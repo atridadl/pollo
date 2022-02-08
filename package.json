@@ -19,5 +19,9 @@
     "prettier-plugin-svelte": "^2.4.0",
     "svelte": "^3.44.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "papercss": "^1.8.3",
+    "spaper": "^0.3.6"
+  }
 }

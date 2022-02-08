@@ -813,6 +813,11 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
+papercss@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/papercss/-/papercss-1.8.3.tgz#2b1f40727190228496590eb7651a31799ecb6dd9"
+  integrity sha512-dRlaR5Kw6NbuMnHEIPLa6JvGndIE2RZ27ebSfjYXV6XAYEnxOMsNeYGDkmJgXol1A0LexmyP3F6F7+HL0XdGqA==
+
 parent-module@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/parent-module/-/parent-module-1.0.1.tgz#691d2709e78c79fae3a156622452d00762caaaa2"
@@ -961,6 +966,11 @@ sourcemap-codec@^1.4.4:
   version "1.4.8"
   resolved "https://registry.yarnpkg.com/sourcemap-codec/-/sourcemap-codec-1.4.8.tgz#ea804bd94857402e6992d05a38ef1ae35a9ab4c4"
   integrity sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==
+
+spaper@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/spaper/-/spaper-0.3.6.tgz#da394c65aadb0ba84f0e75e87cb9bc036288c3e3"
+  integrity sha512-D2mCksiLdbIGxfM1cq9OlaRCMqd9Z3AD/Fyy2x1IZsqCahaI4r2v0rFFjgx+tVbCrYB+76jom/BQVXRnxPOYzg==
 
 sprintf-js@~1.0.2:
   version "1.0.3"
