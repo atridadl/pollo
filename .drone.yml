@@ -13,12 +13,12 @@ steps:
     VITE_APP_COLLECTION_ID:
       from_secret: VITE_APP_COLLECTION_ID
   commands:
-  - yarn
+  - npm i
   - touch .env
   - echo "VITE_APP_ENDPOINT=$VITE_APP_ENDPOINT" >> .env
   - echo "VITE_APP_PROJECT=$VITE_APP_PROJECT" >> .env
   - echo "VITE_APP_COLLECTION_ID=$VITE_APP_COLLECTION_ID" >> .env
-  - yarn build
+  - npm run build
 
 - name: deploy
   image: node:16
