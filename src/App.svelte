@@ -29,7 +29,10 @@
       component: Login,
       conditions: [() => !$state.account],
     }),
-    "/signup": SignUp,
+    "/signup": wrap({
+      component: SignUp,
+      conditions: [() => !$state.account],
+    }),
     "/polls": wrap({
       component: Polls,
       conditions: [() => !!$state.account],
@@ -41,32 +44,45 @@
     try {
       const account = await sdk.account.get();
       state.init(account);
+      console.log(account)
     } catch (error) {
       state.init(null);
     }
   });
 </script>
 
+<style>
+.logout-button:hover span {
+  display: none;
+}
+
+.logout-button:hover:before {
+  content:"😭 Logout?";
+}
+</style>
+
 <Alert />
 <Router {routes} on:conditionsFailed={() => push("/")} />
   
 {#if $location !== "/login"}
   {#if $state.account}
-  <section class="absolute top-0 right-0 py-3 px-6 mr-8 mb-8">
+  <section class="absolute top-0 right-0 py-3 px-6 mr-2 mt-2">
     <button
       on:click={logout}
-      class="mx-auto mt-4 py-3 px-12 font-semibold text-md rounded-lg shadow-md bg-white text-gray-900 border border-gray-900 hover:border-transparent hover:text-white hover:bg-gray-900 focus:outline-none"
+      class="logout-button mx-auto mt-4 py-2 px-4 font-semibold text-md rounded-lg shadow-md bg-white text-gray-900 border border-gray-900 hover:border-transparent hover:text-white hover:bg-gray-900 focus:outline-none"
     >
-      Logout 👋
+      <span>
+        👋 Hi {$state.account.name}!
+      </span>
     </button>
   </section>
   {:else}
-  <section class="absolute top-0 right-0 py-3 px-6 mr-8 mb-8">
+  <section class="absolute top-0 right-0 py-3 px-6 mr-2 mt-2">
     <button
         on:click={() => push("/login")}
-        class="mx-auto mt-4 py-3 px-12 font-semibold text-md rounded-lg shadow-md bg-white text-gray-900 border border-gray-900 hover:border-transparent hover:text-white hover:bg-gray-900 focus:outline-none"
+        class="mx-auto mt-4 py-2 px-4 font-semibold text-md rounded-lg shadow-md bg-white text-gray-900 border border-gray-900 hover:border-transparent hover:text-white hover:bg-gray-900 focus:outline-none"
     >
-      Login 👋
+    ✨ Login ✨
     </button>
   </section>
   {/if}

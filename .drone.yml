@@ -1,0 +1,33 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: build
+  image: node:16
+  environment:
+    VITE_APP_ENDPOINT:
+      from_secret: VITE_APP_ENDPOINT
+    VITE_APP_PROJECT:
+      from_secret: VITE_APP_PROJECT
+    VITE_APP_COLLECTION_ID:
+      from_secret: VITE_APP_COLLECTION_ID
+  commands:
+  - yarn
+  - touch .env
+  - echo "VITE_APP_ENDPOINT=$VITE_APP_ENDPOINT" >> .env
+  - echo "VITE_APP_PROJECT=$VITE_APP_PROJECT" >> .env
+  - echo "VITE_APP_COLLECTION_ID=$VITE_APP_COLLECTION_ID" >> .env
+  - yarn build
+
+- name: deploy
+  image: node:16
+  environment:
+    SURFER_TOKEN:
+      from_secret: SURFER_TOKEN
+    SURFER_URL:
+      from_secret: SURFER_URL
+  commands:
+  - echo $SURFER_URL
+  - npm -g install cloudron-surfer
+  - surfer put --token $SURFER_TOKEN --server $SURFER_URL dist/* /
