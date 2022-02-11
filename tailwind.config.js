@@ -1,12 +1,15 @@
 module.exports = {
-  purge: {
-    enable: true,
-    content: ["./src/**/*.{js,jsx,ts,tsx,svelte}", "./public/index.html"],
-    options: {
-      safelist: [/^w-/, /^bg-[a-z]*-500/],
+  content: ["./src/**/*.{js,jsx,ts,tsx,svelte}", "./public/index.html"],
+  safelist: [
+    {
+      pattern: /^w-/,
     },
-  },
-  darkMode: false, // or 'media' or 'class'
+    {
+      pattern: /^bg-[a-z]*-500/,
+    },
+
+  ],
+  darkMode: "media",
   theme: {
     extend: {},
     fontFamily: {
