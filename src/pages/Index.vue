@@ -9,6 +9,7 @@ const count = ref(0)
         class="container h-screen max-h-screen px-3 max-w-xl mx-auto flex flex-col"
     >
         <div class="my-auto p-2 rounded-lg text-center">
+            <img class="my-8 mx-auto" width="150" height="150" src="/src/assets/logo.png" alt="">
             <div class="font-bold text-3xl md:text-5xl lg:text-6xl">
             Pollo
             </div>
