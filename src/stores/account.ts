@@ -1,13 +1,14 @@
-import { defineStore } from 'pinia';
-import { sdk, server } from '../appwrite';
-import { User } from '../types';
+import { defineStore, Store } from 'pinia';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User } from "firebase/auth";
+
+interface StoreUser {
+  user: User | null,
+};
 
 export const useAccountStore = defineStore('accounts', {
     // a function that returns a fresh state
-    state: () => (<User>{
-      id: null,
-      name: null,
-      email: null,
+    state: () => (<StoreUser>{
+      user: null
     }),
     // optional getters
     getters: {
@@ -15,47 +16,53 @@ export const useAccountStore = defineStore('accounts', {
     // optional actions
     actions: {
       async getAccount () {
-        try {
-          const user = await sdk.account.get();
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
           console.log(user)
-          this.$patch({
-            id: user.$id,
-            name: user.name,
-            email: user.email,
-          });
-          localStorage.setItem('id', user.$id);
-        } catch (error) {
-          console.log(error);
-        }
+          if (user) {
+            this.user = user;
+            localStorage.setItem("uid", user.uid);
+          } else {
+            this.user = null;
+            localStorage.removeItem("uid");
+          }
+        });
       },
       async signup (email: string, password: string, name: string) {
-        try {
-          await sdk.account.create(email, password, name);
-          this.getAccount()
-        } catch (error) {
-          console.log(error);
-        }
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // ..
+          });
       },
       async login (email: string, password: string) {
-        try {
-          await sdk.account.createSession(email, password);
-          this.getAccount()
-        } catch (error) {
-          console.log(error);
-        }
+        const auth = getAuth();
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(user)
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+          });
       },
       async logout () {
-        try {
-          await sdk.account.deleteSession("current");
-          this.$patch({
-            id: null,
-            name: null,
-            email: null,
-          });
-          localStorage.removeItem('id');
-        } catch (error) {
-          console.log(error);
-        }
+        const auth = getAuth();
+        signOut(auth).then(() => {
+          this.user = null
+        }).catch((error) => {
+          // An error happened.
+          console.log(error)
+        })
       },
     },
   })

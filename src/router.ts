@@ -19,7 +19,7 @@ const router = createRouter({ history, routes });
 const accountStore = useAccountStore(pinia)
 
 router.beforeEach((to, from, next) => {
-  if (to.path === '/secret' && localStorage.getItem('id') === null) {
+  if (to.path === '/secret' && !localStorage.getItem("uid")) {
     next('/login');
   } else {
     next();

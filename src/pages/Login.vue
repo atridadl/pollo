@@ -11,7 +11,8 @@ const accountStore = useAccountStore();
 
 async function attemptLogin () {
     await accountStore.login(email.value, password.value);
-    // router.push('/')
+    email.value = password.value = "";
+    router.push('/')
 };
 
 const checkForm = computed(() => {

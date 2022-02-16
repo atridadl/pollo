@@ -5,23 +5,20 @@ import { useRouter } from 'vue-router';
 
 const email = ref("");
 const password = ref("");
-const name = ref("");
+// const name = ref("");
 
 const router = useRouter();
 const accountStore = useAccountStore();
 
 async function attemptSignUp () {
-    try {
-        await accountStore.signup(email.value, password.value, name.value);
-        await accountStore.login(email.value, password.value);
-        name = email = password = "";
-å    } catch (error) {
-        console.log(error);
-    }
+    await accountStore.signup(email.value, password.value);
+    await accountStore.login(email.value, password.value);
+    email.value = password.value = "";
+    
 };
 
 const checkForm = computed(() => {
-    return (email.value !== "" && password.value !== "" && name.value !== "");
+    return (email.value !== "" && password.value !== "");
 });
 </script>
 
@@ -36,14 +33,6 @@ const checkForm = computed(() => {
                 </span>
             </p>
             <form>
-                <label class="block mt-6" for="name">Name</label>
-                <input
-                    id="name"
-                    class="w-full p-4 placeholder-gray-400 text-gray-700 bg-white text-lg border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-900"
-                    type="text"
-                    v-model="name"
-                />
-
                 <label class="block mt-6" for="email">Email</label>
                 <input
                     id="email"
