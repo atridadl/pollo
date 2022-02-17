@@ -1,5 +1,5 @@
 import { defineStore, Store } from 'pinia';
-import { doc, query, where, addDoc, deleteDoc, collection, onSnapshot } from "firebase/firestore";
+import { doc, query, where, addDoc, setDoc, deleteDoc, collection, onSnapshot } from "firebase/firestore";
 import { db } from '../firebase';
 import { Poll, StorePoll } from '../types';
 
@@ -34,12 +34,26 @@ export const usePollStore = defineStore('polls', {
       async addPoll (poll: Poll) {
         await addDoc(collection(db, "polls"), poll);
       },
-      async editPoll (pollID: string) {
+      async editPoll (poll: StorePoll) {
+        await setDoc(doc(db, "polls", poll.dbID), {
+          name: poll.name,
+          pollID: poll.pollID,
+          inProgress: poll.inProgress,
+          ownerUID: poll.ownerUID,
+          questionIDs: poll.questionIDs
+        });
       },
       async deletePoll (dbID: string) {
         await deleteDoc(doc(db, "polls", dbID));
       },
-      async togglePollStatus (pollID: string) {
+      async togglePollStatus (poll: StorePoll) {
+        await setDoc(doc(db, "polls", poll.dbID), {
+          name: poll.name,
+          pollID: poll.pollID,
+          inProgress: !poll.inProgress,
+          ownerUID: poll.ownerUID,
+          questionIDs: poll.questionIDs
+        });
       },
     },
   })

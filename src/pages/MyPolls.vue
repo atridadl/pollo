@@ -7,12 +7,12 @@ import { makeID } from '../helpers';
 
 const pollStore = usePollStore();
 const accountStore = useAccountStore();
-const loginModal = ref(false);
+const newPollModal = ref(false);
 const pollName = ref("");
 
 
-function setLoginModal (state: boolean) {
-    loginModal.value = state;
+function setNewPollModal (state: boolean) {
+    newPollModal.value = state;
 }
 
 async function addPoll () {
@@ -23,7 +23,7 @@ async function addPoll () {
         ownerUID: accountStore.user?.uid,
         questionIDs: []
     })
-    setLoginModal(false);
+    setNewPollModal(false);
     pollName.value = "";
 };
 
@@ -42,13 +42,13 @@ onMounted(() => {
             </div>
 
             <button
-                v-on:click="setLoginModal(true)"
+                v-on:click="setNewPollModal(true)"
                 class="mx-auto mt-4 py-2 px-4 font-semibold text-md rounded-lg shadow-md bg-white text-gray-900 border border-gray-900 hover:border-transparent hover:text-white hover:bg-gray-900 focus:outline-none"
             >
                 🚀 New Poll
             </button>
 
-            <div v-if="loginModal" class="z-40 bg-slate-800 bg-opacity-50 flex justify-center items-center absolute top-0 right-0 bottom-0 left-0">
+            <div v-if="newPollModal" class="z-40 bg-slate-800 bg-opacity-50 flex justify-center items-center absolute top-0 right-0 bottom-0 left-0">
                 <div class="bg-white px-16 py-14 rounded-md text-center">
                     <form>
                         <label class="block mt-6" for="name">Poll Name</label>
@@ -59,7 +59,7 @@ onMounted(() => {
                         />
                     </form>
                     <button
-                        v-on:click="setLoginModal(false)"
+                        v-on:click="setNewPollModal(false)"
                         class="mx-2 mt-4 py-2 px-4 font-semibold text-md rounded-lg bg-white text-gray-900 border border-gray-900 hover:border-4 hover:border-red-500 hover:text-white hover:bg-gray-900 focus:outline-none"
                     >
                         ❌ Cancel
@@ -74,7 +74,7 @@ onMounted(() => {
             </div>
 
             <ul>
-                <PollItem v-for="poll in pollStore.polls" :key="poll.dbID" :name="poll.name" :pollID="poll.pollID" :dbID="poll.dbID" />
+                <PollItem v-for="poll in pollStore.polls" :key="poll.dbID" :poll="poll" />
             </ul>
         </div>
     </section>
