@@ -1,3 +1,0 @@
-<template>
-    SECRET
-</template>

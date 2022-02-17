@@ -1,13 +1,11 @@
-import { defineStore, Store } from 'pinia';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, User } from "firebase/auth";
-
-interface StoreUser {
-  user: User | null,
-};
+import { defineStore } from 'pinia';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { FirebaseUser } from '../types';
 
 export const useAccountStore = defineStore('accounts', {
     // a function that returns a fresh state
-    state: () => (<StoreUser>{
+    state: () => (<FirebaseUser>{
       user: null
     }),
     // optional getters
@@ -16,9 +14,7 @@ export const useAccountStore = defineStore('accounts', {
     // optional actions
     actions: {
       async getAccount () {
-        const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
-          console.log(user)
           if (user) {
             this.user = user;
             localStorage.setItem("uid", user.uid);
@@ -29,7 +25,6 @@ export const useAccountStore = defineStore('accounts', {
         });
       },
       async signup (email: string, password: string, name: string) {
-        const auth = getAuth();
         createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             // Signed in 
@@ -43,12 +38,10 @@ export const useAccountStore = defineStore('accounts', {
           });
       },
       async login (email: string, password: string) {
-        const auth = getAuth();
         signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            console.log(user)
           })
           .catch((error) => {
             const errorCode = error.code;
@@ -56,7 +49,6 @@ export const useAccountStore = defineStore('accounts', {
           });
       },
       async logout () {
-        const auth = getAuth();
         signOut(auth).then(() => {
           this.user = null
         }).catch((error) => {

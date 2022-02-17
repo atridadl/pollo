@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Index from "./pages/Index.vue";
-import NewPoll from "./pages/NewPoll.vue";
+import MyPolls from "./pages/MyPolls.vue";
 import Login from "./pages/Login.vue";
 import SignUp from "./pages/SignUp.vue";
 import { useAccountStore } from './stores/account';
@@ -9,9 +9,9 @@ import pinia from "./pinia";
 const history = createWebHistory();
 const routes = [
   { path: "/", component: Index },
-  { path: "/secret", component: NewPoll },
+  { path: "/polls", component: MyPolls },
   { path: "/login", component: Login },
-  { path: "/signup", component: SignUp }
+  { path: "/signup", component: SignUp },
 ];
 
 const router = createRouter({ history, routes });
@@ -19,7 +19,7 @@ const router = createRouter({ history, routes });
 const accountStore = useAccountStore(pinia)
 
 router.beforeEach((to, from, next) => {
-  if (to.path === '/secret' && !localStorage.getItem("uid")) {
+  if (to.path === '/polls' && !localStorage.getItem("uid")) {
     next('/login');
   } else {
     next();

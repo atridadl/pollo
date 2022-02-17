@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:hosting": "yarn build && firebase deploy --only hosting",
+    "deploy:full": "yarn build && firebase deploy"
   },
   "dependencies": {
     "appwrite": "^6.0.1",
