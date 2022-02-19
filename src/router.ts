@@ -3,8 +3,6 @@ import Index from "./pages/Index.vue";
 import MyPolls from "./pages/MyPolls.vue";
 import Login from "./pages/Login.vue";
 import SignUp from "./pages/SignUp.vue";
-import { useAccountStore } from './stores/account';
-import pinia from "./pinia";
 
 const history = createWebHistory();
 const routes = [
@@ -15,8 +13,6 @@ const routes = [
 ];
 
 const router = createRouter({ history, routes });
-
-const accountStore = useAccountStore(pinia)
 
 router.beforeEach((to, from, next) => {
   if (to.path === '/polls' && !localStorage.getItem("uid")) {

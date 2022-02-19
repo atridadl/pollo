@@ -18,13 +18,13 @@ async function attemptLogout () {
     } catch (error) {
       console.log()
     } finally {
-      accountStore.getAccount();
+      accountStore.get();
       router.push("/");
     }
 }
 
 onMounted(() => {
-  accountStore.getAccount();
+  accountStore.get();
   setViewHeight()
   window.addEventListener('resize', () => {
     setViewHeight()

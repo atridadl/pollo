@@ -1,7 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 
-const count = ref(0)
+const pollID = ref("");
+
+function joinPoll () {
+    console.log(pollID.value);
+    pollID.value = "";
+}
 </script>
 
 <template>
@@ -17,14 +22,15 @@ const count = ref(0)
             <div class="font-bold text-lg md:text-xl lg:text-2xl">
             Polling. Simplified.
             </div>
-
-            <form>
-            <input
-                type="text"
-                class="w-4/5 my-8 px-4 py-2 text-center text-md rounded-lg border-2 border-gray-400 hover:border-black transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-110 hover:shadow-xl shadow-md"
-                placeholder="Enter your ✨poll code✨!"
-                bind:value
-            />
+            <form
+                v-on:submit.prevent="joinPoll()"
+            >
+                <input
+                    type="text"
+                    class="w-4/5 my-8 px-4 py-2 text-center text-md rounded-lg border-2 border-gray-400 hover:border-black transition duration-200 ease-in-out transform hover:-translate-y-1 hover:scale-110 hover:shadow-xl shadow-md"
+                    placeholder="Enter your ✨poll code✨!"
+                    v-model="pollID"
+                />
             </form>
         </div>
     </section>

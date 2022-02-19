@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { usePollStore } from '../stores/polls'
+import { usePollStore } from '../stores/poll'
 import { useAccountStore } from '../stores/account'
 import PollItem from '../components/PollItem.vue'
-import { makeID } from '../helpers';
+import { makeID } from '../utils/helpers';
 
 const pollStore = usePollStore();
 const accountStore = useAccountStore();
@@ -16,7 +16,7 @@ function setNewPollModal (state: boolean) {
 }
 
 async function addPoll () {
-    pollStore.addPoll({
+    pollStore.add({
         name: pollName.value,
         pollID: makeID(5),
         inProgress: false,
@@ -28,7 +28,7 @@ async function addPoll () {
 };
 
 onMounted(() => {
-    pollStore.getPolls();
+    pollStore.get();
 });
 </script>
 

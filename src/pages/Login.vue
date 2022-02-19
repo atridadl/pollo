@@ -30,7 +30,9 @@ const checkForm = computed(() => {
                     <a href="/signup"> Sign Up </a>
                 </span>
             </p>
-            <form>
+            <form
+                v-on:submit.prevent="attemptLogin()"
+            >
                 <label class="block mt-6" for="email">Email</label>
                 <input
                     id="email"
@@ -48,7 +50,6 @@ const checkForm = computed(() => {
 
                 <div class="mt-6">
                     <button
-                        v-on:click="attemptLogin()"
                         :disabled="!checkForm"
                         type="submit"
                         class="mx-auto mt-4 py-4 px-16 font-semibold rounded-lg shadow-md bg-gray-900 text-white border hover:border-gray-900 hover:text-gray-900 hover:bg-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"

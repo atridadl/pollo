@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { auth } from '../firebase';
+import { auth } from '../plugins/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { FirebaseUser } from '../types';
+import { FirebaseUser } from '../utils/types';
 
-export const useAccountStore = defineStore('accounts', {
+export const useAccountStore = defineStore('account', {
     // a function that returns a fresh state
     state: () => (<FirebaseUser>{
       user: null
@@ -13,7 +13,7 @@ export const useAccountStore = defineStore('accounts', {
     },
     // optional actions
     actions: {
-      async getAccount () {
+      async get () {
         onAuthStateChanged(auth, (user) => {
           if (user) {
             this.user = user;

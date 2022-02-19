@@ -1,9 +1,9 @@
 import { defineStore, Store } from 'pinia';
 import { doc, query, where, addDoc, setDoc, deleteDoc, collection, onSnapshot } from "firebase/firestore";
-import { db } from '../firebase';
-import { Poll, StorePoll } from '../types';
+import { db } from '../plugins/firebase';
+import { Poll, StorePoll } from '../utils/types';
 
-export const usePollStore = defineStore('polls', {
+export const usePollStore = defineStore('poll', {
     // a function that returns a fresh state
     state: () => ({
       polls: [] as StorePoll[],
@@ -13,7 +13,7 @@ export const usePollStore = defineStore('polls', {
     },
     // optional actions
     actions: {
-      async getPolls () {
+      async get () {
         const q = query(collection(db, "polls"), where("ownerUID", "==", `${localStorage.getItem("uid")}`));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
           const tempPolls = [] as StorePoll[];
@@ -31,10 +31,10 @@ export const usePollStore = defineStore('polls', {
           this.polls = tempPolls;
         });
       },
-      async addPoll (poll: Poll) {
+      async add (poll: Poll) {
         await addDoc(collection(db, "polls"), poll);
       },
-      async editPoll (poll: StorePoll) {
+      async edit (poll: StorePoll) {
         await setDoc(doc(db, "polls", poll.dbID), {
           name: poll.name,
           pollID: poll.pollID,
@@ -43,10 +43,10 @@ export const usePollStore = defineStore('polls', {
           questionIDs: poll.questionIDs
         });
       },
-      async deletePoll (dbID: string) {
+      async delete (dbID: string) {
         await deleteDoc(doc(db, "polls", dbID));
       },
-      async togglePollStatus (poll: StorePoll) {
+      async toggle (poll: StorePoll) {
         await setDoc(doc(db, "polls", poll.dbID), {
           name: poll.name,
           pollID: poll.pollID,

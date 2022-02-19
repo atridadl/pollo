@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { usePollStore } from '../stores/polls'
+import { usePollStore } from '../stores/poll'
 const props = defineProps(['poll'])
 
 const pollStore = usePollStore();
@@ -8,17 +8,17 @@ const editPollModal = ref(false);
 const pollName = ref(props.poll.name);
 
 function deletePoll () {
-    pollStore.deletePoll(props.poll.dbID);
+    pollStore.delete(props.poll.dbID);
 }
 
 function editPoll () {
     setEditPollModal(false);
     const newPoll = props.poll;
     newPoll.name = pollName;
-    pollStore.editPoll(newPoll);
+    pollStore.edit(newPoll);
 }
  function togglePollStatus () {
-     pollStore.togglePollStatus(props.poll);
+     pollStore.toggle(props.poll);
  }
 
 function setEditPollModal (state: boolean) {
