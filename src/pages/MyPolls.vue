@@ -1,18 +1,28 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { usePollStore } from '../stores/poll'
 import { useAccountStore } from '../stores/account'
+import { usePollStore } from '../stores/poll'
+import { useQuestionStore } from "../stores/question";
 import PollItem from '../components/PollItem.vue'
 import { makeID } from '../utils/helpers';
 
-const pollStore = usePollStore();
+
 const accountStore = useAccountStore();
+const pollStore = usePollStore();
+const questionStore = useQuestionStore();
+
 const newPollModal = ref(false);
 const pollName = ref("");
+const newQuestionModal = ref(false);
+const questionName = ref("");
 
 
 function setNewPollModal (state: boolean) {
     newPollModal.value = state;
+}
+
+function setQuestionModal (state: boolean) {
+    newQuestionModal.value = state;
 }
 
 async function addPoll () {
@@ -27,8 +37,21 @@ async function addPoll () {
     pollName.value = "";
 };
 
+async function addQuestion () {
+        // pollStore.add({
+        //     name: pollName.value,
+        //     pollID: makeID(5),
+        //     inProgress: false,
+        //     ownerUID: accountStore.user?.uid,
+        //     questionIDs: []
+        // })
+    setQuestionModal(false);
+    questionName.value = "";
+};
+
 onMounted(() => {
     pollStore.get();
+    questionStore.get();
 });
 </script>
 
@@ -66,6 +89,31 @@ onMounted(() => {
                     </button>
                     <button
                         v-on:click="addPoll()"
+                        class="mx-2 mt-4 py-2 px-4 font-semibold text-md rounded-lg bg-white text-gray-900 border border-gray-900 hover:border-4 hover:border-green-500 hover:text-white hover:bg-gray-900 focus:outline-none"
+                    >
+                        🚀 Submit
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="newQuestionModal" class="z-40 bg-slate-800 bg-opacity-50 flex justify-center items-center absolute top-0 right-0 bottom-0 left-0">
+                <div class="bg-white px-16 py-14 rounded-md text-center">
+                    <form>
+                        <label class="block mt-6" for="name">Poll Name</label>
+                        <input
+                            id="name"
+                            class="w-full p-4 placeholder-gray-400 text-gray-700 bg-white text-lg border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-900"
+                            v-model="questionName"
+                        />
+                    </form>
+                    <button
+                        v-on:click="setNewQuestionModal(false)"
+                        class="mx-2 mt-4 py-2 px-4 font-semibold text-md rounded-lg bg-white text-gray-900 border border-gray-900 hover:border-4 hover:border-red-500 hover:text-white hover:bg-gray-900 focus:outline-none"
+                    >
+                        ❌ Cancel
+                    </button>
+                    <button
+                        v-on:click="addQuestion()"
                         class="mx-2 mt-4 py-2 px-4 font-semibold text-md rounded-lg bg-white text-gray-900 border border-gray-900 hover:border-4 hover:border-green-500 hover:text-white hover:bg-gray-900 focus:outline-none"
                     >
                         🚀 Submit

@@ -29,5 +29,4 @@ dist-ssr
 firebase-debug.log
 firebase.json
 firebase.indexes.json
-firestore.rules
 firebaseConfig.json

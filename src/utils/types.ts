@@ -41,6 +41,7 @@ interface Question {
 
 interface StoreQuestion {
     questionID: string,
+    dbID: string,
     ownerUID: string | undefined,
     title: string,
     questionType: QuestionType,
