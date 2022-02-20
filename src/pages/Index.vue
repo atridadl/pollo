@@ -1,10 +1,15 @@
 <script setup>
-import { ref } from 'vue'
+import { useAccountStore } from '../stores/account'
+import { onMounted, ref } from 'vue'
+
+const accountStore = useAccountStore();
 
 const pollID = ref("");
 
 function joinPoll () {
-    console.log(pollID.value);
+    if (pollID.value.length >= 5) {
+        console.log(pollID.value);
+    }
     pollID.value = "";
 }
 </script>
@@ -14,7 +19,7 @@ function joinPoll () {
         class="container h-screen max-h-screen px-3 max-w-xl mx-auto flex flex-col absolute inset-0"
     >
         <div class="my-auto p-2 rounded-lg text-center">
-            <img class="w-2/5 my-8 mx-auto" src="/src/assets/logo.png" alt="">
+            <img class="w-2/6 my-8 mx-auto" src="/src/assets/logo.png" alt="">
             <div class="font-bold text-3xl md:text-5xl lg:text-6xl">
             Pollo
             </div>
@@ -22,6 +27,11 @@ function joinPoll () {
             <div class="font-bold text-lg md:text-xl lg:text-2xl">
             Polling. Simplified.
             </div>
+
+            <div v-if="accountStore.user" class="font-bold text-lg md:text-xl lg:text-xl">
+                👋 Hi {{ accountStore.user.email }}! 👋
+            </div>
+            
             <form
                 v-on:submit.prevent="joinPoll()"
             >

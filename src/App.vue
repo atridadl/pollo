@@ -53,11 +53,9 @@ onMounted(() => {
 
     <button
       v-on:click="attemptLogout"
-      class="logout-button mx-2 mt-4 py-2 px-4 font-semibold text-md rounded-lg shadow-md bg-white text-gray-900 border border-gray-900 hover:border-transparent hover:text-white hover:bg-gray-900 focus:outline-none"
+      class="mx-2 mt-4 py-2 px-4 font-semibold text-md rounded-lg shadow-md bg-white text-gray-900 border border-gray-900 hover:border-transparent hover:text-white hover:bg-gray-900 focus:outline-none"
     >
-      <span>
-        👋 Hi {{ accountStore.user.email }}!
-      </span>
+      😭 Logout?
     </button>
   </section>
   <section v-if="!accountStore.user && route.path !== '/login' && route.path !== '/signup'" class="absolute top-0 right-0 py-3 px-6 mr-2 mt-2">
@@ -85,13 +83,5 @@ onMounted(() => {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-.logout-button:hover span {
-  display: none;
-}
-
-.logout-button:hover:before {
-  content:"😭 Logout?";
 }
 </style>
