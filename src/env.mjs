@@ -20,8 +20,26 @@ const server = z.object({
     process.env.VERCEL ? z.string().min(1) : z.string().url()
   ),
   // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
-  GITHUB_CLIENT_ID: z.string(),
-  GITHUB_CLIENT_SECRET: z.string(),
+  GITHUB_CLIENT_ID: z.preprocess(
+    // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
+    // Since NextAuth.js automatically uses the VERCEL_URL if present.
+    (str) =>
+      process.env.NODE_ENV === "development"
+        ? process.env.GITHUB_CLIENT_ID_LOCAL
+        : process.env.GITHUB_CLIENT_ID,
+    // VERCEL_URL doesn't include `https` so it cant be validated as a URL
+    z.string()
+  ),
+  GITHUB_CLIENT_SECRET: z.preprocess(
+    // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
+    // Since NextAuth.js automatically uses the VERCEL_URL if present.
+    (str) =>
+      process.env.NODE_ENV === "development"
+        ? process.env.GITHUB_CLIENT_SECRET_LOCAL
+        : process.env.GITHUB_CLIENT_SECRET,
+    // VERCEL_URL doesn't include `https` so it cant be validated as a URL
+    z.string()
+  ),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   ABLY_PRIVATE_KEY: z.string(),
