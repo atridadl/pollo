@@ -28,7 +28,6 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
           />
           {title}
           {env.NEXT_PUBLIC_APP_ENV === "development" && " >> DEVELOPMENT"}
-          {env.NEXT_PUBLIC_APP_ENV === "local" && " >> LOCAL"}
         </Link>
       </div>
       {sessionData?.user.image && (
