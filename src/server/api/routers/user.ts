@@ -1,7 +1,8 @@
 import type { User } from "@prisma/client";
 import { z } from "zod";
+import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { sendMail } from "~/server/jmap";
+import { sendMail } from "fms-ts";
 import { fetchFromCache, writeToCache, deleteFromCache } from "~/server/redis";
 import type { Role } from "~/utils/types";
 
@@ -113,7 +114,13 @@ export const userRouter = createTRPCRouter({
           "-- \n" +
           "Sprint Padawan Admin - Atridad \n";
 
-        await sendMail(subject, body, user.email);
+        await sendMail(
+          env.JMAP_USERNAME,
+          env.JMAP_TOKEN,
+          subject,
+          body,
+          user.email
+        );
         await deleteFromCache(`kv_usercount_admin`);
         await deleteFromCache(`kv_userlist_admin`);
       }
