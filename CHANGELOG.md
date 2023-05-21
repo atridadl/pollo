@@ -16,3 +16,8 @@ All notable changes to this project will be documented in this file.
 🚧 Added indicators for the environment in development and local
 🚧 Fully automated the process for developing locally with railway
 🚧 Package updates
+
+## 1.0.1 - Completely orchestrate principle-centered initiatives (2023-05-14)
+
+🚧 Moved to fms-ts for emails
+🚧 Package updates

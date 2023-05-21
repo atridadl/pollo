@@ -10,7 +10,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
-import { sendMail } from "./jmap";
+import { sendMail } from "fms-ts";
 import { deleteFromCache } from "./redis";
 
 /**
@@ -59,7 +59,13 @@ export const authOptions: NextAuthOptions = {
           "-- \n" +
           "Sprint Padawan Admin - Atridad \n";
 
-        await sendMail(subject, body, user.email);
+        await sendMail(
+          env.JMAP_USERNAME,
+          env.JMAP_TOKEN,
+          subject,
+          body,
+          user.email
+        );
         await deleteFromCache(`kv_userlist_admin`);
         await deleteFromCache(`kv_usercount_admin`);
       }
