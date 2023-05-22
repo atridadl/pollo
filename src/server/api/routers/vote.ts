@@ -2,18 +2,36 @@ import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { deleteFromCache, fetchFromCache, writeToCache } from "~/server/redis";
+import {
+  cacheClient,
+  writeToCache,
+  fetchFromCache,
+  deleteFromCache,
+} from "redicache-ts";
+import { env } from "~/env.mjs";
+
+const client = cacheClient(env.REDIS_URL);
 
 export const voteRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchFromCache<number>(`kv_votecount_admin`);
+    const cachedResult = await fetchFromCache<number>(
+      client,
+      env.APP_ENV,
+      `kv_votecount_admin`
+    );
 
     if (cachedResult) {
       return cachedResult;
     } else {
       const votesCount = await ctx.prisma.vote.count();
 
-      await writeToCache(`kv_votecount_admin`, votesCount, 69);
+      await writeToCache(
+        client,
+        env.APP_ENV,
+        `kv_votecount_admin`,
+        votesCount,
+        69
+      );
 
       return votesCount;
     }
@@ -52,7 +70,7 @@ export const voteRouter = createTRPCRouter({
       });
 
       if (vote) {
-        await deleteFromCache(`kv_votecount_admin`);
+        await deleteFromCache(client, env.APP_ENV, `kv_votecount_admin`);
 
         await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
       }

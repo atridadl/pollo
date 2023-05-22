@@ -3,19 +3,37 @@ import { z } from "zod";
 import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { sendMail } from "fms-ts";
-import { fetchFromCache, writeToCache, deleteFromCache } from "~/server/redis";
 import type { Role } from "~/utils/types";
+
+import {
+  cacheClient,
+  writeToCache,
+  fetchFromCache,
+  deleteFromCache,
+} from "redicache-ts";
+
+const client = cacheClient(env.REDIS_URL);
 
 export const userRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchFromCache<number>(`kv_usercount_admin`);
+    const cachedResult = await fetchFromCache<number>(
+      client,
+      env.APP_ENV,
+      `kv_usercount_admin`
+    );
 
     if (cachedResult) {
       return cachedResult;
     } else {
       const usersCount = await ctx.prisma.user.count();
 
-      await writeToCache(`kv_usercount_admin`, usersCount, 69);
+      await writeToCache(
+        client,
+        env.APP_ENV,
+        `kv_usercount_admin`,
+        usersCount,
+        69
+      );
 
       return usersCount;
     }
@@ -50,7 +68,7 @@ export const userRouter = createTRPCRouter({
         name: string | null;
         email: string | null;
       }[]
-    >(`kv_userlist_admin`);
+    >(client, env.APP_ENV, `kv_userlist_admin`);
 
     if (cachedResult) {
       return cachedResult.map((user) => {
@@ -75,7 +93,13 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      await writeToCache(`kv_userlist_admin`, JSON.stringify(users), 69);
+      await writeToCache(
+        client,
+        env.APP_ENV,
+        `kv_userlist_admin`,
+        JSON.stringify(users),
+        69
+      );
 
       return users;
     }
@@ -121,8 +145,8 @@ export const userRouter = createTRPCRouter({
           body,
           user.email
         );
-        await deleteFromCache(`kv_usercount_admin`);
-        await deleteFromCache(`kv_userlist_admin`);
+        await deleteFromCache(client, env.APP_ENV, `kv_usercount_admin`);
+        await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
       }
 
       return !!user;
@@ -162,7 +186,7 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      await deleteFromCache(`kv_userlist_admin`);
+      await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
 
       return !!user;
     }),

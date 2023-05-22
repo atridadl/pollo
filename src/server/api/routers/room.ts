@@ -7,7 +7,15 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
-import { writeToCache, fetchFromCache, deleteFromCache } from "~/server/redis";
+import {
+  cacheClient,
+  writeToCache,
+  fetchFromCache,
+  deleteFromCache,
+} from "redicache-ts";
+import { env } from "~/env.mjs";
+
+const client = cacheClient(env.REDIS_URL);
 
 export const roomRouter = createTRPCRouter({
   // Create
@@ -29,8 +37,12 @@ export const roomRouter = createTRPCRouter({
           },
         });
         if (room) {
-          await deleteFromCache(`kv_roomcount_admin`);
-          await deleteFromCache(`kv_roomlist_${ctx.session.user.id}`);
+          await deleteFromCache(client, env.APP_ENV, `kv_roomcount_admin`);
+          await deleteFromCache(
+            client,
+            env.APP_ENV,
+            `kv_roomlist_${ctx.session.user.id}`
+          );
 
           await publishToChannel(
             `${ctx.session.user.id}`,
@@ -92,7 +104,7 @@ export const roomRouter = createTRPCRouter({
         createdAt: Date;
         roomName: string;
       }[]
-    >(`kv_roomlist_${ctx.session.user.id}`);
+    >(client, env.APP_ENV, `kv_roomlist_${ctx.session.user.id}`);
 
     if (cachedResult) {
       return cachedResult;
@@ -109,6 +121,8 @@ export const roomRouter = createTRPCRouter({
       });
 
       await writeToCache(
+        client,
+        env.APP_ENV,
         `kv_roomlist_${ctx.session.user.id}`,
         JSON.stringify(roomList),
         69
@@ -119,14 +133,24 @@ export const roomRouter = createTRPCRouter({
   }),
 
   countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchFromCache<number>(`kv_roomcount_admin`);
+    const cachedResult = await fetchFromCache<number>(
+      client,
+      env.APP_ENV,
+      `kv_roomcount_admin`
+    );
 
     if (cachedResult) {
       return cachedResult;
     } else {
       const roomsCount = await ctx.prisma.room.count();
 
-      await writeToCache(`kv_roomcount_admin`, roomsCount, 69);
+      await writeToCache(
+        client,
+        env.APP_ENV,
+        `kv_roomcount_admin`,
+        roomsCount,
+        69
+      );
 
       return roomsCount;
     }
@@ -242,9 +266,13 @@ export const roomRouter = createTRPCRouter({
       });
 
       if (deletedRoom) {
-        await deleteFromCache(`kv_roomcount_admin`);
-        await deleteFromCache(`kv_votecount_admin`);
-        await deleteFromCache(`kv_roomlist_${ctx.session.user.id}`);
+        await deleteFromCache(client, env.APP_ENV, `kv_roomcount_admin`);
+        await deleteFromCache(client, env.APP_ENV, `kv_votecount_admin`);
+        await deleteFromCache(
+          client,
+          env.APP_ENV,
+          `kv_roomlist_${ctx.session.user.id}`
+        );
 
         await publishToChannel(
           `${ctx.session.user.id}`,
