@@ -11,7 +11,9 @@ import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
 import { sendMail } from "fms-ts";
-import { deleteFromCache } from "./redis";
+import { cacheClient, deleteFromCache } from "redicache-ts";
+
+const client = cacheClient(env.REDIS_URL);
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -66,15 +68,15 @@ export const authOptions: NextAuthOptions = {
           body,
           user.email
         );
-        await deleteFromCache(`kv_userlist_admin`);
-        await deleteFromCache(`kv_usercount_admin`);
+        await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
+        await deleteFromCache(client, env.APP_ENV, `kv_usercount_admin`);
       }
     },
     async signIn({}) {
-      await deleteFromCache(`kv_userlist_admin`);
+      await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
     },
     async signOut({}) {
-      await deleteFromCache(`kv_userlist_admin`);
+      await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
     },
   },
   adapter: PrismaAdapter(prisma),
