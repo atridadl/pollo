@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
           <GiTechnoHeart className="inline-block text-primary text-lg" /> by{" "}
           <a
             className="link link-primary link-hover"
-            href="https://atridad.dev"
+            href="https://atri.dad"
             rel="noreferrer"
             target="_blank"
           >
