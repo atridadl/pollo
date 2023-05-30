@@ -5,10 +5,12 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "NEXTAUTH_URL=http://localhost:3000 && next dev",
+    "serv": "NEXTAUTH_URL=http://localhost:3000 && next dev",
+    "dev": "railway run pnpm serv",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "connect": "railway link"
   },
   "dependencies": {
     "@ably-labs/react-hooks": "^2.1.1",
