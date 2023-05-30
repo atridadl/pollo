@@ -121,6 +121,8 @@ const RoomBody: React.FC = () => {
   useEffect(() => {
     window.addEventListener("beforeunload", () => channel.presence.leave());
     return () => {
+      localStorage.removeItem(`${roomId}_story_name`);
+      localStorage.removeItem(`${roomId}_room_scale`);
       window.removeEventListener("beforeunload", () =>
         channel.presence.leave()
       );
@@ -131,8 +133,16 @@ const RoomBody: React.FC = () => {
   // Init story name
   useEffect(() => {
     if (sessionData && roomFromDb) {
-      setStoryNameText(roomFromDb.storyName || "");
-      setRoomScale(roomFromDb.scale || "ERROR");
+      setStoryNameText(
+        localStorage.getItem(`${roomId}_story_name`) ||
+          roomFromDb.storyName ||
+          ""
+      );
+      setRoomScale(
+        localStorage.getItem(`${roomId}_room_scale`) ||
+          roomFromDb.scale ||
+          "ERROR"
+      );
     }
   }, [roomFromDb, sessionData]);
 
@@ -367,7 +377,13 @@ const RoomBody: React.FC = () => {
                     placeholder="Scale (Comma Separated)"
                     className="input input-bordered m-auto"
                     value={roomScale}
-                    onChange={(event) => setRoomScale(event.target.value)}
+                    onChange={(event) => {
+                      setRoomScale(event.target.value);
+                      localStorage.setItem(
+                        `${roomId}_room_scale`,
+                        event.target.value
+                      );
+                    }}
                   />
 
                   <label className="label mx-auto">{"Story Name:"} </label>
@@ -377,7 +393,13 @@ const RoomBody: React.FC = () => {
                     placeholder="Story Name"
                     className="input input-bordered m-auto"
                     value={storyNameText}
-                    onChange={(event) => setStoryNameText(event.target.value)}
+                    onChange={(event) => {
+                      setStoryNameText(event.target.value);
+                      localStorage.setItem(
+                        `${roomId}_story_name`,
+                        event.target.value
+                      );
+                    }}
                   />
 
                   <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">

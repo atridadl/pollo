@@ -9,6 +9,7 @@ import {
   deleteFromCache,
 } from "redicache-ts";
 import { env } from "~/env.mjs";
+import { Vote } from "@prisma/client";
 
 const client = cacheClient(env.REDIS_URL);
 
@@ -36,6 +37,35 @@ export const voteRouter = createTRPCRouter({
       return votesCount;
     }
   }),
+  getAllByRoomId: protectedProcedure
+    .input(z.object({ roomId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const cachedResult = await fetchFromCache<Vote[]>(
+        client,
+        env.APP_ENV,
+        `kv_votes_${input.roomId}`
+      );
+
+      if (cachedResult) {
+        return cachedResult;
+      } else {
+        const votesByRoomId = await ctx.prisma.vote.findMany({
+          where: {
+            roomId: input.roomId,
+          },
+        });
+
+        await writeToCache(
+          client,
+          env.APP_ENV,
+          `kv_votes_${input.roomId}`,
+          JSON.stringify(votesByRoomId),
+          69
+        );
+
+        return votesByRoomId;
+      }
+    }),
   set: protectedProcedure
     .input(z.object({ value: z.string(), roomId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -71,6 +101,7 @@ export const voteRouter = createTRPCRouter({
 
       if (vote) {
         await deleteFromCache(client, env.APP_ENV, `kv_votecount_admin`);
+        await deleteFromCache(client, env.APP_ENV, `kv_votes_${input.roomId}`);
 
         await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
       }
