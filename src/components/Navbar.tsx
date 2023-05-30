@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
             priority
           />
           {title}
-          {env.NEXT_PUBLIC_APP_ENV === "development" && " >> DEVELOPMENT"}
+          {env.NEXT_PUBLIC_APP_ENV === "development" && " >> DEV"}
         </Link>
       </div>
       {sessionData?.user.image && (
