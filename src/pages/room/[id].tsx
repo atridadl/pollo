@@ -128,7 +128,7 @@ const RoomBody: React.FC = () => {
       );
       channel.presence.leave();
     };
-  }, [channel.presence]);
+  }, [channel.presence, roomId]);
 
   // Init story name
   useEffect(() => {
@@ -142,7 +142,7 @@ const RoomBody: React.FC = () => {
         roomScaleString !== null ? roomScaleString : roomFromDb.scale || "ERROR"
       );
     }
-  }, [roomFromDb, sessionData]);
+  }, [roomFromDb, roomId, sessionData]);
 
   // Helper functions
   const getVoteForCurrentUser = () => {
