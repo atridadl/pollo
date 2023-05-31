@@ -68,7 +68,9 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
                 </li>
               )}
               <li>
-                <a onClick={() => void signOut()}>Sign Out</a>
+                <a onClick={() => void signOut({ callbackUrl: "/" })}>
+                  Sign Out
+                </a>
               </li>
             </ul>
           </div>
