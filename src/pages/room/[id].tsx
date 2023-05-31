@@ -133,15 +133,13 @@ const RoomBody: React.FC = () => {
   // Init story name
   useEffect(() => {
     if (sessionData && roomFromDb) {
+      const storyNameString = localStorage.getItem(`${roomId}_story_name`);
+      const roomScaleString = localStorage.getItem(`${roomId}_room_scale`);
       setStoryNameText(
-        localStorage.getItem(`${roomId}_story_name`) ||
-          roomFromDb.storyName ||
-          ""
+        storyNameString !== null ? storyNameString : roomFromDb.storyName || ""
       );
       setRoomScale(
-        localStorage.getItem(`${roomId}_room_scale`) ||
-          roomFromDb.scale ||
-          "ERROR"
+        roomScaleString !== null ? roomScaleString : roomFromDb.scale || "ERROR"
       );
     }
   }, [roomFromDb, sessionData]);
