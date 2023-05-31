@@ -14,7 +14,7 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
-  // Redirect to home if not logged in
+  // Redirect to login if not signed in
   if (!session) {
     return {
       redirect: {

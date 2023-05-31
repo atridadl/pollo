@@ -13,11 +13,11 @@ import type { Role } from "~/utils/types";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
-  // Redirect to home if not logged in
+  // Redirect to login if not signed in
   if (!session) {
     return {
       redirect: {
-        destination: "/",
+        destination: `/api/auth/signin?callbackUrl=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };
