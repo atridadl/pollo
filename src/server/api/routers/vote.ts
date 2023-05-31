@@ -9,7 +9,7 @@ import {
   deleteFromCache,
 } from "redicache-ts";
 import { env } from "~/env.mjs";
-import { Vote } from "@prisma/client";
+import type { Vote } from "@prisma/client";
 
 const client = cacheClient(env.REDIS_URL);
 

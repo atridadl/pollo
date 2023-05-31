@@ -12,7 +12,6 @@ import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
 import { sendMail } from "fms-ts";
 import { cacheClient, deleteFromCache } from "redicache-ts";
-import { redirect } from "next/navigation";
 
 const client = cacheClient(env.REDIS_URL);
 
