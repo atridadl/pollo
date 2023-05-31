@@ -12,6 +12,7 @@ import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
 import { sendMail } from "fms-ts";
 import { cacheClient, deleteFromCache } from "redicache-ts";
+import { redirect } from "next/navigation";
 
 const client = cacheClient(env.REDIS_URL);
 
@@ -75,7 +76,7 @@ export const authOptions: NextAuthOptions = {
     async signIn({}) {
       await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
     },
-    async signOut({}) {
+    async signOut() {
       await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
     },
   },
