@@ -2,7 +2,6 @@ import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { env } from "~/env.mjs";
-import Loading from "./Loading";
 import { useRouter } from "next/router";
 
 interface NavbarProps {
