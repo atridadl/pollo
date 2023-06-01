@@ -1,17 +1,35 @@
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { env } from "~/env.mjs";
+import { useRouter } from "next/router";
 
 interface NavbarProps {
   title: string;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ title }) => {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status: sessionStatus } = useSession();
+  const router = useRouter();
+
+  const navigationMenu = () => {
+    if (sessionStatus === "authenticated" && router.pathname !== "/dashboard") {
+      return (
+        <Link className="btn btn-secondary btn-outline mx-2" href="/dashboard">
+          Dashboard
+        </Link>
+      );
+    } else if (sessionStatus === "unauthenticated") {
+      return (
+        <button className="btn btn-secondary" onClick={() => void signIn()}>
+          Sign In
+        </button>
+      );
+    }
+  };
 
   return (
-    <nav className="navbar bg-base-100">
+    <nav className="navbar bg-base-100 h-12">
       <div className="flex-1">
         <Link
           about="Back to home."
@@ -19,17 +37,22 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
           className="btn btn-ghost normal-case text-xl"
         >
           <Image
-            className="mr-2"
+            className="md:mr-2"
             src="/logo.webp"
             alt="Nav Logo"
             width={32}
             height={32}
             priority
           />
-          {title}
-          {env.NEXT_PUBLIC_APP_ENV === "development" && " >> DEV"}
+          <span className="hidden md:inline-flex">
+            {title}
+            {env.NEXT_PUBLIC_APP_ENV === "development" && " >> DEV"}
+          </span>
         </Link>
       </div>
+
+      {navigationMenu()}
+
       {sessionData?.user.image && (
         <div className="flex-none gap-2">
           <div className="dropdown dropdown-end">
