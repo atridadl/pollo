@@ -3,7 +3,7 @@ import packagejson from "../../package.json";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="footer footer-center h-[48px] p-2 bg-base-100 text-base-content">
+    <footer className="footer footer-center h-12 p-2 bg-base-100 text-base-content">
       <div>
         <p>
           Made with{" "}
