@@ -1,6 +1,6 @@
-import { GetServerSideProps, type NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import RoomList from "~/components/RoomList";
 
