@@ -53,6 +53,9 @@ dependencies:
   postcss:
     specifier: ^8.4.24
     version: 8.4.24
+  preact:
+    specifier: ^10.15.1
+    version: 10.15.1
   react:
     specifier: 18.2.0
     version: 18.2.0

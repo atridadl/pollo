@@ -1,6 +1,6 @@
 {
   "name": "sprintpadawan",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Plan. Sprint. Repeat.",
   "private": true,
   "scripts": {
@@ -29,6 +29,7 @@
     "next": "^13.4.4",
     "next-auth": "^4.22.1",
     "postcss": "^8.4.24",
+    "preact": "^10.15.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.9.0",
