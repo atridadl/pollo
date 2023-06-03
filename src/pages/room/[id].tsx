@@ -337,16 +337,16 @@ const RoomBody: React.FC = () => {
                     })}
               </ul>
 
-              <div className="btn-group btn-group-vertical md:btn-group-horizontal mx-auto">
+              <div className="join md:btn-group-horizontal mx-auto">
                 {roomFromDb.scale.split(",").map((scaleItem, index) => {
                   return (
                     <button
                       key={index}
-                      className={
+                      className={`join-item ${
                         getVoteForCurrentUser()?.value === scaleItem
-                          ? "btn btn-active"
+                          ? "btn btn-active btn-primary"
                           : "btn"
-                      }
+                      }`}
                       onClick={() => setVote(scaleItem)}
                     >
                       {scaleItem}
@@ -442,8 +442,7 @@ const RoomBody: React.FC = () => {
                         {roomFromDb.storyName === storyNameText ||
                         roomFromDb.votes.length === 0 ? (
                           <>
-                            <IoReloadOutline className="text-white text-xl mr-1" />{" "}
-                            Reset
+                            <IoReloadOutline className="text-xl mr-1" /> Reset
                           </>
                         ) : (
                           <>
