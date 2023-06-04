@@ -20,7 +20,6 @@ import {
   IoDownloadOutline,
 } from "react-icons/io5";
 
-import type { Prisma, Vote } from "@prisma/client";
 import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
 import type { PresenceItem } from "~/utils/types";
 import { env } from "~/env.mjs";
@@ -49,18 +48,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-interface ExtendedVote extends Vote {
-  id: string;
-  userId: string;
-  roomId: string;
-  owner: {
-    image: string | null;
-    _count: Prisma.UserCountOutputType;
-    name: string | null;
-    email: string | null;
-  };
-  value: string;
-}
+// interface ExtendedVote extends Vote {
+//   value: string;
+//   room: typeof Room;
+//   id: string;
+//   createdAt: Date;
+//   userId: string;
+//   owner: {
+//     name: string | null;
+//   };
+//   roomId: string;
+// }
 
 const Room: NextPage = () => {
   return (
@@ -89,6 +87,9 @@ const RoomBody: React.FC = () => {
   const { data: roomFromDb, refetch: refetchRoomFromDb } =
     api.room.get.useQuery({ id: roomId });
 
+  const { data: votesFromDb, refetch: refetchVotesFromDb } =
+    api.vote.getAllByRoomId.useQuery({ roomId });
+
   const setVoteInDb = api.vote.set.useMutation({});
   const setRoomInDb = api.room.set.useMutation({});
 
@@ -104,7 +105,14 @@ const RoomBody: React.FC = () => {
     {
       channelName: `${env.NEXT_PUBLIC_APP_ENV}-${roomId}`,
     },
-    () => void refetchRoomFromDb()
+    ({ name }) => {
+      if (name === "ROOM_UPDATE") {
+        void refetchVotesFromDb();
+        void refetchRoomFromDb();
+      } else if (name === "VOTE_UPDATE") {
+        void refetchVotesFromDb();
+      }
+    }
   );
 
   const [presenceData] = usePresence<PresenceItem>(
@@ -148,8 +156,8 @@ const RoomBody: React.FC = () => {
   const getVoteForCurrentUser = () => {
     if (roomFromDb && sessionData) {
       return (
-        roomFromDb &&
-        roomFromDb.votes.find((vote) => vote.userId === sessionData.user.id)
+        votesFromDb &&
+        votesFromDb.find((vote) => vote.userId === sessionData.user.id)
       );
     } else {
       return null;
@@ -179,7 +187,7 @@ const RoomBody: React.FC = () => {
   };
 
   const downloadLogs = () => {
-    if (roomFromDb) {
+    if (roomFromDb && votesFromDb) {
       // const element = document.createElement("a");
       const jsonObject = roomFromDb?.logs
         .map((item) => {
@@ -197,7 +205,7 @@ const RoomBody: React.FC = () => {
           userId: roomFromDb.owner.id,
           roomId: roomFromDb.id,
           scale: roomScale,
-          votes: roomFromDb.votes.map((vote) => {
+          votes: votesFromDb.map((vote) => {
             return {
               name: vote.owner.name,
               value: vote.value,
@@ -224,10 +232,10 @@ const RoomBody: React.FC = () => {
 
   const voteString = (
     visible: boolean,
-    votes: ExtendedVote[],
+    votes: typeof votesFromDb,
     presenceItem: PresenceItem
   ) => {
-    const matchedVote = votes.find(
+    const matchedVote = votes?.find(
       (vote) => vote.userId === presenceItem.client_id
     );
 
@@ -327,9 +335,10 @@ const RoomBody: React.FC = () => {
                           </p>
 
                           {roomFromDb &&
+                            votesFromDb &&
                             voteString(
                               roomFromDb.visible,
-                              roomFromDb.votes,
+                              votesFromDb,
                               presenceItem.data
                             )}
                         </li>
@@ -427,7 +436,7 @@ const RoomBody: React.FC = () => {
                             false,
                             true,
                             roomFromDb.storyName === storyNameText ||
-                              roomFromDb.votes.length === 0
+                              votesFromDb?.length === 0
                               ? false
                               : true
                           )
@@ -440,7 +449,7 @@ const RoomBody: React.FC = () => {
                         }
                       >
                         {roomFromDb.storyName === storyNameText ||
-                        roomFromDb.votes.length === 0 ? (
+                        votesFromDb?.length === 0 ? (
                           <>
                             <IoReloadOutline className="text-xl mr-1" /> Reset
                           </>
@@ -452,19 +461,20 @@ const RoomBody: React.FC = () => {
                       </button>
                     </div>
 
-                    {(roomFromDb.logs.length > 0 ||
-                      roomFromDb.votes.length > 0) && (
-                      <div>
-                        <button
-                          onClick={() => downloadLogs()}
-                          className="btn btn-primary inline-flex hover:animate-pulse"
-                        >
-                          <>
-                            <IoDownloadOutline className="text-xl" />
-                          </>
-                        </button>
-                      </div>
-                    )}
+                    {votesFromDb &&
+                      (roomFromDb.logs.length > 0 ||
+                        votesFromDb.length > 0) && (
+                        <div>
+                          <button
+                            onClick={() => downloadLogs()}
+                            className="btn btn-primary inline-flex hover:animate-pulse"
+                          >
+                            <>
+                              <IoDownloadOutline className="text-xl" />
+                            </>
+                          </button>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
