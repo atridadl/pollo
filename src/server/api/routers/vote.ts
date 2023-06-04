@@ -9,7 +9,7 @@ import {
   deleteFromCache,
 } from "redicache-ts";
 import { env } from "~/env.mjs";
-import type { Vote } from "@prisma/client";
+import type { Room } from "@prisma/client";
 
 const client = cacheClient(env.REDIS_URL);
 
@@ -40,11 +40,19 @@ export const voteRouter = createTRPCRouter({
   getAllByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const cachedResult = await fetchFromCache<Vote[]>(
-        client,
-        env.APP_ENV,
-        `kv_votes_${input.roomId}`
-      );
+      const cachedResult = await fetchFromCache<
+        {
+          value: string;
+          room: Room;
+          id: string;
+          createdAt: Date;
+          userId: string;
+          owner: {
+            name: string | null;
+          };
+          roomId: string;
+        }[]
+      >(client, env.APP_ENV, `kv_votes_${input.roomId}`);
 
       if (cachedResult) {
         return cachedResult;
@@ -52,6 +60,19 @@ export const voteRouter = createTRPCRouter({
         const votesByRoomId = await ctx.prisma.vote.findMany({
           where: {
             roomId: input.roomId,
+          },
+          select: {
+            id: true,
+            createdAt: true,
+            owner: {
+              select: {
+                name: true,
+              },
+            },
+            room: true,
+            roomId: true,
+            userId: true,
+            value: true,
           },
         });
 

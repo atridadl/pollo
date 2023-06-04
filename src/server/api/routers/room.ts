@@ -74,23 +74,6 @@ export const roomRouter = createTRPCRouter({
           storyName: true,
           visible: true,
           scale: true,
-          votes: {
-            select: {
-              id: true,
-              value: true,
-              roomId: true,
-              userId: true,
-              createdAt: true,
-              owner: {
-                select: {
-                  _count: true,
-                  name: true,
-                  image: true,
-                  email: true,
-                },
-              },
-            },
-          },
           owner: true,
         },
       });
