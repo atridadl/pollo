@@ -4,7 +4,6 @@ import { type GetServerSideProps } from "next";
 
 import { getServerAuthSession } from "../../server/auth";
 import { api } from "~/utils/api";
-import Loading from "~/components/Loading";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { AiOutlineClear } from "react-icons/ai";
 import { FaShieldAlt } from "react-icons/fa";
@@ -46,7 +45,7 @@ const Admin: NextPage = () => {
         <meta name="description" content="Plan. Sprint. Repeat." />
       </Head>
       <div className="flex flex-col items-center justify-center text-center px-4 py-16 ">
-        <div className="flex flex-col items-center prose">
+        <div className="flex flex-col items-center">
           <AdminBody />
         </div>
       </div>
@@ -123,14 +122,14 @@ const AdminBody: React.FC = () => {
 
   return (
     <>
-      <h1>Admin Panel</h1>
+      <h1 className="text-4xl font-bold">Admin Panel</h1>
 
       <div className="stats stats-horizontal shadow bg-neutral m-4">
         <div className="stat">
           <div className="stat-title">Users</div>
           <div className="stat-value">
             {usersCountLoading || usersCountFetching ? (
-              <Loading />
+              <span className="loading loading-spinner loading-lg"></span>
             ) : (
               <>{usersCount ? usersCount : "0"}</>
             )}
@@ -141,7 +140,7 @@ const AdminBody: React.FC = () => {
           <div className="stat-title">Rooms</div>
           <div className="stat-value">
             {roomsCountLoading || roomsCountFetching ? (
-              <Loading />
+              <span className="loading loading-spinner loading-lg"></span>
             ) : (
               <>{roomsCount ? roomsCount : "0"}</>
             )}
@@ -152,7 +151,7 @@ const AdminBody: React.FC = () => {
           <div className="stat-title">Votes</div>
           <div className="stat-value">
             {votesCountLoading || votesCountFetching ? (
-              <Loading />
+              <span className="loading loading-spinner loading-lg"></span>
             ) : (
               <>{votesCount ? votesCount : "0"}</>
             )}
@@ -176,13 +175,13 @@ const AdminBody: React.FC = () => {
           <h2 className="card-title">Users:</h2>
 
           {usersLoading || usersFetching ? (
-            <Loading />
+            <span className="loading loading-spinner loading-lg"></span>
           ) : (
-            <div className="overflow-x-scroll w-[calc(80vw-4rem)]">
-              <table className="w-full text-center">
+            <div className="overflow-x-scroll">
+              <table className="table text-center">
                 {/* head */}
                 <thead>
-                  <tr>
+                  <tr className="border-white">
                     <th>ID</th>
                     <th>Name</th>
                     <th>Created At</th>
@@ -197,7 +196,7 @@ const AdminBody: React.FC = () => {
                     )
                     .map((user) => {
                       return (
-                        <tr key={user.id}>
+                        <tr key={user.id} className="hover">
                           <td className="max-w-[100px] break-words">
                             {user.id}
                           </td>

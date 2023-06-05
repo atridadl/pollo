@@ -5,7 +5,8 @@ A scrum poker tool that helps agile teams plan their sprints in real-time.
 ## Stack
 
 - Front-end framework: Nextjs
-- Rendering method: SSR
+- Front-end library: Preact
+- Rendering method: SSR SPA
 - Hosting: Railway
 - Real-time pub/sub: Ably
 - ORM: Prisma

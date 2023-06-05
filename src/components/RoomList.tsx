@@ -5,7 +5,6 @@ import { api } from "~/utils/api";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
 import { env } from "~/env.mjs";
-import Loading from "./Loading";
 import { useState } from "react";
 
 const RoomList: React.FC = () => {
@@ -50,7 +49,7 @@ const RoomList: React.FC = () => {
   };
 
   return (
-    <div className="prose flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center gap-8">
       {/* Modal for Adding Rooms */}
       <input type="checkbox" id="new-room-modal" className="modal-toggle" />
       <div className="modal modal-bottom sm:modal-middle">
@@ -95,10 +94,10 @@ const RoomList: React.FC = () => {
 
       {roomsFromDb && roomsFromDb.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="w-full text-center break-all">
+          <table className="table text-center">
             {/* head */}
             <thead>
-              <tr>
+              <tr className="border-white">
                 <th>Room Name</th>
                 <th>Actions</th>
               </tr>
@@ -106,7 +105,7 @@ const RoomList: React.FC = () => {
             <tbody className="">
               {roomsFromDb?.map((room) => {
                 return (
-                  <tr key={room.id}>
+                  <tr key={room.id} className="hover border-white">
                     <td className="break-all max-w-[200px] md:max-w-[400px]">
                       {room.roomName}
                     </td>
@@ -138,7 +137,7 @@ const RoomList: React.FC = () => {
 
       {roomsFromDb === undefined && (
         <div className="flex items-center justify-center">
-          <Loading />
+          <span className="loading loading-spinner loading-lg"></span>
         </div>
       )}
     </div>

@@ -8,7 +8,6 @@ import "~/styles/globals.css";
 import Navbar from "~/components/Navbar";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Loading from "~/components/Loading";
 import Footer from "~/components/Footer";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -43,7 +42,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <div className="block h-[100%]">
         <Navbar title="Sprint Padawan" />
         <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
-          {pageLoading ? <Loading /> : <Component {...pageProps} />}
+          {pageLoading ? (
+            <span className="loading loading-spinner loading-lg"></span>
+          ) : (
+            <Component {...pageProps} />
+          )}
         </div>
         <Footer />
       </div>

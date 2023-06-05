@@ -8,7 +8,6 @@ import { api } from "~/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Loading from "~/components/Loading";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -38,7 +37,7 @@ const Profile: NextPage = () => {
         <meta name="description" content="Plan. Sprint. Repeat." />
       </Head>
       <div className="flex flex-col items-center justify-center text-center gap-12 px-4 py-16 ">
-        <div className="flex flex-col items-center prose">
+        <div className="flex flex-col items-center">
           <ProfileBody />
         </div>
       </div>
@@ -128,7 +127,7 @@ const ProfileBody: React.FC = () => {
 
             {providersLoading ? (
               <div className="mx-auto">
-                <Loading />
+                <span className="loading loading-spinner loading-lg"></span>
               </div>
             ) : (
               <div className="mx-auto">

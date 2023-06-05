@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 
 import RoomList from "~/components/RoomList";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaShieldAlt } from "react-icons/fa";
 import { getServerAuthSession } from "~/server/auth";
@@ -35,7 +35,7 @@ const Home: NextPage = () => {
         <title>Sprint Padawan</title>
         <meta name="description" content="Plan. Sprint. Repeat." />
       </Head>
-      <div className="prose flex flex-col text-center items-center justify-center px-4 py-16">
+      <div className="flex flex-col text-center items-center justify-center px-4 py-16 gap-4">
         <HomePageBody />
       </div>
     </>
@@ -47,11 +47,16 @@ export default Home;
 const HomePageBody: React.FC = () => {
   const { data: sessionData } = useSession();
   const [joinRoomTextBox, setJoinRoomTextBox] = useState<string>("");
-  const [tabIndex, setTabIndex] = useState<number>(0);
+  const [tabIndex, setTabIndex] = useState<number>();
+
+  useEffect(() => {
+    const tabIndexLocal = localStorage.getItem(`dashboardTabIndex`);
+    setTabIndex(tabIndexLocal !== null ? Number(tabIndexLocal) : 0);
+  }, [tabIndex, sessionData]);
 
   return (
     <>
-      <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md mx-auto">
+      <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold mx-auto">
         Hi, {sessionData?.user.name}!{" "}
         {sessionData?.user.role === "ADMIN" && (
           <FaShieldAlt className="inline-block text-primary" />
@@ -62,7 +67,10 @@ const HomePageBody: React.FC = () => {
           className={
             tabIndex === 0 ? "tab no-underline tab-active" : "tab no-underline"
           }
-          onClick={() => setTabIndex(0)}
+          onClick={() => {
+            setTabIndex(0);
+            localStorage.setItem("dashboardTabIndex", "0");
+          }}
         >
           Join a Room
         </a>
@@ -70,7 +78,10 @@ const HomePageBody: React.FC = () => {
           className={
             tabIndex === 1 ? "tab no-underline tab-active" : "tab no-underline"
           }
-          onClick={() => setTabIndex(1)}
+          onClick={() => {
+            setTabIndex(1);
+            localStorage.setItem("dashboardTabIndex", "1");
+          }}
         >
           Room List
         </a>
