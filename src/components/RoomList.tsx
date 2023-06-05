@@ -95,10 +95,10 @@ const RoomList: React.FC = () => {
 
       {roomsFromDb && roomsFromDb.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="w-full text-center break-all">
+          <table className="table text-center">
             {/* head */}
             <thead>
-              <tr>
+              <tr className="border-white">
                 <th>Room Name</th>
                 <th>Actions</th>
               </tr>
@@ -106,7 +106,7 @@ const RoomList: React.FC = () => {
             <tbody className="">
               {roomsFromDb?.map((room) => {
                 return (
-                  <tr key={room.id}>
+                  <tr key={room.id} className="hover">
                     <td className="break-all max-w-[200px] md:max-w-[400px]">
                       {room.roomName}
                     </td>
@@ -138,7 +138,7 @@ const RoomList: React.FC = () => {
 
       {roomsFromDb === undefined && (
         <div className="flex items-center justify-center">
-          <Loading />
+          <span className="loading loading-spinner loading-lg"></span>
         </div>
       )}
     </div>

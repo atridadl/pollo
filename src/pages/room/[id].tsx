@@ -260,7 +260,7 @@ const RoomBody: React.FC = () => {
   if (roomFromDb === undefined) {
     return (
       <div className="flex flex-col items-center justify-center text-center">
-        <Loading />
+        <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
     // Room has been loaded
