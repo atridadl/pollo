@@ -7,7 +7,8 @@ const Footer: React.FC = () => {
       <div>
         <p>
           Made with{" "}
-          <GiTechnoHeart className="inline-block text-primary text-lg" /> by{" "}
+          <GiTechnoHeart className="inline-block text-primary text-lg animate-pulse" />{" "}
+          by{" "}
           <a
             className="link link-primary link-hover"
             href="https://atri.dad"

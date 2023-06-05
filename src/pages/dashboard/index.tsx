@@ -35,7 +35,7 @@ const Home: NextPage = () => {
         <title>Sprint Padawan</title>
         <meta name="description" content="Plan. Sprint. Repeat." />
       </Head>
-      <div className="prose flex flex-col text-center items-center justify-center px-4 py-16">
+      <div className="flex flex-col text-center items-center justify-center px-4 py-16 gap-4">
         <HomePageBody />
       </div>
     </>
@@ -56,7 +56,7 @@ const HomePageBody: React.FC = () => {
 
   return (
     <>
-      <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md mx-auto">
+      <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold mx-auto">
         Hi, {sessionData?.user.name}!{" "}
         {sessionData?.user.role === "ADMIN" && (
           <FaShieldAlt className="inline-block text-primary" />

@@ -8,7 +8,6 @@ import "~/styles/globals.css";
 import Navbar from "~/components/Navbar";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Loading from "~/components/Loading";
 import Footer from "~/components/Footer";
 
 const MyApp: AppType<{ session: Session | null }> = ({

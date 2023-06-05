@@ -4,7 +4,6 @@ import { type GetServerSideProps } from "next";
 
 import { getServerAuthSession } from "../../server/auth";
 import { api } from "~/utils/api";
-import Loading from "~/components/Loading";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { AiOutlineClear } from "react-icons/ai";
 import { FaShieldAlt } from "react-icons/fa";
@@ -46,7 +45,7 @@ const Admin: NextPage = () => {
         <meta name="description" content="Plan. Sprint. Repeat." />
       </Head>
       <div className="flex flex-col items-center justify-center text-center px-4 py-16 ">
-        <div className="flex flex-col items-center prose">
+        <div className="flex flex-col items-center">
           <AdminBody />
         </div>
       </div>
@@ -123,7 +122,7 @@ const AdminBody: React.FC = () => {
 
   return (
     <>
-      <h1>Admin Panel</h1>
+      <h1 className="text-4xl font-bold">Admin Panel</h1>
 
       <div className="stats stats-horizontal shadow bg-neutral m-4">
         <div className="stat">

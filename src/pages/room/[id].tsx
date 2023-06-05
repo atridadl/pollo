@@ -23,7 +23,6 @@ import {
 import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
 import type { PresenceItem } from "~/utils/types";
 import { env } from "~/env.mjs";
-import Loading from "~/components/Loading";
 import { FaShieldAlt } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
 import Link from "next/link";
@@ -485,15 +484,15 @@ const RoomBody: React.FC = () => {
     // Room does not exist
   } else {
     return (
-      <span className="prose text-center">
-        <h1>4️⃣0️⃣4️⃣</h1>
-        <h1>
+      <span className="text-center">
+        <h1 className="text-5xl font-bold m-2">4️⃣0️⃣4️⃣</h1>
+        <h1 className="text-5xl font-bold m-2">
           Oops! This room does not appear to exist, or may have been deleted! 😢
         </h1>
         <Link
           about="Back to home."
           href="/"
-          className="btn btn-secondary normal-case text-xl"
+          className="btn btn-secondary normal-case text-xl m-2"
         >
           Back to Home
         </Link>
