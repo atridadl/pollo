@@ -8,7 +8,7 @@ const Home: NextPage = () => {
         <title>Sprint Padawan</title>
         <meta name="description" content="Plan. Sprint. Repeat." />
       </Head>
-      <div className="prose flex flex-col text-center items-center justify-center px-4 py-16">
+      <div className="flex flex-col text-center items-center justify-center px-4 py-16 gap-4">
         <HomePageBody />
       </div>
     </>
@@ -42,6 +42,18 @@ const HomePageBody: React.FC = () => {
         </span>
         .
       </h2>
+
+      <div className="card bg-secondary text-black font-bold text-left">
+        <div className="card-body">
+          <h2 className="card-title">Features:</h2>
+          <ul>
+            <li>🚀 Real-time votes!</li>
+            <li>🚀 Granual control of room name and vote scale!</li>
+            <li>🚀 CSV Reports for every room!</li>
+            <li>🚀 100% free and open-source... forever!</li>
+          </ul>
+        </div>
+      </div>
     </>
   );
 };

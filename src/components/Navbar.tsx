@@ -46,7 +46,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
           />
           <span className="hidden md:inline-flex">
             {title}
-            {env.NEXT_PUBLIC_APP_ENV === "development" && " >> DEV"}
+            {env.NEXT_PUBLIC_APP_ENV === "development" && " >> Staging"}
           </span>
         </Link>
       </div>
