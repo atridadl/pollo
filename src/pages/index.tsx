@@ -20,14 +20,14 @@ export default Home;
 const HomePageBody: React.FC = () => {
   return (
     <>
-      <h1 className="text-6xl">
+      <h1 className="text-6xl font-bold">
         Sprint{" "}
         <span className="bg-gradient-to-br from-pink-600 to-cyan-400 bg-clip-text text-transparent box-decoration-clone">
           Padawan
         </span>
       </h1>
 
-      <h2 className="my-4 text-3xl">
+      <h2 className="my-4 text-3xl font-bold">
         A{" "}
         <span className="bg-gradient-to-br from-pink-600 to-pink-400 bg-clip-text text-transparent box-decoration-clone">
           scrum poker{" "}
