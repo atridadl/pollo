@@ -10,10 +10,12 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
-import { sendMail } from "fms-ts";
+import { Resend } from "resend";
+import { Welcome } from "../components/templates/Welcome";
 import { cacheClient, deleteFromCache } from "redicache-ts";
 
 const client = cacheClient(env.REDIS_URL);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -52,22 +54,14 @@ export const authOptions: NextAuthOptions = {
   events: {
     async createUser({ user }) {
       if (user && user.name && user.email) {
-        const subject = "🎉 Welcome to Sprint Padawan! 🎉";
+        await resend.sendEmail({
+          from: "no-reply@sprintpadawan.dev",
+          to: user.email,
+          subject: "🎉 Welcome to Sprint Padawan! 🎉",
+          //@ts-ignore: IDK why this doesn't work...
 
-        const body =
-          `Hi ${user.name}! \n\n` +
-          "Thank you for signing up for Sprint Padawan! \n" +
-          "If at any point you encounter issues, please let me know at support@sprintpadawan.dev. \n" +
-          "-- \n" +
-          "Sprint Padawan Admin - Atridad \n";
-
-        await sendMail(
-          env.JMAP_USERNAME,
-          env.JMAP_TOKEN,
-          subject,
-          body,
-          user.email
-        );
+          react: Welcome({ name: user.name }),
+        });
         await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
         await deleteFromCache(client, env.APP_ENV, `kv_usercount_admin`);
       }

@@ -2,8 +2,9 @@ import type { User } from "@prisma/client";
 import { z } from "zod";
 import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { sendMail } from "fms-ts";
 import type { Role } from "~/utils/types";
+import { Resend } from "resend";
+import { Goodbye } from "~/components/templates/Goodbye";
 
 import {
   cacheClient,
@@ -13,6 +14,7 @@ import {
 } from "redicache-ts";
 
 const client = cacheClient(env.REDIS_URL);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const userRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
@@ -38,6 +40,7 @@ export const userRouter = createTRPCRouter({
       return usersCount;
     }
   }),
+
   getProviders: protectedProcedure.query(async ({ ctx }) => {
     const providers = await ctx.prisma.user.findUnique({
       where: {
@@ -59,6 +62,9 @@ export const userRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const cachedResult = await fetchFromCache<
       {
+        accounts: {
+          provider: string;
+        }[];
         sessions: {
           id: string;
         }[];
@@ -88,6 +94,11 @@ export const userRouter = createTRPCRouter({
           sessions: {
             select: {
               id: true,
+            },
+          },
+          accounts: {
+            select: {
+              provider: true,
             },
           },
         },
@@ -129,22 +140,13 @@ export const userRouter = createTRPCRouter({
       }
 
       if (!!user && user.name && user.email) {
-        const subject = "Sorry to see you go... 😭";
-
-        const body =
-          `Hi ${user.name}! \n\n` +
-          "We're sorry to see you go! \n" +
-          "Your data has been deleted, including all room history, user data, votes, etc. \n" +
-          "-- \n" +
-          "Sprint Padawan Admin - Atridad \n";
-
-        await sendMail(
-          env.JMAP_USERNAME,
-          env.JMAP_TOKEN,
-          subject,
-          body,
-          user.email
-        );
+        await resend.sendEmail({
+          from: "no-reply@sprintpadawan.dev",
+          to: user.email,
+          subject: "Sorry to see you go... 😭",
+          //@ts-ignore: IDK why this doesn't work...
+          react: Goodbye({ name: user.name }),
+        });
         await deleteFromCache(client, env.APP_ENV, `kv_usercount_admin`);
         await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
       }

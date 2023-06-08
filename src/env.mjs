@@ -44,9 +44,7 @@ const server = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   ABLY_PRIVATE_KEY: z.string(),
   APP_ENV: z.string(),
-  JMAP_TOKEN: z.string(),
-  JMAP_USERNAME: z.string(),
-  JMAP_HOSTNAME: z.string(),
+  RESEND_API_KEY: z.string(),
 });
 
 /**
@@ -78,9 +76,7 @@ const processEnv = {
   NEXT_PUBLIC_ABLY_PUBLIC_KEY: process.env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
   APP_ENV: process.env.APP_ENV,
   NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
-  JMAP_TOKEN: process.env.JMAP_TOKEN,
-  JMAP_USERNAME: process.env.JMAP_USERNAME,
-  JMAP_HOSTNAME: process.env.JMAP_HOSTNAME,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
 };
 
 // Don't touch the part below
