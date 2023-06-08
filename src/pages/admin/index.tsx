@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { AiOutlineClear } from "react-icons/ai";
 import { FaShieldAlt } from "react-icons/fa";
+import { SiGoogle, SiGithub } from "react-icons/si";
 import type { Role } from "~/utils/types";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -80,6 +81,24 @@ const AdminBody: React.FC = () => {
     isFetching: votesCountFetching,
     refetch: refetchVotesCount,
   } = api.vote.countAll.useQuery();
+
+  const getProviders = (user: {
+    createdAt: Date;
+    accounts: {
+      provider: string;
+    }[];
+    sessions: {
+      id: string;
+    }[];
+    id: string;
+    role: Role;
+    name: string | null;
+    email: string | null;
+  }) => {
+    return user.accounts.map((account) => {
+      return account.provider;
+    });
+  };
 
   const deleteUserMutation = api.user.delete.useMutation({
     onSuccess: async () => {
@@ -186,6 +205,7 @@ const AdminBody: React.FC = () => {
                     <th>Name</th>
                     <th>Created At</th>
                     <th># Sessions</th>
+                    <th>Providers</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -209,6 +229,14 @@ const AdminBody: React.FC = () => {
                           </td>
                           <td className="max-w-[100px] break-normal">
                             {user.sessions.length}
+                          </td>
+                          <td className="max-w-[100px] break-normal">
+                            {getProviders(user).includes("google") && (
+                              <SiGoogle className="text-xl m-1 inline-block hover:text-secondary" />
+                            )}
+                            {getProviders(user).includes("github") && (
+                              <SiGithub className="text-xl m-1 inline-block hover:text-secondary" />
+                            )}
                           </td>
                           <td>
                             <button className="m-2">

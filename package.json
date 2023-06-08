@@ -33,6 +33,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.9.0",
     "redicache-ts": "^0.1.1",
+    "resend": "^0.15.1",
     "sharp": "^0.32.1",
     "superjson": "1.12.3",
     "zod": "^3.21.4"
