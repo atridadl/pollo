@@ -58,7 +58,8 @@ export const authOptions: NextAuthOptions = {
           from: "no-reply@sprintpadawan.dev",
           to: user.email,
           subject: "🎉 Welcome to Sprint Padawan! 🎉",
-          //@ts-ignore
+          //@ts-ignore: IDK why this doesn't work...
+
           react: Welcome({ name: user.name }),
         });
         await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);

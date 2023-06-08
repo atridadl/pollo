@@ -144,7 +144,7 @@ export const userRouter = createTRPCRouter({
           from: "no-reply@sprintpadawan.dev",
           to: user.email,
           subject: "Sorry to see you go... 😭",
-          //@ts-ignore
+          //@ts-ignore: IDK why this doesn't work...
           react: Goodbye({ name: user.name }),
         });
         await deleteFromCache(client, env.APP_ENV, `kv_usercount_admin`);
