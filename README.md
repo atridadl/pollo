@@ -6,12 +6,11 @@ A scrum poker tool that helps agile teams plan their sprints in real-time.
 
 - Front-end framework: Nextjs
 - Rendering method: SSR
-- Hosting: Vercel
+- Hosting: Railway
 - Real-time pub/sub: Ably
 - ORM: Prisma
-- Database: Planetscale Serverless mySQL
-- Cache: Upstash Redis
-- Rate-limiting: Upstash Redis
+- Database: PostgreSQL
+- Cache: Redis
 
 ## Versioning
 
