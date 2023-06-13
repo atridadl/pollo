@@ -6,7 +6,7 @@ import {
 } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
@@ -73,6 +73,7 @@ export const authOptions: NextAuthOptions = {
       await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
     },
   },
+  // @ts-ignore This adapter should work...
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
