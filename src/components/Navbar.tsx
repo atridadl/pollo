@@ -68,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
             </label>
             <ul
               tabIndex={0}
-              className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+              className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box z-50"
             >
               <li>
                 <Link
