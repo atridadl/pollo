@@ -198,6 +198,8 @@ export const roomRouter = createTRPCRouter({
             roomId: input.roomId,
           },
         });
+
+        await deleteFromCache(client, env.APP_ENV, `kv_votes_${input.roomId}`);
       }
 
       const newRoom = await ctx.prisma.room.update({
