@@ -47,18 +47,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-// interface ExtendedVote extends Vote {
-//   value: string;
-//   room: typeof Room;
-//   id: string;
-//   createdAt: Date;
-//   userId: string;
-//   owner: {
-//     name: string | null;
-//   };
-//   roomId: string;
-// }
-
 const Room: NextPage = () => {
   return (
     <>
