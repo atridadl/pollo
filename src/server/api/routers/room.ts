@@ -75,6 +75,15 @@ export const roomRouter = createTRPCRouter({
           visible: true,
           scale: true,
           owner: true,
+          votes: {
+            select: {
+              id: true,
+              owner: true,
+              roomId: true,
+              userId: true,
+              value: true,
+            },
+          },
         },
       });
     }),
@@ -198,6 +207,8 @@ export const roomRouter = createTRPCRouter({
             roomId: input.roomId,
           },
         });
+
+        await publishToChannel(`${input.roomId}`, "VOTE_UPDATE", "UPDATE");
       }
 
       const newRoom = await ctx.prisma.room.update({

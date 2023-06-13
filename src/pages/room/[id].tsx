@@ -27,6 +27,7 @@ import { FaShieldAlt } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
 import Link from "next/link";
 import { downloadCSV } from "~/utils/helpers";
+import { User } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -46,18 +47,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: { session },
   };
 };
-
-// interface ExtendedVote extends Vote {
-//   value: string;
-//   room: typeof Room;
-//   id: string;
-//   createdAt: Date;
-//   userId: string;
-//   owner: {
-//     name: string | null;
-//   };
-//   roomId: string;
-// }
 
 const Room: NextPage = () => {
   return (
@@ -86,9 +75,6 @@ const RoomBody: React.FC = () => {
   const { data: roomFromDb, refetch: refetchRoomFromDb } =
     api.room.get.useQuery({ id: roomId });
 
-  const { data: votesFromDb, refetch: refetchVotesFromDb } =
-    api.vote.getAllByRoomId.useQuery({ roomId });
-
   const setVoteInDb = api.vote.set.useMutation({});
   const setRoomInDb = api.room.set.useMutation({});
 
@@ -104,13 +90,8 @@ const RoomBody: React.FC = () => {
     {
       channelName: `${env.NEXT_PUBLIC_APP_ENV}-${roomId}`,
     },
-    ({ name }) => {
-      if (name === "ROOM_UPDATE") {
-        void refetchVotesFromDb();
-        void refetchRoomFromDb();
-      } else if (name === "VOTE_UPDATE") {
-        void refetchVotesFromDb();
-      }
+    () => {
+      void refetchRoomFromDb();
     }
   );
 
@@ -155,8 +136,8 @@ const RoomBody: React.FC = () => {
   const getVoteForCurrentUser = () => {
     if (roomFromDb && sessionData) {
       return (
-        votesFromDb &&
-        votesFromDb.find((vote) => vote.userId === sessionData.user.id)
+        roomFromDb.votes &&
+        roomFromDb.votes.find((vote) => vote.userId === sessionData.user.id)
       );
     } else {
       return null;
@@ -186,7 +167,7 @@ const RoomBody: React.FC = () => {
   };
 
   const downloadLogs = () => {
-    if (roomFromDb && votesFromDb) {
+    if (roomFromDb) {
       // const element = document.createElement("a");
       const jsonObject = roomFromDb?.logs
         .map((item) => {
@@ -204,7 +185,7 @@ const RoomBody: React.FC = () => {
           userId: roomFromDb.owner.id,
           roomId: roomFromDb.id,
           scale: roomScale,
-          votes: votesFromDb.map((vote) => {
+          votes: roomFromDb.votes.map((vote) => {
             return {
               name: vote.owner.name,
               value: vote.value,
@@ -231,7 +212,13 @@ const RoomBody: React.FC = () => {
 
   const voteString = (
     visible: boolean,
-    votes: typeof votesFromDb,
+    votes: {
+      id: string;
+      userId: string;
+      owner: User;
+      roomId: string;
+      value: string;
+    }[],
     presenceItem: PresenceItem
   ) => {
     const matchedVote = votes?.find(
@@ -334,10 +321,9 @@ const RoomBody: React.FC = () => {
                           </p>
 
                           {roomFromDb &&
-                            votesFromDb &&
                             voteString(
                               roomFromDb.visible,
-                              votesFromDb,
+                              roomFromDb.votes,
                               presenceItem.data
                             )}
                         </li>
@@ -435,7 +421,7 @@ const RoomBody: React.FC = () => {
                             false,
                             true,
                             roomFromDb.storyName === storyNameText ||
-                              votesFromDb?.length === 0
+                              roomFromDb.votes.length === 0
                               ? false
                               : true
                           )
@@ -448,7 +434,7 @@ const RoomBody: React.FC = () => {
                         }
                       >
                         {roomFromDb.storyName === storyNameText ||
-                        votesFromDb?.length === 0 ? (
+                        roomFromDb.votes.length === 0 ? (
                           <>
                             <IoReloadOutline className="text-xl mr-1" /> Reset
                           </>
@@ -460,9 +446,9 @@ const RoomBody: React.FC = () => {
                       </button>
                     </div>
 
-                    {votesFromDb &&
+                    {roomFromDb.votes &&
                       (roomFromDb.logs.length > 0 ||
-                        votesFromDb.length > 0) && (
+                        roomFromDb.votes.length > 0) && (
                         <div>
                           <button
                             onClick={() => downloadLogs()}
