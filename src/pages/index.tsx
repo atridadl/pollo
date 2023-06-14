@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import { block } from "million/react";
 
 const Home: NextPage = () => {
   return (
@@ -17,7 +18,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const HomePageBody: React.FC = () => {
+const HomePageBody: React.FC = block(() => {
   return (
     <>
       <h1 className="text-6xl font-bold">
@@ -56,4 +57,4 @@ const HomePageBody: React.FC = () => {
       </div>
     </>
   );
-};
+});

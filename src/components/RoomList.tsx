@@ -6,8 +6,9 @@ import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
 import { env } from "~/env.mjs";
 import { useState } from "react";
+import { block } from "million/react";
 
-const RoomList: React.FC = () => {
+const RoomList: React.FC = block(() => {
   const { data: sessionData } = useSession();
 
   configureAbly({
@@ -142,6 +143,6 @@ const RoomList: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default RoomList;
