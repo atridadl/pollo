@@ -27,7 +27,6 @@ import { FaShieldAlt } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
 import Link from "next/link";
 import { downloadCSV } from "~/utils/helpers";
-import { block } from "million/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -64,7 +63,7 @@ const Room: NextPage = () => {
 
 export default Room;
 
-const RoomBody: React.FC = block(() => {
+const RoomBody: React.FC = () => {
   const { data: sessionData } = useSession();
   const { query } = useRouter();
   const roomId = z.string().parse(query.id);
@@ -488,4 +487,4 @@ const RoomBody: React.FC = block(() => {
       </span>
     );
   }
-});
+};
