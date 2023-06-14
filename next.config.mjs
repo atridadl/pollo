@@ -1,5 +1,6 @@
 // @ts-check
 import withPWA from "next-pwa";
+import million from "million/compiler";
 
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
 
@@ -27,4 +28,4 @@ const config = {
 const nextConfig = withPWA({
   dest: "public",
 })(config);
-export default nextConfig;
+export default million.next(nextConfig);
