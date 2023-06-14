@@ -34,7 +34,7 @@ export const userRouter = createTRPCRouter({
         env.APP_ENV,
         `kv_usercount_admin`,
         usersCount,
-        69
+        Number(env.REDIS_TTL)
       );
 
       return usersCount;
@@ -109,7 +109,7 @@ export const userRouter = createTRPCRouter({
         env.APP_ENV,
         `kv_userlist_admin`,
         JSON.stringify(users),
-        69
+        Number(env.REDIS_TTL)
       );
 
       return users;

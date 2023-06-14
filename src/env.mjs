@@ -7,6 +7,7 @@ import { z } from "zod";
 const server = z.object({
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
+  REDIS_TTL: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
@@ -65,6 +66,7 @@ const client = z.object({
 const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   REDIS_URL: process.env.REDIS_URL,
+  REDIS_TTL: process.env.REDIS_TTL,
   NODE_ENV: process.env.NODE_ENV,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,

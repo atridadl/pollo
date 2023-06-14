@@ -108,7 +108,7 @@ export const roomRouter = createTRPCRouter({
         env.APP_ENV,
         `kv_roomlist_${ctx.session.user.id}`,
         JSON.stringify(roomList),
-        69
+        Number(env.REDIS_TTL)
       );
 
       return roomList;
@@ -132,7 +132,7 @@ export const roomRouter = createTRPCRouter({
         env.APP_ENV,
         `kv_roomcount_admin`,
         roomsCount,
-        69
+        Number(env.REDIS_TTL)
       );
 
       return roomsCount;
