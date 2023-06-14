@@ -31,7 +31,7 @@ export const voteRouter = createTRPCRouter({
         env.APP_ENV,
         `kv_votecount_admin`,
         votesCount,
-        69
+        Number(env.REDIS_TTL)
       );
 
       return votesCount;
@@ -81,7 +81,7 @@ export const voteRouter = createTRPCRouter({
           env.APP_ENV,
           `kv_votes_${input.roomId}`,
           JSON.stringify(votesByRoomId),
-          69
+          Number(Number(env.REDIS_TTL))
         );
 
         return votesByRoomId;
