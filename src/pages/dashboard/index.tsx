@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaShieldAlt } from "react-icons/fa";
 import { getServerAuthSession } from "~/server/auth";
-import { block } from "million/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -45,7 +44,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const HomePageBody: React.FC = block(() => {
+const HomePageBody: React.FC = () => {
   const { data: sessionData } = useSession();
   const [joinRoomTextBox, setJoinRoomTextBox] = useState<string>("");
   const [tabIndex, setTabIndex] = useState<number>();
@@ -111,4 +110,4 @@ const HomePageBody: React.FC = block(() => {
       {tabIndex === 1 && <RoomList />}
     </>
   );
-});
+};
