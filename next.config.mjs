@@ -1,6 +1,4 @@
 // @ts-check
-import withPWA from "next-pwa";
-
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
 
 /** @type {import("next").NextConfig} */
@@ -24,7 +22,5 @@ const config = {
     return config;
   },
 };
-const nextConfig = withPWA({
-  dest: "public",
-})(config);
-export default nextConfig;
+
+export default config;
