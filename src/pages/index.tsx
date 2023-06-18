@@ -48,7 +48,7 @@ const HomePageBody: React.FC = () => {
           <h2 className="card-title">Features:</h2>
           <ul>
             <li>🚀 Real-time votes!</li>
-            <li>🚀 Granual control of room name and vote scale!</li>
+            <li>🚀 Granular control of room name and vote scale!</li>
             <li>🚀 CSV Reports for every room!</li>
             <li>🚀 100% free and open-source... forever!</li>
           </ul>
