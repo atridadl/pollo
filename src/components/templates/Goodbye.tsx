@@ -21,7 +21,7 @@ export const Goodbye: React.FC<Readonly<EmailTemplateProps>> = ({ name }) => (
     <Body>
       <Container>
         <Heading className="text-4xl">Farewell, {name}...</Heading>
-        <Text>We're sorry to see you go.</Text>
+        <Text>{"Were sorry to see you go."}</Text>
         <Text>
           Your data has been deleted, including all room history, user data,
           votes, etc.
