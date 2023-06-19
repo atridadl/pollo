@@ -25,6 +25,10 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
           Sign In
         </button>
       );
+    } else {
+      <div className="flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>;
     }
   };
 
