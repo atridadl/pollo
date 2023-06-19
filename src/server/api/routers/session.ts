@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { cacheClient, deleteFromCache } from "redicache-ts";
 import { env } from "~/env.mjs";
-
-const client = cacheClient(env.REDIS_URL);
+import { redis } from "~/server/redis";
 
 export const sessionRouter = createTRPCRouter({
   deleteAll: protectedProcedure
@@ -20,7 +18,7 @@ export const sessionRouter = createTRPCRouter({
       });
 
       if (!!sessions) {
-        await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
+        await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
       }
 
       return !!sessions;
