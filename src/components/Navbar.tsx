@@ -25,10 +25,6 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
           Sign In
         </button>
       );
-    } else {
-      <div className="flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>;
     }
   };
 
@@ -55,7 +51,13 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
         </Link>
       </div>
 
-      {navigationMenu()}
+      {sessionStatus === "loading" ? (
+        <div className="flex items-center justify-center">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : (
+        navigationMenu()
+      )}
 
       {sessionData?.user.image && (
         <div className="flex-none gap-2">
