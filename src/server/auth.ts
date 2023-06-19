@@ -12,9 +12,8 @@ import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
 import { Resend } from "resend";
 import { Welcome } from "../components/templates/Welcome";
-import { cacheClient, deleteFromCache } from "redicache-ts";
+import { redis } from "./redis";
 
-const client = cacheClient(env.REDIS_URL);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
@@ -62,15 +61,15 @@ export const authOptions: NextAuthOptions = {
 
           react: Welcome({ name: user.name }),
         });
-        await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
-        await deleteFromCache(client, env.APP_ENV, `kv_usercount_admin`);
+        await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
+        await redis.del(`${env.APP_ENV}_kv_usercount_admin`);
       }
     },
     async signIn({}) {
-      await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
+      await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
     },
     async signOut() {
-      await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
+      await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
     },
   },
   // @ts-ignore This adapter should work...
