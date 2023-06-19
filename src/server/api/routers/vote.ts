@@ -2,23 +2,14 @@ import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import {
-  cacheClient,
-  writeToCache,
-  fetchFromCache,
-  deleteFromCache,
-} from "redicache-ts";
 import { env } from "~/env.mjs";
 import type { Room } from "@prisma/client";
-
-const client = cacheClient(env.REDIS_URL);
+import { redis } from "~/server/redis";
 
 export const voteRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchFromCache<number>(
-      client,
-      env.APP_ENV,
-      `kv_votecount_admin`
+    const cachedResult = await redis.get<number>(
+      `${env.APP_ENV}_kv_votecount_admin`
     );
 
     if (cachedResult) {
@@ -26,13 +17,7 @@ export const voteRouter = createTRPCRouter({
     } else {
       const votesCount = await ctx.prisma.vote.count();
 
-      await writeToCache(
-        client,
-        env.APP_ENV,
-        `kv_votecount_admin`,
-        votesCount,
-        Number(env.REDIS_TTL)
-      );
+      await redis.set(`${env.APP_ENV}_kv_votecount_admin`, votesCount);
 
       return votesCount;
     }
@@ -40,7 +25,7 @@ export const voteRouter = createTRPCRouter({
   getAllByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const cachedResult = await fetchFromCache<
+      const cachedResult = await redis.get<
         {
           value: string;
           room: Room;
@@ -52,7 +37,7 @@ export const voteRouter = createTRPCRouter({
           };
           roomId: string;
         }[]
-      >(client, env.APP_ENV, `kv_votes_${input.roomId}`);
+      >(`${env.APP_ENV}_kv_votes_${input.roomId}`);
 
       if (cachedResult) {
         return cachedResult;
@@ -76,12 +61,9 @@ export const voteRouter = createTRPCRouter({
           },
         });
 
-        await writeToCache(
-          client,
-          env.APP_ENV,
-          `kv_votes_${input.roomId}`,
-          JSON.stringify(votesByRoomId),
-          Number(Number(env.REDIS_TTL))
+        await redis.set(
+          `${env.APP_ENV}_kv_votes_${input.roomId}`,
+          votesByRoomId
         );
 
         return votesByRoomId;
@@ -121,8 +103,8 @@ export const voteRouter = createTRPCRouter({
       });
 
       if (vote) {
-        await deleteFromCache(client, env.APP_ENV, `kv_votecount_admin`);
-        await deleteFromCache(client, env.APP_ENV, `kv_votes_${input.roomId}`);
+        await redis.del(`${env.APP_ENV}_kv_votecount_admin`);
+        await redis.del(`${env.APP_ENV}_kv_votes_${input.roomId}`);
 
         await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
       }

@@ -6,11 +6,10 @@
   "scripts": {
     "build": "next build",
     "serv": "NEXTAUTH_URL=http://localhost:3000 && next dev",
-    "dev": "railway run pnpm serv",
+    "dev": "pnpm serv",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start",
-    "connect": "railway link"
+    "start": "next start"
   },
   "dependencies": {
     "@ably-labs/react-hooks": "^2.1.1",
@@ -18,10 +17,11 @@
     "@prisma/client": "4.15.0",
     "@react-email/components": "^0.0.7",
     "@tanstack/react-query": "^4.29.14",
-    "@trpc/client": "10.30.0",
-    "@trpc/next": "10.30.0",
-    "@trpc/react-query": "10.30.0",
-    "@trpc/server": "10.30.0",
+    "@trpc/client": "10.31.0",
+    "@trpc/next": "10.31.0",
+    "@trpc/react-query": "10.31.0",
+    "@trpc/server": "10.31.0",
+    "@upstash/redis": "^1.21.0",
     "ably": "^1.2.40",
     "autoprefixer": "^10.4.14",
     "json2csv": "6.0.0-alpha.2",
@@ -33,7 +33,6 @@
     "react-dom": "18.2.0",
     "react-email": "^1.9.4",
     "react-icons": "^4.9.0",
-    "redicache-ts": "^0.1.1",
     "resend": "^0.15.3",
     "sharp": "^0.32.1",
     "superjson": "1.12.3",

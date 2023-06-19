@@ -6,22 +6,14 @@ import type { Role } from "~/utils/types";
 import { Resend } from "resend";
 import { Goodbye } from "~/components/templates/Goodbye";
 
-import {
-  cacheClient,
-  writeToCache,
-  fetchFromCache,
-  deleteFromCache,
-} from "redicache-ts";
+import { redis } from "~/server/redis";
 
-const client = cacheClient(env.REDIS_URL);
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const userRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchFromCache<number>(
-      client,
-      env.APP_ENV,
-      `kv_usercount_admin`
+    const cachedResult = await redis.get<number>(
+      `${env.APP_ENV}_kv_usercount_admin`
     );
 
     if (cachedResult) {
@@ -29,13 +21,7 @@ export const userRouter = createTRPCRouter({
     } else {
       const usersCount = await ctx.prisma.user.count();
 
-      await writeToCache(
-        client,
-        env.APP_ENV,
-        `kv_usercount_admin`,
-        usersCount,
-        Number(env.REDIS_TTL)
-      );
+      await redis.set(`${env.APP_ENV}_kv_usercount_admin`, usersCount);
 
       return usersCount;
     }
@@ -60,7 +46,7 @@ export const userRouter = createTRPCRouter({
     });
   }),
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchFromCache<
+    const cachedResult = await redis.get<
       {
         accounts: {
           provider: string;
@@ -74,7 +60,7 @@ export const userRouter = createTRPCRouter({
         name: string | null;
         email: string | null;
       }[]
-    >(client, env.APP_ENV, `kv_userlist_admin`);
+    >(`${env.APP_ENV}_kv_userlist_admin`);
 
     if (cachedResult) {
       return cachedResult.map((user) => {
@@ -104,13 +90,7 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      await writeToCache(
-        client,
-        env.APP_ENV,
-        `kv_userlist_admin`,
-        JSON.stringify(users),
-        Number(env.REDIS_TTL)
-      );
+      await redis.set(`${env.APP_ENV}_kv_userlist_admin`, users);
 
       return users;
     }
@@ -147,8 +127,9 @@ export const userRouter = createTRPCRouter({
           //@ts-ignore: IDK why this doesn't work...
           react: Goodbye({ name: user.name }),
         });
-        await deleteFromCache(client, env.APP_ENV, `kv_usercount_admin`);
-        await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
+
+        await redis.del(`${env.APP_ENV}_kv_usercount_admin`);
+        await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
       }
 
       return !!user;
@@ -188,7 +169,7 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      await deleteFromCache(client, env.APP_ENV, `kv_userlist_admin`);
+      await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
 
       return !!user;
     }),
