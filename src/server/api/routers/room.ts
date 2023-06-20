@@ -1,18 +1,14 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import { env } from "~/env.mjs";
 import { redis } from "~/server/redis";
 
 export const roomRouter = createTRPCRouter({
   // Create
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string(),
