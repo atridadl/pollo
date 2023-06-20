@@ -20,6 +20,15 @@ import { type Session } from "next-auth";
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 
+const rateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(
+    Number(env.UPSTASH_RATELIMIT_REQUESTS),
+    `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
+  ),
+  analytics: true,
+});
+
 type CreateContextOptions = {
   session: Session | null;
 };
@@ -65,6 +74,9 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
+import { Ratelimit } from "@upstash/ratelimit";
+import { redis } from "../redis";
+import { env } from "~/env.mjs";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -97,13 +109,18 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
+  // Auth
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+  const { success } = await rateLimit.limit(
+    `${env.APP_ENV}_${ctx.session.user.id}`
+  );
+  if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
   return next({
     ctx: {
-      // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user },
     },
   });
@@ -117,4 +134,4 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const protectedProcedure = t.procedure.use(enforceRouteProtection);
