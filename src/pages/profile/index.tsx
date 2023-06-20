@@ -127,7 +127,7 @@ const ProfileBody: React.FC = () => {
 
             {providersLoading ? (
               <div className="mx-auto">
-                <span className="loading loading-spinner loading-lg"></span>
+                <span className="loading loading-dots loading-lg"></span>{" "}
               </div>
             ) : (
               <div className="mx-auto">
