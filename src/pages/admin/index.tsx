@@ -182,7 +182,7 @@ const AdminBody: React.FC = () => {
       usersFetching ||
       roomsCountFetching ||
       votesCountFetching ? (
-        <button className="btn btn-primary loading">Fetching...</button>
+        <span className="loading loading-dots loading-lg"></span>
       ) : (
         <button className="btn btn-primary" onClick={() => void refetchData()}>
           Re-fetch
