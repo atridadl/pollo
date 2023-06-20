@@ -148,7 +148,7 @@ const AdminBody: React.FC = () => {
           <div className="stat-title">Users</div>
           <div className="stat-value">
             {usersCountLoading || usersCountFetching ? (
-              <span className="loading loading-spinner loading-lg"></span>
+              <span className="loading loading-dots loading-lg"></span>
             ) : (
               <>{usersCount ? usersCount : "0"}</>
             )}
@@ -159,7 +159,7 @@ const AdminBody: React.FC = () => {
           <div className="stat-title">Rooms</div>
           <div className="stat-value">
             {roomsCountLoading || roomsCountFetching ? (
-              <span className="loading loading-spinner loading-lg"></span>
+              <span className="loading loading-dots loading-lg"></span>
             ) : (
               <>{roomsCount ? roomsCount : "0"}</>
             )}
@@ -170,7 +170,7 @@ const AdminBody: React.FC = () => {
           <div className="stat-title">Votes</div>
           <div className="stat-value">
             {votesCountLoading || votesCountFetching ? (
-              <span className="loading loading-spinner loading-lg"></span>
+              <span className="loading loading-dots loading-lg"></span>
             ) : (
               <>{votesCount ? votesCount : "0"}</>
             )}
@@ -194,7 +194,7 @@ const AdminBody: React.FC = () => {
           <h2 className="card-title">Users:</h2>
 
           {usersLoading || usersFetching ? (
-            <span className="loading loading-spinner loading-lg"></span>
+            <span className="loading loading-dots loading-lg"></span>
           ) : (
             <div className="overflow-x-scroll">
               <table className="table text-center">

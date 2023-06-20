@@ -43,7 +43,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <Navbar title="Sprint Padawan" />
         <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
           {pageLoading ? (
-            <span className="loading loading-spinner loading-lg"></span>
+            <span className="loading loading-dots loading-lg"></span>
           ) : (
             <Component {...pageProps} />
           )}
