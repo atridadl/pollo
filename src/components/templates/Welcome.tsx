@@ -17,6 +17,10 @@ interface WelcomeTemplateProps {
   name: string;
 }
 
+const baseUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
 export const Welcome: React.FC<Readonly<WelcomeTemplateProps>> = ({ name }) => (
   <Html>
     <Head />
@@ -26,7 +30,7 @@ export const Welcome: React.FC<Readonly<WelcomeTemplateProps>> = ({ name }) => (
         <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
           <Section className="mt-[32px]">
             <Img
-              src={`/logo.webp`}
+              src={`${baseUrl}/logo.webp`}
               width="40"
               height="37"
               alt={`Sprint Padawan Logo`}
