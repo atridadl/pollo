@@ -12,7 +12,6 @@ import {
   Section,
   Img,
 } from "@react-email/components";
-import { env } from "~/env.mjs";
 
 interface WelcomeTemplateProps {
   name: string;
@@ -27,7 +26,7 @@ export const Welcome: React.FC<Readonly<WelcomeTemplateProps>> = ({ name }) => (
         <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
           <Section className="mt-[32px]">
             <Img
-              src={`${env.NEXTAUTH_URL}/logo.webp`}
+              src={`/logo.webp`}
               width="40"
               height="37"
               alt={`Sprint Padawan Logo`}
