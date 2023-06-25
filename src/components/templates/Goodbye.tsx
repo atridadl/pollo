@@ -8,27 +8,42 @@ import {
   Preview,
   Text,
   Hr,
+  Tailwind,
+  Section,
+  Img,
 } from "@react-email/components";
+import { env } from "~/env.mjs";
 
-interface EmailTemplateProps {
+interface GoodbyeTemplateProps {
   name: string;
 }
 
-export const Goodbye: React.FC<Readonly<EmailTemplateProps>> = ({ name }) => (
+export const Goodbye: React.FC<Readonly<GoodbyeTemplateProps>> = ({ name }) => (
   <Html>
     <Head />
     <Preview>Sorry to see you go... 😭</Preview>
-    <Body>
-      <Container>
-        <Heading className="text-4xl">Farewell, {name}...</Heading>
-        <Text>{"Were sorry to see you go."}</Text>
-        <Text>
-          Your data has been deleted, including all room history, user data,
-          votes, etc.
-        </Text>
-        <Hr />
-        <Text>Sprint Padawan Admin - Atridad</Text>
-      </Container>
-    </Body>
+    <Tailwind>
+      <Body className="bg-white my-auto mx-auto font-sans">
+        <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
+          <Section className="mt-[32px]">
+            <Img
+              src={`${env.NEXTAUTH_URL}/logo.webp`}
+              width="40"
+              height="37"
+              alt={`Sprint Padawan Logo`}
+              className="my-0 mx-auto"
+            />
+          </Section>
+          <Heading className="text-4xl">Farewell, {name}...</Heading>
+          <Text>{"Were sorry to see you go."}</Text>
+          <Text>
+            Your data has been deleted, including all room history, user data,
+            votes, etc.
+          </Text>
+          <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
+          <Text>— The Sprint Padawan team</Text>
+        </Container>
+      </Body>
+    </Tailwind>
   </Html>
 );
