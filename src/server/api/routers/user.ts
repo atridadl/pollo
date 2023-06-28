@@ -21,7 +21,9 @@ export const userRouter = createTRPCRouter({
     } else {
       const usersCount = await ctx.prisma.user.count();
 
-      await redis.set(`${env.APP_ENV}_kv_usercount_admin`, usersCount);
+      await redis.set(`${env.APP_ENV}_kv_usercount_admin`, usersCount, {
+        ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS),
+      });
 
       return usersCount;
     }
@@ -90,7 +92,9 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      await redis.set(`${env.APP_ENV}_kv_userlist_admin`, users);
+      await redis.set(`${env.APP_ENV}_kv_userlist_admin`, users, {
+        ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS),
+      });
 
       return users;
     }
