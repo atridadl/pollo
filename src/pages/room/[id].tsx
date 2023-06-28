@@ -53,6 +53,7 @@ const Room: NextPage = () => {
       <Head>
         <title>Sprint Padawan</title>
         <meta name="description" content="Plan. Sprint. Repeat." />
+        <meta http-equiv="Cache-control" content="no-cache" />
       </Head>
       <div className="flex flex-col items-center justify-center text-center gap-2">
         <RoomBody />
