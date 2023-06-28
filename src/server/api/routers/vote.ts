@@ -17,7 +17,9 @@ export const voteRouter = createTRPCRouter({
     } else {
       const votesCount = await ctx.prisma.vote.count();
 
-      await redis.set(`${env.APP_ENV}_kv_votecount_admin`, votesCount);
+      await redis.set(`${env.APP_ENV}_kv_votecount_admin`, votesCount, {
+        ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS),
+      });
 
       return votesCount;
     }
@@ -63,7 +65,8 @@ export const voteRouter = createTRPCRouter({
 
         await redis.set(
           `${env.APP_ENV}_kv_votes_${input.roomId}`,
-          votesByRoomId
+          votesByRoomId,
+          { ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS) }
         );
 
         return votesByRoomId;

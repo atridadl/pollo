@@ -90,7 +90,8 @@ export const roomRouter = createTRPCRouter({
 
       await redis.set(
         `${env.APP_ENV}_kv_roomlist_${ctx.session.user.id}`,
-        roomList
+        roomList,
+        { ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS) }
       );
 
       return roomList;
@@ -107,7 +108,9 @@ export const roomRouter = createTRPCRouter({
     } else {
       const roomsCount = await ctx.prisma.room.count();
 
-      await redis.set(`${env.APP_ENV}_kv_roomcount_admin`, roomsCount);
+      await redis.set(`${env.APP_ENV}_kv_roomcount_admin`, roomsCount, {
+        ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS),
+      });
 
       return roomsCount;
     }
