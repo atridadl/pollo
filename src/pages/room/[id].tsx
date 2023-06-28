@@ -116,8 +116,6 @@ const RoomBody: React.FC = () => {
   useEffect(() => {
     window.addEventListener("beforeunload", () => channel.presence.leave());
     return () => {
-      localStorage.removeItem(`${roomId}_story_name`);
-      localStorage.removeItem(`${roomId}_room_scale`);
       window.removeEventListener("beforeunload", () =>
         channel.presence.leave()
       );
@@ -128,14 +126,8 @@ const RoomBody: React.FC = () => {
   // Init story name
   useEffect(() => {
     if (sessionData && roomFromDb) {
-      const storyNameString = localStorage.getItem(`${roomId}_story_name`);
-      const roomScaleString = localStorage.getItem(`${roomId}_room_scale`);
-      setStoryNameText(
-        storyNameString !== null ? storyNameString : roomFromDb.storyName || ""
-      );
-      setRoomScale(
-        roomScaleString !== null ? roomScaleString : roomFromDb.scale || "ERROR"
-      );
+      setStoryNameText(roomFromDb.storyName || "");
+      setRoomScale(roomFromDb.scale || "ERROR");
     }
   }, [roomFromDb, roomId, sessionData]);
 
@@ -175,7 +167,6 @@ const RoomBody: React.FC = () => {
 
   const downloadLogs = () => {
     if (roomFromDb && votesFromDb) {
-      // const element = document.createElement("a");
       const jsonObject = roomFromDb?.logs
         .map((item) => {
           return {
@@ -373,10 +364,6 @@ const RoomBody: React.FC = () => {
                     value={roomScale}
                     onChange={(event) => {
                       setRoomScale(event.target.value);
-                      localStorage.setItem(
-                        `${roomId}_room_scale`,
-                        event.target.value
-                      );
                     }}
                   />
 
@@ -389,10 +376,6 @@ const RoomBody: React.FC = () => {
                     value={storyNameText}
                     onChange={(event) => {
                       setStoryNameText(event.target.value);
-                      localStorage.setItem(
-                        `${roomId}_story_name`,
-                        event.target.value
-                      );
                     }}
                   />
 
