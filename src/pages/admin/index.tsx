@@ -106,6 +106,14 @@ const AdminBody: React.FC = () => {
     },
   });
 
+  const clearSessionsByUserMutation = api.session.deleteAllByUserId.useMutation(
+    {
+      onSuccess: async () => {
+        await refetchData();
+      },
+    }
+  );
+
   const clearSessionsMutation = api.session.deleteAll.useMutation({
     onSuccess: async () => {
       await refetchData();
@@ -122,8 +130,12 @@ const AdminBody: React.FC = () => {
     await deleteUserMutation.mutateAsync({ userId });
   };
 
-  const clearSessionsHandler = async (userId: string) => {
-    await clearSessionsMutation.mutateAsync({ userId });
+  const clearSessionsByUserHandler = async (userId: string) => {
+    await clearSessionsByUserMutation.mutateAsync({ userId });
+  };
+
+  const clearSessionsHandler = async () => {
+    await clearSessionsMutation.mutateAsync();
   };
 
   const setUserRoleHandler = async (userId: string, role: Role) => {
@@ -184,9 +196,21 @@ const AdminBody: React.FC = () => {
       votesCountFetching ? (
         <span className="loading loading-dots loading-lg"></span>
       ) : (
-        <button className="btn btn-primary" onClick={() => void refetchData()}>
-          Re-fetch
-        </button>
+        <>
+          <button
+            className="btn btn-primary"
+            onClick={() => void refetchData()}
+          >
+            Re-fetch
+          </button>
+
+          <button
+            className="btn btn-primary"
+            onClick={() => void clearSessionsHandler()}
+          >
+            Delete All Sessions
+          </button>
+        </>
       )}
 
       <div className="card max-w-[80vw] bg-neutral shadow-xl m-4">
@@ -258,7 +282,9 @@ const AdminBody: React.FC = () => {
                             </button>
                             <button
                               className="m-2"
-                              onClick={() => void clearSessionsHandler(user.id)}
+                              onClick={() =>
+                                void clearSessionsByUserHandler(user.id)
+                              }
                             >
                               <AiOutlineClear className="text-xl inline-block hover:text-warning" />
                             </button>

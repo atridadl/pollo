@@ -4,7 +4,7 @@ import { env } from "~/env.mjs";
 import { redis } from "~/server/redis";
 
 export const sessionRouter = createTRPCRouter({
-  deleteAll: protectedProcedure
+  deleteAllByUserId: protectedProcedure
     .input(
       z.object({
         userId: z.string(),
@@ -23,4 +23,13 @@ export const sessionRouter = createTRPCRouter({
 
       return !!sessions;
     }),
+  deleteAll: protectedProcedure.mutation(async ({ ctx, input }) => {
+    const sessions = await ctx.prisma.session.deleteMany();
+
+    if (!!sessions) {
+      await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
+    }
+
+    return !!sessions;
+  }),
 });
