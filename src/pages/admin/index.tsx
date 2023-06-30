@@ -196,21 +196,21 @@ const AdminBody: React.FC = () => {
       votesCountFetching ? (
         <span className="loading loading-dots loading-lg"></span>
       ) : (
-        <>
+        <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">
+          <button
+            className="btn btn-primary m-2"
+            onClick={() => void clearSessionsHandler()}
+          >
+            Delete All Sessions
+          </button>
+
           <button
             className="btn btn-primary"
             onClick={() => void refetchData()}
           >
             Re-fetch
           </button>
-
-          <button
-            className="btn btn-primary"
-            onClick={() => void clearSessionsHandler()}
-          >
-            Delete All Sessions
-          </button>
-        </>
+        </div>
       )}
 
       <div className="card max-w-[80vw] bg-neutral shadow-xl m-4">
