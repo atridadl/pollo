@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { env } from "~/env.mjs";
-import { redis } from "~/server/redis";
+import { invalidateCache } from "~/server/redis";
 
 export const sessionRouter = createTRPCRouter({
   deleteAllByUserId: protectedProcedure
@@ -18,7 +18,7 @@ export const sessionRouter = createTRPCRouter({
       });
 
       if (!!sessions) {
-        await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
+        await invalidateCache(`kv_userlist_admin`);
       }
 
       return !!sessions;
@@ -27,7 +27,7 @@ export const sessionRouter = createTRPCRouter({
     const sessions = await ctx.prisma.session.deleteMany();
 
     if (!!sessions) {
-      await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
+      await invalidateCache(`kv_userlist_admin`);
     }
 
     return !!sessions;

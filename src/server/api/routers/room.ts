@@ -4,7 +4,7 @@ import { publishToChannel } from "~/server/ably";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import { env } from "~/env.mjs";
-import { redis } from "~/server/redis";
+import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const roomRouter = createTRPCRouter({
   // Create
@@ -26,8 +26,8 @@ export const roomRouter = createTRPCRouter({
           },
         });
         if (room) {
-          await redis.del(`${env.APP_ENV}_kv_roomcount_admin`);
-          await redis.del(`${env.APP_ENV}_kv_roomlist_${ctx.session.user.id}`);
+          await invalidateCache(`kv_roomcount_admin`);
+          await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
           await publishToChannel(
             `${ctx.session.user.id}`,
@@ -66,13 +66,13 @@ export const roomRouter = createTRPCRouter({
 
   // Get All
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await redis.get<
+    const cachedResult = await fetchCache<
       {
         id: string;
         createdAt: Date;
         roomName: string;
       }[]
-    >(`${env.APP_ENV}_kv_roomlist_${ctx.session.user.id}`);
+    >(`kv_roomlist_${ctx.session.user.id}`);
 
     if (cachedResult) {
       return cachedResult;
@@ -88,29 +88,21 @@ export const roomRouter = createTRPCRouter({
         },
       });
 
-      await redis.set(
-        `${env.APP_ENV}_kv_roomlist_${ctx.session.user.id}`,
-        roomList,
-        { ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS) }
-      );
+      await setCache(`kv_roomlist_${ctx.session.user.id}`, roomList);
 
       return roomList;
     }
   }),
 
   countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await redis.get<number>(
-      `${env.APP_ENV}_kv_roomcount_admin`
-    );
+    const cachedResult = await fetchCache<number>(`kv_roomcount_admin`);
 
     if (cachedResult) {
       return cachedResult;
     } else {
       const roomsCount = await ctx.prisma.room.count();
 
-      await redis.set(`${env.APP_ENV}_kv_roomcount_admin`, roomsCount, {
-        ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS),
-      });
+      await setCache(`kv_roomcount_admin`, roomsCount);
 
       return roomsCount;
     }
@@ -176,7 +168,7 @@ export const roomRouter = createTRPCRouter({
           },
         });
 
-        await redis.del(`${env.APP_ENV}_kv_votes_${input.roomId}`);
+        await invalidateCache(`kv_votes_${input.roomId}`);
       }
 
       const newRoom = await ctx.prisma.room.update({
@@ -228,9 +220,9 @@ export const roomRouter = createTRPCRouter({
       });
 
       if (deletedRoom) {
-        await redis.del(`${env.APP_ENV}_kv_roomcount_admin`);
-        await redis.del(`${env.APP_ENV}_kv_votecount_admin`);
-        await redis.del(`${env.APP_ENV}_kv_roomlist_${ctx.session.user.id}`);
+        await invalidateCache(`kv_roomcount_admin`);
+        await invalidateCache(`kv_votecount_admin`);
+        await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
         await publishToChannel(
           `${ctx.session.user.id}`,

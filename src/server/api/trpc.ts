@@ -19,9 +19,10 @@ import { type Session } from "next-auth";
 
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
+import { Redis } from "@upstash/redis";
 
 const rateLimit = new Ratelimit({
-  redis,
+  redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(
     Number(env.UPSTASH_RATELIMIT_REQUESTS),
     `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
@@ -75,7 +76,6 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { Ratelimit } from "@upstash/ratelimit";
-import { redis } from "../redis";
 import { env } from "~/env.mjs";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({

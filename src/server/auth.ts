@@ -12,7 +12,7 @@ import { prisma } from "~/server/db";
 import type { Role } from "~/utils/types";
 import { Resend } from "resend";
 import { Welcome } from "../components/templates/Welcome";
-import { redis } from "./redis";
+import { invalidateCache } from "./redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -61,15 +61,15 @@ export const authOptions: NextAuthOptions = {
 
           react: Welcome({ name: user.name }),
         });
-        await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
-        await redis.del(`${env.APP_ENV}_kv_usercount_admin`);
+        await invalidateCache(`kv_userlist_admin`);
+        await invalidateCache(`kv_usercount_admin`);
       }
     },
     async signIn({}) {
-      await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
+      await invalidateCache(`kv_userlist_admin`);
     },
     async signOut() {
-      await redis.del(`${env.APP_ENV}_kv_userlist_admin`);
+      await invalidateCache(`kv_userlist_admin`);
     },
   },
   // @ts-ignore This adapter should work...
