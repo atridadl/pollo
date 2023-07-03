@@ -4,22 +4,18 @@ import { publishToChannel } from "~/server/ably";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { env } from "~/env.mjs";
 import type { Room } from "@prisma/client";
-import { redis } from "~/server/redis";
+import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const voteRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await redis.get<number>(
-      `${env.APP_ENV}_kv_votecount_admin`
-    );
+    const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
 
     if (cachedResult) {
       return cachedResult;
     } else {
       const votesCount = await ctx.prisma.vote.count();
 
-      await redis.set(`${env.APP_ENV}_kv_votecount_admin`, votesCount, {
-        ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS),
-      });
+      await setCache(`kv_votecount_admin`, votesCount);
 
       return votesCount;
     }
@@ -27,7 +23,7 @@ export const voteRouter = createTRPCRouter({
   getAllByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const cachedResult = await redis.get<
+      const cachedResult = await fetchCache<
         {
           value: string;
           room: Room;
@@ -39,7 +35,7 @@ export const voteRouter = createTRPCRouter({
           };
           roomId: string;
         }[]
-      >(`${env.APP_ENV}_kv_votes_${input.roomId}`);
+      >(`kv_votes_${input.roomId}`);
 
       if (cachedResult) {
         return cachedResult;
@@ -63,11 +59,7 @@ export const voteRouter = createTRPCRouter({
           },
         });
 
-        await redis.set(
-          `${env.APP_ENV}_kv_votes_${input.roomId}`,
-          votesByRoomId,
-          { ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS) }
-        );
+        await setCache(`kv_votes_${input.roomId}`, votesByRoomId);
 
         return votesByRoomId;
       }
@@ -106,8 +98,8 @@ export const voteRouter = createTRPCRouter({
       });
 
       if (vote) {
-        await redis.del(`${env.APP_ENV}_kv_votecount_admin`);
-        await redis.del(`${env.APP_ENV}_kv_votes_${input.roomId}`);
+        await invalidateCache(`kv_votecount_admin`);
+        await invalidateCache(`kv_votes_${input.roomId}`);
 
         await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
       }
