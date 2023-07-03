@@ -21,15 +21,6 @@ import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { Redis } from "@upstash/redis";
 
-const rateLimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(
-    Number(env.UPSTASH_RATELIMIT_REQUESTS),
-    `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
-  ),
-  analytics: true,
-});
-
 type CreateContextOptions = {
   session: Session | null;
 };
@@ -114,16 +105,34 @@ const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-  const { success } = await rateLimit.limit(
-    `${env.APP_ENV}_${ctx.session.user.id}`
-  );
-  if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-  return next({
-    ctx: {
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
+  try {
+    const rateLimit = new Ratelimit({
+      redis: Redis.fromEnv(),
+      limiter: Ratelimit.slidingWindow(
+        Number(env.UPSTASH_RATELIMIT_REQUESTS),
+        `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
+      ),
+      analytics: true,
+    });
+
+    const { success } = await rateLimit.limit(
+      `${env.APP_ENV}_${ctx.session.user.id}`
+    );
+    if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+    return next({
+      ctx: {
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  } catch {
+    return next({
+      ctx: {
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  }
 });
 
 /**
