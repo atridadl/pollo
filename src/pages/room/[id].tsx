@@ -71,6 +71,7 @@ const RoomBody: React.FC = () => {
 
   const [storyNameText, setStoryNameText] = useState<string>("");
   const [roomScale, setRoomScale] = useState<string>("");
+  const [copied, setCopied] = useState<boolean>(false);
 
   const { data: roomFromDb, refetch: refetchRoomFromDb } =
     api.room.get.useQuery({ id: roomId });
@@ -203,6 +204,10 @@ const RoomBody: React.FC = () => {
       .writeText(window.location.href)
       .then(() => {
         console.log(`Copied Room Link to Clipboard!`);
+        setCopied(true);
+        setTimeout(() => {
+          setCopied(false);
+        }, 2000);
       })
       .catch(() => {
         console.log(`Error Copying Room Link to Clipboard!`);
@@ -252,10 +257,14 @@ const RoomBody: React.FC = () => {
           <div>{roomFromDb.id}</div>
 
           <button>
-            <IoCopyOutline
-              className="mx-1 hover:text-primary"
-              onClick={copyRoomURLHandler}
-            ></IoCopyOutline>
+            {copied ? (
+              <IoCheckmarkCircleOutline className="mx-1 text-green-400 animate-bounce" />
+            ) : (
+              <IoCopyOutline
+                className="mx-1 hover:text-primary"
+                onClick={copyRoomURLHandler}
+              ></IoCopyOutline>
+            )}
           </button>
         </div>
 
