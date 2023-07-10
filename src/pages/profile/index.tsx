@@ -8,7 +8,8 @@ import { api } from "~/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
+import { SiGoogle, SiGithub } from "react-icons/si";
+import { FaShieldAlt } from "react-icons/fa";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -115,14 +116,21 @@ const ProfileBody: React.FC = () => {
           <div className="card-body">
             <h2 className="card-title">Profile:</h2>
             {sessionData.user.image && (
-              <Image
-                className="mx-auto"
-                src={sessionData.user.image}
-                alt="Profile picture."
-                height={100}
-                width={100}
-                priority
-              />
+              <div className="indicator mx-auto m-4">
+                <span className="indicator-item indicator-bottom badge badge-primary">
+                  <div className="tooltip tooltip-primary" data-tip="Admin">
+                    <FaShieldAlt className="text-xl" />
+                  </div>
+                </span>
+                <Image
+                  className="mx-auto"
+                  src={sessionData.user.image}
+                  alt="Profile picture."
+                  height={100}
+                  width={100}
+                  priority
+                />
+              </div>
             )}
 
             {providersLoading ? (
@@ -136,7 +144,7 @@ const ProfileBody: React.FC = () => {
                   disabled={providers?.includes("github")}
                   onClick={() => void signIn("github")}
                 >
-                  <FaGithub />
+                  <SiGithub />
                 </button>
 
                 <button
@@ -144,7 +152,7 @@ const ProfileBody: React.FC = () => {
                   disabled={providers?.includes("google")}
                   onClick={() => void signIn("google")}
                 >
-                  <FaGoogle />
+                  <SiGoogle />
                 </button>
               </div>
             )}
