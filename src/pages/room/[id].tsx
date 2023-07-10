@@ -202,7 +202,7 @@ const RoomBody: React.FC = () => {
   const copyRoomURLHandler = () => {
     navigator.clipboard
       .writeText(window.location.href)
-      .then(async () => {
+      .then(() => {
         console.log(`Copied Room Link to Clipboard!`);
         setCopied(true);
         setTimeout(() => {
