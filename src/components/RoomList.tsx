@@ -1,11 +1,11 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-import { api } from "~/utils/api";
-import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
-import { env } from "~/env.mjs";
 import { useState } from "react";
+import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
+import { env } from "~/env.mjs";
+import { api } from "~/utils/api";
 
 const RoomList: React.FC = () => {
   const { data: sessionData } = useSession();

@@ -1,14 +1,13 @@
-import { type NextPage } from "next";
+import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
-import { type GetServerSideProps } from "next";
 
-import { getServerAuthSession } from "../../server/auth";
-import { api } from "~/utils/api";
-import { IoTrashBinOutline } from "react-icons/io5";
 import { AiOutlineClear } from "react-icons/ai";
 import { FaShieldAlt } from "react-icons/fa";
-import { SiGoogle, SiGithub } from "react-icons/si";
+import { IoTrashBinOutline } from "react-icons/io5";
+import { SiGithub, SiGoogle } from "react-icons/si";
+import { api } from "~/utils/api";
 import type { Role } from "~/utils/types";
+import { getServerAuthSession } from "../../server/auth";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);

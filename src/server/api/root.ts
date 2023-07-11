@@ -1,8 +1,8 @@
-import { createTRPCRouter } from "~/server/api/trpc";
 import { roomRouter } from "~/server/api/routers/room";
-import { voteRouter } from "./routers/vote";
-import { userRouter } from "./routers/user";
+import { createTRPCRouter } from "~/server/api/trpc";
 import { sessionRouter } from "./routers/session";
+import { userRouter } from "./routers/user";
+import { voteRouter } from "./routers/vote";
 
 /**
  * This is the primary router for your server.
