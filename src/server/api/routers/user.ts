@@ -1,12 +1,12 @@
 import type { User } from "@prisma/client";
+import { Resend } from "resend";
 import { z } from "zod";
+import { Goodbye } from "~/components/templates/Goodbye";
 import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import type { Role } from "~/utils/types";
-import { Resend } from "resend";
-import { Goodbye } from "~/components/templates/Goodbye";
 
-import { setCache, fetchCache, invalidateCache } from "~/server/redis";
+import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

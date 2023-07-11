@@ -5,7 +5,6 @@ enum RoleValue {
 
 generator client {
     provider = "prisma-client-js"  
-    previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {

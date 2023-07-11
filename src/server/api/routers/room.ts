@@ -3,7 +3,6 @@ import { publishToChannel } from "~/server/ably";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
-import { env } from "~/env.mjs";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const roomRouter = createTRPCRouter({

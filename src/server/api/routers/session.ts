@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { env } from "~/env.mjs";
 import { invalidateCache } from "~/server/redis";
 
 export const sessionRouter = createTRPCRouter({
@@ -23,7 +22,7 @@ export const sessionRouter = createTRPCRouter({
 
       return !!sessions;
     }),
-  deleteAll: protectedProcedure.mutation(async ({ ctx, input }) => {
+  deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
     const sessions = await ctx.prisma.session.deleteMany();
 
     if (!!sessions) {

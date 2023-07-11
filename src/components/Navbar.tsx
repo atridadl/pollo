@@ -1,8 +1,8 @@
-import { useSession, signOut, signIn } from "next-auth/react";
-import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { env } from "~/env.mjs";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { env } from "~/env.mjs";
 
 interface NavbarProps {
   title: string;

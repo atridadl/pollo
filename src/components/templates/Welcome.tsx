@@ -1,17 +1,17 @@
-import * as React from "react";
 import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Preview,
-  Text,
-  Hr,
-  Tailwind,
-  Section,
-  Img,
+    Body,
+    Container,
+    Head,
+    Heading,
+    Hr,
+    Html,
+    Img,
+    Preview,
+    Section,
+    Tailwind,
+    Text,
 } from "@react-email/components";
+import * as React from "react";
 
 interface WelcomeTemplateProps {
   name: string;
