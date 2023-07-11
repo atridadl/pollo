@@ -17,9 +17,9 @@
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 
+import { Redis } from "@upstash/redis";
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
-import { Redis } from "@upstash/redis";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -65,8 +65,8 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
 import { Ratelimit } from "@upstash/ratelimit";
+import superjson from "superjson";
 import { env } from "~/env.mjs";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({

@@ -1,6 +1,6 @@
 import Ably from "ably";
-import type { EventType } from "../utils/types";
 import { env } from "~/env.mjs";
+import type { EventType } from "../utils/types";
 
 const ably = new Ably.Realtime.Promise(env.ABLY_PRIVATE_KEY);
 

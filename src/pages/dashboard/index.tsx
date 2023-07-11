@@ -1,11 +1,11 @@
 import type { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 
 import RoomList from "~/components/RoomList";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FaShieldAlt } from "react-icons/fa";
 import { getServerAuthSession } from "~/server/auth";
 

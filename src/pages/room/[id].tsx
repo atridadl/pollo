@@ -1,32 +1,31 @@
-import { type NextPage } from "next";
-import Image from "next/image";
+import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
-import { type GetServerSideProps } from "next";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import { getServerAuthSession } from "../../server/auth";
-import { useRouter } from "next/router";
-import { api } from "~/utils/api";
-import { z } from "zod";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import {
-  IoCopyOutline,
-  IoHourglassOutline,
-  IoCheckmarkCircleOutline,
-  IoEyeOutline,
-  IoEyeOffOutline,
-  IoSaveOutline,
-  IoReloadOutline,
-  IoDownloadOutline,
+    IoCheckmarkCircleOutline,
+    IoCopyOutline,
+    IoDownloadOutline,
+    IoEyeOffOutline,
+    IoEyeOutline,
+    IoHourglassOutline,
+    IoReloadOutline,
+    IoSaveOutline,
 } from "react-icons/io5";
+import { z } from "zod";
+import { api } from "~/utils/api";
+import { getServerAuthSession } from "../../server/auth";
 
 import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
-import type { PresenceItem } from "~/utils/types";
-import { env } from "~/env.mjs";
+import Link from "next/link";
 import { FaShieldAlt } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
-import Link from "next/link";
+import { env } from "~/env.mjs";
 import { downloadCSV } from "~/utils/helpers";
+import type { PresenceItem } from "~/utils/types";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);

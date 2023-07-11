@@ -1,9 +1,8 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { env } from "~/env.mjs";
 import type { Room } from "@prisma/client";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const voteRouter = createTRPCRouter({

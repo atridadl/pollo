@@ -12,7 +12,6 @@ import {
   Section,
   Img,
 } from "@react-email/components";
-import { env } from "~/env.mjs";
 
 interface GoodbyeTemplateProps {
   name: string;
