@@ -38,15 +38,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, [router.events]);
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={ session }>
       <div className="block h-[100%]">
         <Navbar title="Sprint Padawan" />
         <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
-          {pageLoading ? (
+          { pageLoading ? (
             <span className="loading loading-dots loading-lg"></span>
           ) : (
-            <Component {...pageProps} />
-          )}
+            <Component { ...pageProps } />
+          ) }
         </div>
         <Footer />
       </div>
