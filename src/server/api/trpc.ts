@@ -17,7 +17,6 @@
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 
-import { Redis } from "@upstash/redis";
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 
@@ -65,9 +64,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import { Ratelimit } from "@upstash/ratelimit";
 import superjson from "superjson";
-import { env } from "~/env.mjs";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -106,33 +103,11 @@ const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  try {
-    const rateLimit = new Ratelimit({
-      redis: Redis.fromEnv(),
-      limiter: Ratelimit.slidingWindow(
-        Number(env.UPSTASH_RATELIMIT_REQUESTS),
-        `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
-      ),
-      analytics: true,
-    });
-
-    const { success } = await rateLimit.limit(
-      `${env.APP_ENV}_${ctx.session.user.id}`
-    );
-    if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
-    return next({
-      ctx: {
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
-  } catch {
-    return next({
-      ctx: {
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
-  }
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
 });
 
 /**
