@@ -1,15 +1,14 @@
-import { type NextPage } from "next";
-import Image from "next/image";
+import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
-import { type GetServerSideProps } from "next";
+import Image from "next/image";
 
-import { getServerAuthSession } from "../../server/auth";
-import { api } from "~/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { SiGoogle, SiGithub } from "react-icons/si";
 import { FaShieldAlt } from "react-icons/fa";
+import { SiGithub, SiGoogle } from "react-icons/si";
+import { api } from "~/utils/api";
+import { getServerAuthSession } from "../../server/auth";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -104,7 +103,7 @@ const ProfileBody: React.FC = () => {
               <label
                 htmlFor="delete-user-modal"
                 className="btn btn-error"
-                onClick={() => void deleteCurrentUser()}
+                onClick={ () => void deleteCurrentUser() }
               >
                 I am sure!
               </label>
@@ -115,76 +114,79 @@ const ProfileBody: React.FC = () => {
         <div className="card w-90 bg-neutral shadow-xl">
           <div className="card-body">
             <h2 className="card-title">Profile:</h2>
-            {sessionData.user.image && (
+            { sessionData.user.image && (
               <div className="indicator mx-auto m-4">
-                <span className="indicator-item indicator-bottom badge badge-primary">
-                  <div className="tooltip tooltip-primary" data-tip="Admin">
-                    <FaShieldAlt className="text-xl" />
-                  </div>
-                </span>
+                { sessionData.user.role === "ADMIN" && (
+                  <span className="indicator-item indicator-bottom badge badge-primary">
+                    <div className="tooltip tooltip-primary" data-tip="Admin">
+                      <FaShieldAlt className="text-xl" />
+                    </div>
+                  </span>
+                ) }
+
                 <Image
                   className="mx-auto"
-                  src={sessionData.user.image}
+                  src={ sessionData.user.image }
                   alt="Profile picture."
-                  height={100}
-                  width={100}
+                  height={ 100 }
+                  width={ 100 }
                   priority
                 />
               </div>
-            )}
+            ) }
 
-            {providersLoading ? (
+            { providersLoading ? (
               <div className="mx-auto">
-                <span className="loading loading-dots loading-lg"></span>{" "}
+                <span className="loading loading-dots loading-lg"></span>{ " " }
               </div>
             ) : (
               <div className="mx-auto">
                 <button
-                  className={`btn btn-square btn-outline mx-2`}
-                  disabled={providers?.includes("github")}
-                  onClick={() => void signIn("github")}
+                  className={ `btn btn-square btn-outline mx-2` }
+                  disabled={ providers?.includes("github") }
+                  onClick={ () => void signIn("github") }
                 >
                   <SiGithub />
                 </button>
 
                 <button
-                  className={`btn btn-square btn-outline mx-2`}
-                  disabled={providers?.includes("google")}
-                  onClick={() => void signIn("google")}
+                  className={ `btn btn-square btn-outline mx-2` }
+                  disabled={ providers?.includes("google") }
+                  onClick={ () => void signIn("google") }
                 >
                   <SiGoogle />
                 </button>
               </div>
-            )}
+            ) }
 
-            {sessionData.user.name && (
+            { sessionData.user.name && (
               <input
                 type="text"
                 placeholder="Name"
                 className="input input-bordered"
-                value={nameText}
-                onChange={(event) => setNameText(event.target.value)}
+                value={ nameText }
+                onChange={ (event) => setNameText(event.target.value) }
               />
-            )}
+            ) }
 
-            {sessionData.user.email && (
+            { sessionData.user.email && (
               <input
                 type="text"
                 placeholder="Email"
                 className="input input-bordered"
-                value={sessionData.user.email}
+                value={ sessionData.user.email }
                 disabled
               />
-            )}
+            ) }
 
             <button
-              onClick={() => void saveUser()}
+              onClick={ () => void saveUser() }
               className="btn btn-secondary"
             >
               Save Account
             </button>
 
-            {/* <button className="btn btn-error">Delete Account</button> */}
+            {/* <button className="btn btn-error">Delete Account</button> */ }
 
             <label htmlFor="delete-user-modal" className="btn btn-error">
               Delete Account

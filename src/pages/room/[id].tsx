@@ -6,14 +6,14 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import {
-    IoCheckmarkCircleOutline,
-    IoCopyOutline,
-    IoDownloadOutline,
-    IoEyeOffOutline,
-    IoEyeOutline,
-    IoHourglassOutline,
-    IoReloadOutline,
-    IoSaveOutline,
+  IoCheckmarkCircleOutline,
+  IoCopyOutline,
+  IoDownloadOutline,
+  IoEyeOffOutline,
+  IoEyeOutline,
+  IoHourglassOutline,
+  IoReloadOutline,
+  IoSaveOutline,
 } from "react-icons/io5";
 import { z } from "zod";
 import { api } from "~/utils/api";
@@ -224,7 +224,7 @@ const RoomBody: React.FC = () => {
 
     if (visible) {
       if (!!matchedVote) {
-        return <p>{matchedVote.value}</p>;
+        return <p>{ matchedVote.value }</p>;
       } else {
         return <IoHourglassOutline className="text-xl mx-auto text-red-400" />;
       }
@@ -243,39 +243,39 @@ const RoomBody: React.FC = () => {
   if (roomFromDb === undefined) {
     return (
       <div className="flex flex-col items-center justify-center text-center">
-        <span className="loading loading-dots loading-lg"></span>{" "}
+        <span className="loading loading-dots loading-lg"></span>{ " " }
       </div>
     );
     // Room has been loaded
   } else if (roomFromDb) {
     return (
       <span className="text-center">
-        <div className="text-2xl">{roomFromDb.roomName}</div>
+        <div className="text-2xl">{ roomFromDb.roomName }</div>
         <div className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md mx-auto">
           <div>ID:</div>
-          <div>{roomFromDb.id}</div>
+          <div>{ roomFromDb.id }</div>
 
           <button>
-            {copied ? (
+            { copied ? (
               <IoCheckmarkCircleOutline className="mx-1 text-green-400 animate-bounce" />
             ) : (
               <IoCopyOutline
                 className="mx-1 hover:text-primary"
-                onClick={copyRoomURLHandler}
+                onClick={ copyRoomURLHandler }
               ></IoCopyOutline>
-            )}
+            ) }
           </button>
         </div>
 
-        {roomFromDb && (
+        { roomFromDb && (
           <div className="card card-compact bg-neutral shadow-xl mx-auto m-4">
             <div className="card-body">
               <h2 className="card-title mx-auto">
-                Story: {roomFromDb.storyName}
+                Story: { roomFromDb.storyName }
               </h2>
 
               <ul className="p-0 mx-auto flex flex-row flex-wrap justify-center items-center text-ceter gap-4">
-                {presenceData &&
+                { presenceData &&
                   presenceData
                     .filter(
                       (value, index, self) =>
@@ -288,73 +288,72 @@ const RoomBody: React.FC = () => {
                     .map((presenceItem) => {
                       return (
                         <li
-                          key={presenceItem.clientId}
+                          key={ presenceItem.clientId }
                           className="flex flex-row items-center justify-center gap-2"
                         >
                           <div className="w-10 rounded-full avatar mx-auto">
                             <Image
-                              src={presenceItem.data.image}
-                              alt={`${presenceItem.data.name}'s Profile Picture`}
-                              height={32}
-                              width={32}
+                              src={ presenceItem.data.image }
+                              alt={ `${presenceItem.data.name}'s Profile Picture` }
+                              height={ 32 }
+                              width={ 32 }
                             />
                           </div>
 
                           <p className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md mx-auto">
-                            {presenceItem.data.name}{" "}
-                            {presenceItem.data.role === "ADMIN" && (
+                            { presenceItem.data.name }{ " " }
+                            { presenceItem.data.role === "ADMIN" && (
                               <div
                                 className="tooltip tooltip-primary"
                                 data-tip="Admin"
                               >
                                 <FaShieldAlt className="inline-block text-primary" />
                               </div>
-                            )}{" "}
-                            {presenceItem.clientId === roomFromDb.userId && (
+                            ) }{ " " }
+                            { presenceItem.clientId === roomFromDb.userId && (
                               <div
                                 className="tooltip tooltip-warning"
                                 data-tip="Room Owner"
                               >
                                 <RiVipCrownFill className="inline-block text-yellow-500" />
                               </div>
-                            )}
-                            {" : "}
+                            ) }
+                            { " : " }
                           </p>
 
-                          {roomFromDb &&
+                          { roomFromDb &&
                             votesFromDb &&
                             voteString(
                               roomFromDb.visible,
                               votesFromDb,
                               presenceItem.data
-                            )}
+                            ) }
                         </li>
                       );
-                    })}
+                    }) }
               </ul>
 
               <div className="join md:btn-group-horizontal mx-auto">
-                {roomFromDb.scale.split(",").map((scaleItem, index) => {
+                { roomFromDb.scale.split(",").map((scaleItem, index) => {
                   return (
                     <button
-                      key={index}
-                      className={`join-item ${
-                        getVoteForCurrentUser()?.value === scaleItem
+                      key={ index }
+                      className={ `join-item ${getVoteForCurrentUser()?.value === scaleItem
                           ? "btn btn-active btn-primary"
                           : "btn"
-                      }`}
-                      onClick={() => setVote(scaleItem)}
+                        }` }
+                      onClick={ () => setVote(scaleItem) }
                     >
-                      {scaleItem}
+                      { scaleItem }
                     </button>
                   );
-                })}
+                }) }
               </div>
             </div>
           </div>
-        )}
+        ) }
 
-        {sessionData &&
+        { sessionData &&
           !!roomFromDb &&
           roomFromDb.userId === sessionData.user.id && (
             <>
@@ -363,38 +362,38 @@ const RoomBody: React.FC = () => {
                   <h2 className="card-title mx-auto">Room Settings</h2>
 
                   <label className="label mx-auto">
-                    {"Vote Scale (Comma Separated):"}{" "}
+                    { "Vote Scale (Comma Separated):" }{ " " }
                   </label>
 
                   <input
                     type="text"
                     placeholder="Scale (Comma Separated)"
                     className="input input-bordered m-auto"
-                    value={roomScale}
-                    onChange={(event) => {
+                    value={ roomScale }
+                    onChange={ (event) => {
                       setRoomScale(event.target.value);
-                    }}
+                    } }
                   />
 
-                  <label className="label mx-auto">{"Story Name:"} </label>
+                  <label className="label mx-auto">{ "Story Name:" } </label>
 
                   <input
                     type="text"
                     placeholder="Story Name"
                     className="input input-bordered m-auto"
-                    value={storyNameText}
-                    onChange={(event) => {
+                    value={ storyNameText }
+                    onChange={ (event) => {
                       setStoryNameText(event.target.value);
-                    }}
+                    } }
                   />
 
                   <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">
                     <div>
                       <button
-                        onClick={() => saveRoom(!roomFromDb.visible, false)}
+                        onClick={ () => saveRoom(!roomFromDb.visible, false) }
                         className="btn btn-primary inline-flex"
                       >
-                        {roomFromDb.visible ? (
+                        { roomFromDb.visible ? (
                           <>
                             <IoEyeOffOutline className="text-xl mr-1" />
                             Hide
@@ -404,13 +403,13 @@ const RoomBody: React.FC = () => {
                             <IoEyeOutline className="text-xl mr-1" />
                             Show
                           </>
-                        )}
+                        ) }
                       </button>
                     </div>
 
                     <div>
                       <button
-                        onClick={() =>
+                        onClick={ () =>
                           saveRoom(
                             false,
                             true,
@@ -427,8 +426,8 @@ const RoomBody: React.FC = () => {
                           ).length <= 1
                         }
                       >
-                        {roomFromDb.storyName === storyNameText ||
-                        votesFromDb?.length === 0 ? (
+                        { roomFromDb.storyName === storyNameText ||
+                          votesFromDb?.length === 0 ? (
                           <>
                             <IoReloadOutline className="text-xl mr-1" /> Reset
                           </>
@@ -436,16 +435,16 @@ const RoomBody: React.FC = () => {
                           <>
                             <IoSaveOutline className="text-xl mr-1" /> Save
                           </>
-                        )}
+                        ) }
                       </button>
                     </div>
 
-                    {votesFromDb &&
+                    { votesFromDb &&
                       (roomFromDb.logs.length > 0 ||
                         votesFromDb.length > 0) && (
                         <div>
                           <button
-                            onClick={() => downloadLogs()}
+                            onClick={ () => downloadLogs() }
                             className="btn btn-primary inline-flex hover:animate-pulse"
                           >
                             <>
@@ -453,12 +452,12 @@ const RoomBody: React.FC = () => {
                             </>
                           </button>
                         </div>
-                      )}
+                      ) }
                   </div>
                 </div>
               </div>
             </>
-          )}
+          ) }
       </span>
     );
     // Room does not exist

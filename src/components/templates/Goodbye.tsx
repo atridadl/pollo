@@ -1,17 +1,17 @@
-import * as React from "react";
 import {
   Body,
   Container,
   Head,
   Heading,
-  Html,
-  Preview,
-  Text,
   Hr,
-  Tailwind,
-  Section,
+  Html,
   Img,
+  Preview,
+  Section,
+  Tailwind,
+  Text,
 } from "@react-email/components";
+import * as React from "react";
 
 interface GoodbyeTemplateProps {
   name: string;
@@ -30,15 +30,15 @@ export const Goodbye: React.FC<Readonly<GoodbyeTemplateProps>> = ({ name }) => (
         <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
           <Section className="mt-[32px]">
             <Img
-              src={`${baseUrl}/logo.webp`}
+              src={ `${baseUrl}/logo.webp` }
               width="40"
               height="37"
-              alt={`Sprint Padawan Logo`}
+              alt={ `Sprint Padawan Logo` }
               className="my-0 mx-auto"
             />
           </Section>
-          <Heading className="text-4xl">Farewell, {name}...</Heading>
-          <Text>{"Were sorry to see you go."}</Text>
+          <Heading className="text-4xl">Farewell, { name }...</Heading>
+          <Text>{ "Were sorry to see you go." }</Text>
           <Text>
             Your data has been deleted, including all room history, user data,
             votes, etc.
