@@ -3,6 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import {
   IoCheckmarkCircleOutline,
@@ -25,7 +26,6 @@ import { RiVipCrownFill } from "react-icons/ri";
 import { env } from "~/env.mjs";
 import { downloadCSV } from "~/utils/helpers";
 import type { PresenceItem } from "~/utils/types";
-import { Session } from "next-auth";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -46,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-const Room: NextPage<{ session: Session }> = ({ session }) => {
+const Room: NextPage = () => {
   return (
     <>
       <Head>
@@ -55,7 +55,7 @@ const Room: NextPage<{ session: Session }> = ({ session }) => {
         <meta http-equiv="Cache-control" content="no-cache" />
       </Head>
       <div className="flex flex-col items-center justify-center text-center gap-2">
-        <RoomBody session={session} />
+        <RoomBody />
       </div>
     </>
   );
@@ -63,7 +63,8 @@ const Room: NextPage<{ session: Session }> = ({ session }) => {
 
 export default Room;
 
-const RoomBody: React.FC<{ session: Session }> = ({ session }) => {
+const RoomBody: React.FC = ({}) => {
+  const { data: sessionData } = useSession();
   const { query } = useRouter();
   const roomId = z.string().parse(query.id);
 
@@ -82,7 +83,7 @@ const RoomBody: React.FC<{ session: Session }> = ({ session }) => {
 
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
-    clientId: session.user.id,
+    clientId: sessionData?.user.id,
     recover: (_, cb) => {
       cb(true);
     },
@@ -105,10 +106,10 @@ const RoomBody: React.FC<{ session: Session }> = ({ session }) => {
   const [presenceData] = usePresence<PresenceItem>(
     `${env.NEXT_PUBLIC_APP_ENV}-${roomId}`,
     {
-      name: session.user.name || "",
-      image: session.user.image || "",
-      client_id: session.user.id || "",
-      role: session.user.role || "USER",
+      name: sessionData?.user.name || "",
+      image: sessionData?.user.image || "",
+      client_id: sessionData?.user.id || "",
+      role: sessionData?.user.role || "USER",
     }
   );
 
@@ -125,18 +126,18 @@ const RoomBody: React.FC<{ session: Session }> = ({ session }) => {
 
   // Init story name
   useEffect(() => {
-    if (session && roomFromDb) {
+    if (sessionData && roomFromDb) {
       setStoryNameText(roomFromDb.storyName || "");
       setRoomScale(roomFromDb.scale || "ERROR");
     }
-  }, [roomFromDb, roomId, session]);
+  }, [roomFromDb, roomId, sessionData]);
 
   // Helper functions
   const getVoteForCurrentUser = () => {
-    if (roomFromDb && session) {
+    if (roomFromDb && sessionData) {
       return (
         votesFromDb &&
-        votesFromDb.find((vote) => vote.userId === session.user.id)
+        votesFromDb.find((vote) => vote.userId === sessionData.user.id)
       );
     } else {
       return null;
@@ -353,108 +354,111 @@ const RoomBody: React.FC<{ session: Session }> = ({ session }) => {
           </div>
         )}
 
-        {session && !!roomFromDb && roomFromDb.userId === session.user.id && (
-          <>
-            <div className="card card-compact bg-neutral shadow-xl mx-auto m-4">
-              <div className="card-body flex flex-col flex-wrap">
-                <h2 className="card-title mx-auto">Room Settings</h2>
+        {sessionData &&
+          !!roomFromDb &&
+          roomFromDb.userId === sessionData.user.id && (
+            <>
+              <div className="card card-compact bg-neutral shadow-xl mx-auto m-4">
+                <div className="card-body flex flex-col flex-wrap">
+                  <h2 className="card-title mx-auto">Room Settings</h2>
 
-                <label className="label mx-auto">
-                  {"Vote Scale (Comma Separated):"}{" "}
-                </label>
+                  <label className="label mx-auto">
+                    {"Vote Scale (Comma Separated):"}{" "}
+                  </label>
 
-                <input
-                  type="text"
-                  placeholder="Scale (Comma Separated)"
-                  className="input input-bordered m-auto"
-                  value={roomScale}
-                  onChange={(event) => {
-                    setRoomScale(event.target.value);
-                  }}
-                />
+                  <input
+                    type="text"
+                    placeholder="Scale (Comma Separated)"
+                    className="input input-bordered m-auto"
+                    value={roomScale}
+                    onChange={(event) => {
+                      setRoomScale(event.target.value);
+                    }}
+                  />
 
-                <label className="label mx-auto">{"Story Name:"} </label>
+                  <label className="label mx-auto">{"Story Name:"} </label>
 
-                <input
-                  type="text"
-                  placeholder="Story Name"
-                  className="input input-bordered m-auto"
-                  value={storyNameText}
-                  onChange={(event) => {
-                    setStoryNameText(event.target.value);
-                  }}
-                />
+                  <input
+                    type="text"
+                    placeholder="Story Name"
+                    className="input input-bordered m-auto"
+                    value={storyNameText}
+                    onChange={(event) => {
+                      setStoryNameText(event.target.value);
+                    }}
+                  />
 
-                <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">
-                  <div>
-                    <button
-                      onClick={() => saveRoom(!roomFromDb.visible, false)}
-                      className="btn btn-primary inline-flex"
-                    >
-                      {roomFromDb.visible ? (
-                        <>
-                          <IoEyeOffOutline className="text-xl mr-1" />
-                          Hide
-                        </>
-                      ) : (
-                        <>
-                          <IoEyeOutline className="text-xl mr-1" />
-                          Show
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  <div>
-                    <button
-                      onClick={() =>
-                        saveRoom(
-                          false,
-                          true,
-                          roomFromDb.storyName === storyNameText ||
-                            votesFromDb?.length === 0
-                            ? false
-                            : true
-                        )
-                      }
-                      className="btn btn-primary inline-flex"
-                      disabled={
-                        [...new Set(roomScale.split(","))].filter(
-                          (item) => item !== ""
-                        ).length <= 1
-                      }
-                    >
-                      {roomFromDb.storyName === storyNameText ||
-                      votesFromDb?.length === 0 ? (
-                        <>
-                          <IoReloadOutline className="text-xl mr-1" /> Reset
-                        </>
-                      ) : (
-                        <>
-                          <IoSaveOutline className="text-xl mr-1" /> Save
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {votesFromDb &&
-                    (roomFromDb.logs.length > 0 || votesFromDb.length > 0) && (
-                      <div>
-                        <button
-                          onClick={() => downloadLogs()}
-                          className="btn btn-primary inline-flex hover:animate-pulse"
-                        >
+                  <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">
+                    <div>
+                      <button
+                        onClick={() => saveRoom(!roomFromDb.visible, false)}
+                        className="btn btn-primary inline-flex"
+                      >
+                        {roomFromDb.visible ? (
                           <>
-                            <IoDownloadOutline className="text-xl" />
+                            <IoEyeOffOutline className="text-xl mr-1" />
+                            Hide
                           </>
-                        </button>
-                      </div>
-                    )}
+                        ) : (
+                          <>
+                            <IoEyeOutline className="text-xl mr-1" />
+                            Show
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <div>
+                      <button
+                        onClick={() =>
+                          saveRoom(
+                            false,
+                            true,
+                            roomFromDb.storyName === storyNameText ||
+                              votesFromDb?.length === 0
+                              ? false
+                              : true
+                          )
+                        }
+                        className="btn btn-primary inline-flex"
+                        disabled={
+                          [...new Set(roomScale.split(","))].filter(
+                            (item) => item !== ""
+                          ).length <= 1
+                        }
+                      >
+                        {roomFromDb.storyName === storyNameText ||
+                        votesFromDb?.length === 0 ? (
+                          <>
+                            <IoReloadOutline className="text-xl mr-1" /> Reset
+                          </>
+                        ) : (
+                          <>
+                            <IoSaveOutline className="text-xl mr-1" /> Save
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    {votesFromDb &&
+                      (roomFromDb.logs.length > 0 ||
+                        votesFromDb.length > 0) && (
+                        <div>
+                          <button
+                            onClick={() => downloadLogs()}
+                            className="btn btn-primary inline-flex hover:animate-pulse"
+                          >
+                            <>
+                              <IoDownloadOutline className="text-xl" />
+                            </>
+                          </button>
+                        </div>
+                      )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
       </span>
     );
     // Room does not exist
