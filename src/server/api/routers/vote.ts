@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
+import Ably from "ably";
 
 import type { Room } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
+import { env } from "~/env.mjs";
 
 export const voteRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
@@ -66,6 +68,8 @@ export const voteRouter = createTRPCRouter({
   set: protectedProcedure
     .input(z.object({ value: z.string(), roomId: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      const ably = new Ably.Realtime.Promise(env.ABLY_PRIVATE_KEY);
+
       const vote = await ctx.prisma.vote.upsert({
         where: {
           userId_roomId: {
@@ -100,7 +104,7 @@ export const voteRouter = createTRPCRouter({
         await invalidateCache(`kv_votecount_admin`);
         await invalidateCache(`kv_votes_${input.roomId}`);
 
-        await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
+        await publishToChannel(ably, `${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
       }
 
       return !!vote;
