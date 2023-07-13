@@ -1,7 +1,5 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
-import Ably from "ably";
-
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
@@ -17,8 +15,6 @@ export const roomRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const ably = new Ably.Realtime.Promise(env.ABLY_PRIVATE_KEY);
-
         const room = await ctx.prisma.room.create({
           data: {
             userId: ctx.session.user.id,
@@ -33,7 +29,7 @@ export const roomRouter = createTRPCRouter({
           await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
           await publishToChannel(
-            ably,
+            ctx.ably,
             `${ctx.session.user.id}`,
             "ROOM_LIST_UPDATE",
             "CREATE"
@@ -125,8 +121,6 @@ export const roomRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const ably = new Ably.Realtime.Promise(env.ABLY_PRIVATE_KEY);
-
       if (input.reset) {
         if (input.log) {
           const oldRoom = await ctx.prisma.room.findUnique({
@@ -209,7 +203,12 @@ export const roomRouter = createTRPCRouter({
       });
 
       if (newRoom) {
-        await publishToChannel(ably, `${newRoom.id}`, "ROOM_UPDATE", "UPDATE");
+        await publishToChannel(
+          ctx.ably,
+          `${newRoom.id}`,
+          "ROOM_UPDATE",
+          "UPDATE"
+        );
       }
 
       return !!newRoom;
@@ -219,8 +218,6 @@ export const roomRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const ably = new Ably.Realtime.Promise(env.ABLY_PRIVATE_KEY);
-
       const deletedRoom = await ctx.prisma.room.delete({
         where: {
           id: input.id,
@@ -233,14 +230,14 @@ export const roomRouter = createTRPCRouter({
         await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
         await publishToChannel(
-          ably,
+          ctx.ably,
           `${ctx.session.user.id}`,
           "ROOM_LIST_UPDATE",
           "DELETE"
         );
 
         await publishToChannel(
-          ably,
+          ctx.ably,
           `${deletedRoom.id}`,
           "ROOM_UPDATE",
           "DELETE"
