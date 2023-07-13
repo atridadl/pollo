@@ -4,7 +4,6 @@ import { publishToChannel } from "~/server/ably";
 import type { Room } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
-import { env } from "~/env.mjs";
 
 export const voteRouter = createTRPCRouter({
   countAll: protectedProcedure.query(async ({ ctx }) => {
