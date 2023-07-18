@@ -118,11 +118,10 @@ export const userRouter = createTRPCRouter({
       }
 
       if (!!user && user.name && user.email) {
-        await resend.sendEmail({
-          from: "no-reply@sprintpadawan.dev",
+        await resend.emails.send({
+          from: "Sprint Padawan <no-reply@sprintpadawan.dev>",
           to: user.email,
           subject: "Sorry to see you go... 😭",
-          //@ts-ignore: IDK why this doesn't work...
           react: Goodbye({ name: user.name }),
         });
 
