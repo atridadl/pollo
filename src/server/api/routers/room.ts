@@ -27,7 +27,7 @@ export const roomRouter = createTRPCRouter({
           await invalidateCache(`kv_roomcount_admin`);
           await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
-          publishToChannel(
+          await publishToChannel(
             `${ctx.session.user.id}`,
             "ROOM_LIST_UPDATE",
             "CREATE"
@@ -201,7 +201,7 @@ export const roomRouter = createTRPCRouter({
       });
 
       if (newRoom) {
-        publishToChannel(`${newRoom.id}`, "ROOM_UPDATE", "UPDATE");
+        await publishToChannel(`${newRoom.id}`, "ROOM_UPDATE", "UPDATE");
       }
 
       return !!newRoom;
@@ -222,13 +222,13 @@ export const roomRouter = createTRPCRouter({
         await invalidateCache(`kv_votecount_admin`);
         await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
-        publishToChannel(
+        await publishToChannel(
           `${ctx.session.user.id}`,
           "ROOM_LIST_UPDATE",
           "DELETE"
         );
 
-        publishToChannel(`${deletedRoom.id}`, "ROOM_UPDATE", "DELETE");
+        await publishToChannel(`${deletedRoom.id}`, "ROOM_UPDATE", "DELETE");
       }
 
       return !!deletedRoom;

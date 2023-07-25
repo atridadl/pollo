@@ -118,7 +118,7 @@ const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
   const { success } = await rateLimit.limit(
     `${env.APP_ENV}_${ctx.session.user.id}`
   );
-  console.log(success);
+
   if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
   return next({
