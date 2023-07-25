@@ -21,7 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
       );
     } else if (sessionStatus === "unauthenticated") {
       return (
-        <button className="btn btn-secondary" onClick={ () => void signIn() }>
+        <button className="btn btn-secondary" onClick={() => void signIn()}>
           Sign In
         </button>
       );
@@ -40,40 +40,40 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
             className="md:mr-2"
             src="/logo.webp"
             alt="Nav Logo"
-            width={ 32 }
-            height={ 32 }
+            width={32}
+            height={32}
             priority
           />
           <span className="hidden md:inline-flex">
-            { title }
-            { env.NEXT_PUBLIC_APP_ENV === "development" && " >> Staging" }
+            {title}
+            {env.NEXT_PUBLIC_APP_ENV === "development" && " >> Staging"}
           </span>
         </Link>
       </div>
 
-      { sessionStatus === "loading" ? (
+      {sessionStatus === "loading" ? (
         <div className="flex items-center justify-center">
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
         navigationMenu()
-      ) }
+      )}
 
-      { sessionData?.user.image && (
+      {sessionData?.user.image && (
         <div className="flex-none gap-2">
           <div className="dropdown dropdown-end">
-            <label tabIndex={ 0 } className="btn btn-ghost btn-circle avatar">
+            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <Image
-                  src={ sessionData.user.image }
+                  src={sessionData.user.image}
                   alt="Profile picture."
-                  height={ 32 }
-                  width={ 32 }
+                  height={32}
+                  width={32}
                 />
               </div>
             </label>
             <ul
-              tabIndex={ 0 }
+              tabIndex={0}
               className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box z-50"
             >
               <li>
@@ -85,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
                   Profile
                 </Link>
               </li>
-              { sessionData.user.role === "ADMIN" && (
+              {sessionData.user.role === "ADMIN" && (
                 <li>
                   <Link
                     about="Admin Page"
@@ -95,16 +95,17 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
                     Admin
                   </Link>
                 </li>
-              ) }
-              <li>
-                <a onClick={ () => void signOut({ callbackUrl: "/" }) }>
-                  Sign Out
-                </a>
-              </li>
+              )}
+              <button
+                className="btn btn-secondary btn-sm text-center whitespace-nowrap"
+                onClick={() => void signOut({ callbackUrl: "/" })}
+              >
+                Sign Out
+              </button>
             </ul>
           </div>
         </div>
-      ) }
+      )}
     </nav>
   );
 };

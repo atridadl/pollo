@@ -100,7 +100,7 @@ export const voteRouter = createTRPCRouter({
         await invalidateCache(`kv_votecount_admin`);
         await invalidateCache(`kv_votes_${input.roomId}`);
 
-        publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
+        await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
       }
 
       return !!vote;
