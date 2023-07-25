@@ -19,7 +19,6 @@ import { type Session } from "next-auth";
 
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
-import Ably from "ably";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -38,7 +37,6 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
-    ably: new Ably.Realtime.Promise(env.ABLY_PRIVATE_KEY),
     prisma,
   };
 };
@@ -108,33 +106,26 @@ const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  try {
-    const rateLimit = new Ratelimit({
-      redis: Redis.fromEnv(),
-      limiter: Ratelimit.slidingWindow(
-        Number(env.UPSTASH_RATELIMIT_REQUESTS),
-        `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
-      ),
-      analytics: true,
-    });
+  const rateLimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(
+      Number(env.UPSTASH_RATELIMIT_REQUESTS),
+      `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
+    ),
+    analytics: true,
+  });
 
-    const { success } = await rateLimit.limit(
-      `${env.APP_ENV}_${ctx.session.user.id}`
-    );
-    if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  const { success } = await rateLimit.limit(
+    `${env.APP_ENV}_${ctx.session.user.id}`
+  );
+  console.log(success);
+  if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-    return next({
-      ctx: {
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
-  } catch {
-    return next({
-      ctx: {
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
-  }
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
 });
 
 /**

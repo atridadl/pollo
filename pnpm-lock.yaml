@@ -39,8 +39,8 @@ dependencies:
     specifier: ^1.22.0
     version: 1.22.0
   ably:
-    specifier: ^1.2.41
-    version: 1.2.41
+    specifier: ^1.2.42
+    version: 1.2.42
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.14(postcss@8.4.27)
@@ -56,12 +56,12 @@ dependencies:
   postcss:
     specifier: ^8.4.27
     version: 8.4.27
-  preact:
-    specifier: ^10.16.0
-    version: 10.16.0
   react:
     specifier: 18.2.0
     version: 18.2.0
+  react-dom:
+    specifier: 18.2.0
+    version: 18.2.0(react@18.2.0)
   react-email:
     specifier: ^1.9.4
     version: 1.9.4
@@ -83,8 +83,8 @@ dependencies:
 
 devDependencies:
   '@types/eslint':
-    specifier: ^8.44.0
-    version: 8.44.0
+    specifier: ^8.44.1
+    version: 8.44.1
   '@types/json2csv':
     specifier: ^5.0.3
     version: 5.0.3
@@ -132,7 +132,7 @@ packages:
       react: '>=18.1.0'
       react-dom: '>=18.1.0'
     dependencies:
-      ably: 1.2.41
+      ably: 1.2.42
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
@@ -1087,8 +1087,8 @@ packages:
       '@types/responselike': 1.0.0
     dev: false
 
-  /@types/eslint@8.44.0:
-    resolution: {integrity: sha512-gsF+c/0XOguWgaOgvFs+xnnRqt9GwgTvIks36WpE6ueeI4KCEHHd8K/CKHqhOqrJKsYH8m27kRzQEvWXAwXUTw==}
+  /@types/eslint@8.44.1:
+    resolution: {integrity: sha512-XpNDc4Z5Tb4x+SW1MriMVeIsMoONHCkWFMkR/aPJbzEsxqHy+4Glu/BqTdPrApfDeMaXbtNh6bseNgl5KaWrSg==}
     dependencies:
       '@types/estree': 1.0.1
       '@types/json-schema': 7.0.12
@@ -1382,8 +1382,8 @@ packages:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
     dev: false
 
-  /ably@1.2.41:
-    resolution: {integrity: sha512-TE3PjtrclXFjfIALQhuTd1bEL7EAlS28AGFLaILeXmecXnBQE37WoC2EKZJIX7jRX31bwTHxUouje3WBEnhNKQ==}
+  /ably@1.2.42:
+    resolution: {integrity: sha512-dUnza7cERLWaDa/2pLVXtU2PJoU5k/t6g9sQZI1dgWC5Vok39nE6tf/xH2Rat7PJs7pXl9hLpkg1AhS4Xwd2/w==}
     engines: {node: '>=5.10.x'}
     dependencies:
       '@ably/msgpack-js': 0.4.0
@@ -1686,7 +1686,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001517
-      electron-to-chromium: 1.4.469
+      electron-to-chromium: 1.4.470
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.9)
     dev: false
@@ -2169,8 +2169,8 @@ packages:
       semver: 7.5.4
     dev: false
 
-  /electron-to-chromium@1.4.469:
-    resolution: {integrity: sha512-HRN9XQjElxJBrdDky5iiUUr3eDwXGTg6Cp4IV8MuNc8VqMkYSneSnIe6poFKx9PsNzkudCgaWCBVxwDqirwQWQ==}
+  /electron-to-chromium@1.4.470:
+    resolution: {integrity: sha512-zZM48Lmy2FKWgqyvsX9XK+J6FfP7aCDUFLmgooLJzA7v1agCs/sxSoBpTIwDLhmbhpx9yJIxj2INig/ncjJRqg==}
     dev: false
 
   /emoji-regex@9.2.2:
