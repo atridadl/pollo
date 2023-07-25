@@ -9,6 +9,8 @@ const server = z.object({
   UPSTASH_REDIS_REST_URL: z.string().url(),
   UPSTASH_REDIS_REST_TOKEN: z.string(),
   UPSTASH_REDIS_EXPIRY_SECONDS: z.string(),
+  UPSTASH_RATELIMIT_REQUESTS: z.string(),
+  UPSTASH_RATELIMIT_SECONDS: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
@@ -50,6 +52,8 @@ const processEnv = {
   UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
   UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
   UPSTASH_REDIS_EXPIRY_SECONDS: process.env.UPSTASH_REDIS_EXPIRY_SECONDS,
+  UPSTASH_RATELIMIT_REQUESTS: process.env.UPSTASH_RATELIMIT_REQUESTS,
+  UPSTASH_RATELIMIT_SECONDS: process.env.UPSTASH_RATELIMIT_SECONDS,
   NODE_ENV: process.env.NODE_ENV,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
