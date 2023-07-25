@@ -19,7 +19,6 @@ import { type Session } from "next-auth";
 
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
-import Ably from "ably";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -38,7 +37,6 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
-    ably: new Ably.Realtime.Promise(env.ABLY_PRIVATE_KEY),
     prisma,
   };
 };
@@ -66,8 +64,10 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
+import { Ratelimit } from "@upstash/ratelimit";
 import superjson from "superjson";
 import { env } from "~/env.mjs";
+import { Redis } from "@upstash/redis";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -105,6 +105,21 @@ const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
+  const rateLimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(
+      Number(env.UPSTASH_RATELIMIT_REQUESTS),
+      `${Number(env.UPSTASH_RATELIMIT_SECONDS)}s`
+    ),
+    analytics: true,
+  });
+
+  const { success } = await rateLimit.limit(
+    `${env.APP_ENV}_${ctx.session.user.id}`
+  );
+  console.log(success);
+  if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
   return next({
     ctx: {

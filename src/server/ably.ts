@@ -2,12 +2,16 @@ import Ably from "ably";
 import { env } from "~/env.mjs";
 import type { EventType } from "../utils/types";
 
-export const publishToChannel = async (
-  ablyInstance: Ably.Types.RealtimePromise,
+const ablyRest = new Ably.Rest(env.ABLY_PRIVATE_KEY);
+
+export const publishToChannel = (
   channel: string,
   event: EventType,
   message: string
 ) => {
-  const channelName = ablyInstance.channels.get(`${env.APP_ENV}-${channel}`);
-  await channelName.publish(event, message);
+  try {
+    ablyRest.channels.get(`${env.APP_ENV}-${channel}`).publish(event, message);
+  } catch (error) {
+    console.log(`❌❌❌ Failed to send message!`);
+  }
 };

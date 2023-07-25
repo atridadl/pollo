@@ -21,7 +21,7 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
-export const Goodbye: React.FC<Readonly<GoodbyeTemplateProps>> = ({ name }) => (
+export const Goodbye = ({ name }: GoodbyeTemplateProps) => (
   <Html>
     <Head />
     <Preview>Sorry to see you go... 😭</Preview>
@@ -30,15 +30,15 @@ export const Goodbye: React.FC<Readonly<GoodbyeTemplateProps>> = ({ name }) => (
         <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
           <Section className="mt-[32px]">
             <Img
-              src={ `${baseUrl}/logo.webp` }
+              src={`${baseUrl}/logo.webp`}
               width="40"
               height="37"
-              alt={ `Sprint Padawan Logo` }
+              alt={`Sprint Padawan Logo`}
               className="my-0 mx-auto"
             />
           </Section>
-          <Heading className="text-4xl">Farewell, { name }...</Heading>
-          <Text>{ "Were sorry to see you go." }</Text>
+          <Heading className="text-4xl">Farewell, {name}...</Heading>
+          <Text>{"Were sorry to see you go."}</Text>
           <Text>
             Your data has been deleted, including all room history, user data,
             votes, etc.
