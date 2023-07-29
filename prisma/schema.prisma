@@ -1,6 +1,7 @@
 enum RoleValue {
     USER
     ADMIN
+    MATT
 }
 
 generator client {

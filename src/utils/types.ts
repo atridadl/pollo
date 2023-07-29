@@ -10,6 +10,7 @@ export type EventType = BetterEnum<typeof EventTypes>;
 const RoleValues = {
   ADMIN: "ADMIN",
   USER: "USER",
+  MATT: "MATT",
 } as const;
 export type Role = BetterEnum<typeof RoleValues>;
 

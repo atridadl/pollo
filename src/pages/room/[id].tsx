@@ -15,6 +15,7 @@ import {
   IoReloadOutline,
   IoSaveOutline,
 } from "react-icons/io5";
+import { GiStarFormation } from "react-icons/gi";
 import { z } from "zod";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../../server/auth";
@@ -308,6 +309,14 @@ const RoomBody: React.FC = ({}) => {
                                 data-tip="Admin"
                               >
                                 <FaShieldAlt className="inline-block text-primary" />
+                              </div>
+                            )}{" "}
+                            {presenceItem.data.role === "MATT" && (
+                              <div
+                                className="tooltip tooltip-secondary"
+                                data-tip="Matt"
+                              >
+                                <GiStarFormation className="inline-block text-secondary" />
                               </div>
                             )}{" "}
                             {presenceItem.clientId === roomFromDb.userId && (
