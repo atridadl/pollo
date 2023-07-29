@@ -153,7 +153,11 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         userId: z.string(),
-        role: z.union([z.literal("ADMIN"), z.literal("USER")]),
+        role: z.union([
+          z.literal("ADMIN"),
+          z.literal("USER"),
+          z.literal("VIP"),
+        ]),
       })
     )
     .mutation(async ({ ctx, input }) => {
