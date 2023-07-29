@@ -311,10 +311,10 @@ const RoomBody: React.FC = ({}) => {
                                 <FaShieldAlt className="inline-block text-primary" />
                               </div>
                             )}{" "}
-                            {presenceItem.data.role === "MATT" && (
+                            {presenceItem.data.role === "VIP" && (
                               <div
                                 className="tooltip tooltip-secondary"
-                                data-tip="Matt"
+                                data-tip="VIP"
                               >
                                 <GiStarFormation className="inline-block text-secondary" />
                               </div>
