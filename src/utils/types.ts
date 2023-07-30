@@ -7,15 +7,10 @@ const EventTypes = {
 } as const;
 export type EventType = BetterEnum<typeof EventTypes>;
 
-const RoleValues = {
-  ADMIN: "ADMIN",
-  USER: "USER",
-} as const;
-export type Role = BetterEnum<typeof RoleValues>;
-
 export interface PresenceItem {
   name: string;
   image: string;
   client_id: string;
-  role: Role;
+  isAdmin: boolean;
+  isVIP: boolean;
 }

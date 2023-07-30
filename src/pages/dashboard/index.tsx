@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaShieldAlt } from "react-icons/fa";
 import { getServerAuthSession } from "~/server/auth";
+import { GiStarFormation } from "react-icons/gi";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -57,20 +58,23 @@ const HomePageBody: React.FC = () => {
   return (
     <>
       <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold mx-auto">
-        Hi, { sessionData?.user.name }!{ " " }
-        { sessionData?.user.role === "ADMIN" && (
+        Hi, {sessionData?.user.name}!{" "}
+        {sessionData?.user.isAdmin && (
           <FaShieldAlt className="inline-block text-primary" />
-        ) }
+        )}
+        {sessionData?.user.isVIP && (
+          <GiStarFormation className="inline-block text-secondary" />
+        )}
       </h1>
       <div className="tabs tabs-boxed border-2 border-cyan-500 mb-4">
         <a
           className={
             tabIndex === 0 ? "tab no-underline tab-active" : "tab no-underline"
           }
-          onClick={ () => {
+          onClick={() => {
             setTabIndex(0);
             localStorage.setItem("dashboardTabIndex", "0");
-          } }
+          }}
         >
           Join a Room
         </a>
@@ -78,36 +82,36 @@ const HomePageBody: React.FC = () => {
           className={
             tabIndex === 1 ? "tab no-underline tab-active" : "tab no-underline"
           }
-          onClick={ () => {
+          onClick={() => {
             setTabIndex(1);
             localStorage.setItem("dashboardTabIndex", "1");
-          } }
+          }}
         >
           Room List
         </a>
       </div>
 
-      { tabIndex === 0 && (
+      {tabIndex === 0 && (
         <>
           <input
             type="text"
             placeholder="Enter Room ID"
             className="input input-bordered input-primary mb-4"
-            onChange={ (event) => {
+            onChange={(event) => {
               console.log(event.target.value);
               setJoinRoomTextBox(event.target.value);
-            } }
+            }}
           />
           <Link
-            href={ joinRoomTextBox.length > 0 ? `/room/${joinRoomTextBox}` : "/" }
+            href={joinRoomTextBox.length > 0 ? `/room/${joinRoomTextBox}` : "/"}
             className="btn btn-secondary"
           >
             Join Room
           </Link>
         </>
-      ) }
+      )}
 
-      { tabIndex === 1 && <RoomList /> }
+      {tabIndex === 1 && <RoomList />}
     </>
   );
 };

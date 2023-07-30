@@ -4,7 +4,6 @@ import { z } from "zod";
 import { Goodbye } from "~/components/templates/Goodbye";
 import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import type { Role } from "~/utils/types";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
@@ -54,7 +53,8 @@ export const userRouter = createTRPCRouter({
         }[];
         id: string;
         createdAt: Date;
-        role: Role;
+        isAdmin: boolean;
+        isVIP: boolean;
         name: string | null;
         email: string | null;
       }[]
@@ -72,7 +72,8 @@ export const userRouter = createTRPCRouter({
         select: {
           id: true,
           name: true,
-          role: true,
+          isAdmin: true,
+          isVIP: true,
           createdAt: true,
           email: true,
           sessions: {
@@ -103,7 +104,7 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       let user: User;
-      if (input?.userId && ctx.session.user.role === "ADMIN") {
+      if (input?.userId && ctx.session.user.isAdmin) {
         user = await ctx.prisma.user.delete({
           where: {
             id: input.userId,
@@ -149,11 +150,11 @@ export const userRouter = createTRPCRouter({
 
       return !!user;
     }),
-  setRole: protectedProcedure
+  setAdmin: protectedProcedure
     .input(
       z.object({
         userId: z.string(),
-        role: z.union([z.literal("ADMIN"), z.literal("USER")]),
+        value: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -162,7 +163,29 @@ export const userRouter = createTRPCRouter({
           id: input.userId,
         },
         data: {
-          role: input.role,
+          isAdmin: input.value,
+        },
+      });
+
+      await invalidateCache(`kv_userlist_admin`);
+
+      return !!user;
+    }),
+
+  setVIP: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        value: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: input.userId,
+        },
+        data: {
+          isVIP: input.value,
         },
       });
 

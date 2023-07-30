@@ -5,8 +5,8 @@ import { AiOutlineClear } from "react-icons/ai";
 import { FaShieldAlt } from "react-icons/fa";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { SiGithub, SiGoogle } from "react-icons/si";
+import { GiStarFormation } from "react-icons/gi";
 import { api } from "~/utils/api";
-import type { Role } from "~/utils/types";
 import { getServerAuthSession } from "../../server/auth";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  if (session.user.role !== "ADMIN") {
+  if (!session.user.isAdmin) {
     ctx.res.statusCode = 403;
     return {
       redirect: {
@@ -90,7 +90,8 @@ const AdminBody: React.FC = () => {
       id: string;
     }[];
     id: string;
-    role: Role;
+    isAdmin: boolean;
+    isVIP: boolean;
     name: string | null;
     email: string | null;
   }) => {
@@ -119,7 +120,13 @@ const AdminBody: React.FC = () => {
     },
   });
 
-  const setRoleMutation = api.user.setRole.useMutation({
+  const setAdminMutation = api.user.setAdmin.useMutation({
+    onSuccess: async () => {
+      await refetchData();
+    },
+  });
+
+  const setVIPMutation = api.user.setVIP.useMutation({
     onSuccess: async () => {
       await refetchData();
     },
@@ -137,8 +144,12 @@ const AdminBody: React.FC = () => {
     await clearSessionsMutation.mutateAsync();
   };
 
-  const setUserRoleHandler = async (userId: string, role: Role) => {
-    await setRoleMutation.mutateAsync({ userId, role });
+  const setAdmin = async (userId: string, value: boolean) => {
+    await setAdminMutation.mutateAsync({ userId, value });
+  };
+
+  const setVIP = async (userId: string, value: boolean) => {
+    await setVIPMutation.mutateAsync({ userId, value });
   };
 
   const refetchData = async () => {
@@ -158,70 +169,70 @@ const AdminBody: React.FC = () => {
         <div className="stat">
           <div className="stat-title">Users</div>
           <div className="stat-value">
-            { usersCountLoading || usersCountFetching ? (
+            {usersCountLoading || usersCountFetching ? (
               <span className="loading loading-dots loading-lg"></span>
             ) : (
-              <>{ usersCount ? usersCount : "0" }</>
-            ) }
+              <>{usersCount ? usersCount : "0"}</>
+            )}
           </div>
         </div>
 
         <div className="stat">
           <div className="stat-title">Rooms</div>
           <div className="stat-value">
-            { roomsCountLoading || roomsCountFetching ? (
+            {roomsCountLoading || roomsCountFetching ? (
               <span className="loading loading-dots loading-lg"></span>
             ) : (
-              <>{ roomsCount ? roomsCount : "0" }</>
-            ) }
+              <>{roomsCount ? roomsCount : "0"}</>
+            )}
           </div>
         </div>
 
         <div className="stat">
           <div className="stat-title">Votes</div>
           <div className="stat-value">
-            { votesCountLoading || votesCountFetching ? (
+            {votesCountLoading || votesCountFetching ? (
               <span className="loading loading-dots loading-lg"></span>
             ) : (
-              <>{ votesCount ? votesCount : "0" }</>
-            ) }
+              <>{votesCount ? votesCount : "0"}</>
+            )}
           </div>
         </div>
       </div>
 
-      { usersCountFetching ||
-        usersFetching ||
-        roomsCountFetching ||
-        votesCountFetching ? (
+      {usersCountFetching ||
+      usersFetching ||
+      roomsCountFetching ||
+      votesCountFetching ? (
         <span className="loading loading-dots loading-lg"></span>
       ) : (
         <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">
           <button
             className="btn btn-primary m-2"
-            onClick={ () => void clearSessionsHandler() }
+            onClick={() => void clearSessionsHandler()}
           >
             Delete All Sessions
           </button>
 
           <button
             className="btn btn-primary"
-            onClick={ () => void refetchData() }
+            onClick={() => void refetchData()}
           >
             Re-fetch
           </button>
         </div>
-      ) }
+      )}
 
       <div className="card max-w-[80vw] bg-neutral shadow-xl m-4">
         <div className="card-body">
           <h2 className="card-title">Users:</h2>
 
-          { usersLoading || usersFetching ? (
+          {usersLoading || usersFetching ? (
             <span className="loading loading-dots loading-lg"></span>
           ) : (
             <div className="overflow-x-scroll">
               <table className="table text-center">
-                {/* head */ }
+                {/* head */}
                 <thead>
                   <tr className="border-white">
                     <th>ID</th>
@@ -233,55 +244,64 @@ const AdminBody: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="">
-                  { users
+                  {users
                     ?.sort((user1, user2) =>
                       user2.createdAt > user1.createdAt ? 1 : -1
                     )
                     .map((user) => {
                       return (
-                        <tr key={ user.id } className="hover">
+                        <tr key={user.id} className="hover">
                           <td className="max-w-[100px] break-words">
-                            { user.id }
+                            {user.id}
                           </td>
 
                           <td className="max-w-[100px] break-normal">
-                            { user.name }
+                            {user.name}
                           </td>
                           <td className="max-w-[100px] break-normal">
-                            { user.createdAt.toLocaleDateString() }
+                            {user.createdAt.toLocaleDateString()}
                           </td>
                           <td className="max-w-[100px] break-normal">
-                            { user.sessions.length }
+                            {user.sessions.length}
                           </td>
                           <td className="max-w-[100px] break-normal">
-                            { getProviders(user).includes("google") && (
+                            {getProviders(user).includes("google") && (
                               <SiGoogle className="text-xl m-1 inline-block hover:text-secondary" />
-                            ) }
-                            { getProviders(user).includes("github") && (
+                            )}
+                            {getProviders(user).includes("github") && (
                               <SiGithub className="text-xl m-1 inline-block hover:text-secondary" />
-                            ) }
+                            )}
                           </td>
                           <td>
                             <button className="m-2">
-                              { user.role === "ADMIN" ? (
+                              {user.isAdmin ? (
                                 <FaShieldAlt
                                   className="text-xl inline-block text-primary"
-                                  onClick={ () =>
-                                    void setUserRoleHandler(user.id, "USER")
-                                  }
+                                  onClick={() => void setAdmin(user.id, false)}
                                 />
                               ) : (
                                 <FaShieldAlt
                                   className="text-xl inline-block"
-                                  onClick={ () =>
-                                    void setUserRoleHandler(user.id, "ADMIN")
-                                  }
+                                  onClick={() => void setAdmin(user.id, true)}
                                 />
-                              ) }
+                              )}
+                            </button>
+                            <button className="m-2">
+                              {user.isVIP ? (
+                                <GiStarFormation
+                                  className="text-xl inline-block text-secondary"
+                                  onClick={() => void setVIP(user.id, false)}
+                                />
+                              ) : (
+                                <GiStarFormation
+                                  className="text-xl inline-block"
+                                  onClick={() => void setVIP(user.id, true)}
+                                />
+                              )}
                             </button>
                             <button
                               className="m-2"
-                              onClick={ () =>
+                              onClick={() =>
                                 void clearSessionsByUserHandler(user.id)
                               }
                             >
@@ -289,18 +309,18 @@ const AdminBody: React.FC = () => {
                             </button>
                             <button
                               className="m-2"
-                              onClick={ () => void deleteUserHandler(user.id) }
+                              onClick={() => void deleteUserHandler(user.id)}
                             >
                               <IoTrashBinOutline className="text-xl inline-block hover:text-error" />
                             </button>
                           </td>
                         </tr>
                       );
-                    }) }
+                    })}
                 </tbody>
               </table>
             </div>
-          ) }
+          )}
         </div>
       </div>
     </>
