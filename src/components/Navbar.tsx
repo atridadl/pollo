@@ -85,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
                   Profile
                 </Link>
               </li>
-              {sessionData.user.role === "ADMIN" && (
+              {sessionData.user.isAdmin && (
                 <li>
                   <Link
                     about="Admin Page"
