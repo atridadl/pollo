@@ -110,7 +110,8 @@ const RoomBody: React.FC = ({}) => {
       name: sessionData?.user.name || "",
       image: sessionData?.user.image || "",
       client_id: sessionData?.user.id || "",
-      role: sessionData?.user.role || "USER",
+      isAdmin: sessionData?.user.isAdmin || false,
+      isVIP: sessionData?.user.isVIP || false,
     }
   );
 
@@ -303,7 +304,7 @@ const RoomBody: React.FC = ({}) => {
 
                           <p className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md mx-auto">
                             {presenceItem.data.name}{" "}
-                            {presenceItem.data.role === "ADMIN" && (
+                            {presenceItem.data.isAdmin && (
                               <div
                                 className="tooltip tooltip-primary"
                                 data-tip="Admin"
@@ -311,7 +312,7 @@ const RoomBody: React.FC = ({}) => {
                                 <FaShieldAlt className="inline-block text-primary" />
                               </div>
                             )}{" "}
-                            {presenceItem.data.role === "VIP" && (
+                            {presenceItem.data.isVIP && (
                               <div
                                 className="tooltip tooltip-secondary"
                                 data-tip="VIP"
