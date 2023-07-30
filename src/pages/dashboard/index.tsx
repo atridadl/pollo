@@ -59,10 +59,10 @@ const HomePageBody: React.FC = () => {
     <>
       <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold mx-auto">
         Hi, {sessionData?.user.name}!{" "}
-        {sessionData?.user.role === "ADMIN" && (
+        {sessionData?.user.isAdmin && (
           <FaShieldAlt className="inline-block text-primary" />
         )}
-        {sessionData?.user.role === "VIP" && (
+        {sessionData?.user.isVIP && (
           <GiStarFormation className="inline-block text-secondary" />
         )}
       </h1>

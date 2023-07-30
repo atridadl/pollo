@@ -7,7 +7,6 @@ import { IoTrashBinOutline } from "react-icons/io5";
 import { SiGithub, SiGoogle } from "react-icons/si";
 import { GiStarFormation } from "react-icons/gi";
 import { api } from "~/utils/api";
-import type { Role } from "~/utils/types";
 import { getServerAuthSession } from "../../server/auth";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -23,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  if (session.user.role !== "ADMIN") {
+  if (!session.user.isAdmin) {
     ctx.res.statusCode = 403;
     return {
       redirect: {
@@ -91,7 +90,8 @@ const AdminBody: React.FC = () => {
       id: string;
     }[];
     id: string;
-    role: Role;
+    isAdmin: boolean;
+    isVIP: boolean;
     name: string | null;
     email: string | null;
   }) => {
@@ -120,7 +120,13 @@ const AdminBody: React.FC = () => {
     },
   });
 
-  const setRoleMutation = api.user.setRole.useMutation({
+  const setAdminMutation = api.user.setAdmin.useMutation({
+    onSuccess: async () => {
+      await refetchData();
+    },
+  });
+
+  const setVIPMutation = api.user.setVIP.useMutation({
     onSuccess: async () => {
       await refetchData();
     },
@@ -138,8 +144,12 @@ const AdminBody: React.FC = () => {
     await clearSessionsMutation.mutateAsync();
   };
 
-  const setUserRoleHandler = async (userId: string, role: Role) => {
-    await setRoleMutation.mutateAsync({ userId, role });
+  const setAdmin = async (userId: string, value: boolean) => {
+    await setAdminMutation.mutateAsync({ userId, value });
+  };
+
+  const setVIP = async (userId: string, value: boolean) => {
+    await setVIPMutation.mutateAsync({ userId, value });
   };
 
   const refetchData = async () => {
@@ -264,36 +274,28 @@ const AdminBody: React.FC = () => {
                           </td>
                           <td>
                             <button className="m-2">
-                              {user.role === "ADMIN" ? (
+                              {user.isAdmin ? (
                                 <FaShieldAlt
                                   className="text-xl inline-block text-primary"
-                                  onClick={() =>
-                                    void setUserRoleHandler(user.id, "USER")
-                                  }
+                                  onClick={() => void setAdmin(user.id, false)}
                                 />
                               ) : (
                                 <FaShieldAlt
                                   className="text-xl inline-block"
-                                  onClick={() =>
-                                    void setUserRoleHandler(user.id, "ADMIN")
-                                  }
+                                  onClick={() => void setAdmin(user.id, true)}
                                 />
                               )}
                             </button>
                             <button className="m-2">
-                              {user.role === "VIP" ? (
+                              {user.isVIP ? (
                                 <GiStarFormation
                                   className="text-xl inline-block text-secondary"
-                                  onClick={() =>
-                                    void setUserRoleHandler(user.id, "USER")
-                                  }
+                                  onClick={() => void setVIP(user.id, false)}
                                 />
                               ) : (
                                 <GiStarFormation
                                   className="text-xl inline-block"
-                                  onClick={() =>
-                                    void setUserRoleHandler(user.id, "VIP")
-                                  }
+                                  onClick={() => void setVIP(user.id, true)}
                                 />
                               )}
                             </button>
