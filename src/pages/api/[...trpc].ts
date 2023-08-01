@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { createOpenApiNextHandler } from "trpc-openapi";
 import cors from "nextjs-cors";
 
@@ -7,7 +7,7 @@ import { createTRPCContext } from "~/server/api/trpc";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Setup CORS
-  cors(req, res);
+  await cors(req, res);
 
   // Handle incoming OpenAPI requests
   return createOpenApiNextHandler({
