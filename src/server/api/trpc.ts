@@ -67,7 +67,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import { OpenApiMeta } from "trpc-openapi";
+import type { OpenApiMeta } from "trpc-openapi";
 import { Ratelimit } from "@upstash/ratelimit";
 import superjson from "superjson";
 import { env } from "~/env.mjs";
