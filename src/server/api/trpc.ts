@@ -22,6 +22,7 @@ import { prisma } from "~/server/db";
 
 type CreateContextOptions = {
   session: Session | null;
+  ip: string | undefined;
 };
 
 /**
@@ -37,6 +38,7 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
+    ip: opts.ip,
     prisma,
   };
 };
@@ -54,6 +56,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const session = await getServerAuthSession({ req, res });
 
   return createInnerTRPCContext({
+    ip: req.socket.remoteAddress,
     session,
   });
 };
@@ -64,17 +67,21 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * This is where the tRPC API is initialized, connecting the context and transformer.
  */
 import { initTRPC, TRPCError } from "@trpc/server";
+import { OpenApiMeta } from "trpc-openapi";
 import { Ratelimit } from "@upstash/ratelimit";
 import superjson from "superjson";
 import { env } from "~/env.mjs";
 import { Redis } from "@upstash/redis";
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape }) {
-    return shape;
-  },
-});
+const t = initTRPC
+  .meta<OpenApiMeta>()
+  .context<typeof createTRPCContext>()
+  .create({
+    transformer: superjson,
+    errorFormatter({ shape }) {
+      return shape;
+    },
+  });
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -100,12 +107,20 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   // Auth
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+const enforceRateLimit = t.middleware(async ({ ctx, next }) => {
   const rateLimit = new Ratelimit({
     redis: Redis.fromEnv(),
     limiter: Ratelimit.slidingWindow(
@@ -114,12 +129,20 @@ const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
     ),
     analytics: true,
   });
-
+  console.log(`${env.APP_ENV}_${ctx.session?.user.id || ctx.ip}`);
+  console.log(ctx.ip);
   const { success } = await rateLimit.limit(
-    `${env.APP_ENV}_${ctx.session.user.id}`
+    `${env.APP_ENV}_${ctx.session?.user.id || ctx.ip}`
   );
 
   if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+  return next();
+});
+
+const enforceAdminRole = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user || !ctx.session?.user.isAdmin)
+    throw new TRPCError({ code: "UNAUTHORIZED" });
 
   return next({
     ctx: {
@@ -136,4 +159,13 @@ const enforceRouteProtection = t.middleware(async ({ ctx, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceRouteProtection);
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const protectedRateLimitedProcedure =
+  protectedProcedure.use(enforceRateLimit);
+
+export const publicRateLimitedProcedure = publicProcedure.use(enforceRateLimit);
+
+export const adminProcedure = t.procedure.use(enforceAdminRole);
+
+export const adminRateLimitedProcedure = adminProcedure.use(enforceAdminRole);

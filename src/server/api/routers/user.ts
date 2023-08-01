@@ -3,14 +3,19 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { Goodbye } from "~/components/templates/Goodbye";
 import { env } from "~/env.mjs";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  adminRateLimitedProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+  protectedRateLimitedProcedure,
+} from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const userRouter = createTRPCRouter({
-  countAll: protectedProcedure.query(async ({ ctx }) => {
+  countAll: adminRateLimitedProcedure.query(async ({ ctx }) => {
     const cachedResult = await fetchCache<number>(`kv_usercount_admin`);
 
     if (cachedResult) {
@@ -24,7 +29,7 @@ export const userRouter = createTRPCRouter({
     }
   }),
 
-  getProviders: protectedProcedure.query(async ({ ctx }) => {
+  getProviders: protectedRateLimitedProcedure.query(async ({ ctx }) => {
     const providers = await ctx.prisma.user.findUnique({
       where: {
         id: ctx.session.user.id,
@@ -42,7 +47,7 @@ export const userRouter = createTRPCRouter({
       return account.provider;
     });
   }),
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  getAll: protectedRateLimitedProcedure.query(async ({ ctx }) => {
     const cachedResult = await fetchCache<
       {
         accounts: {
@@ -94,7 +99,7 @@ export const userRouter = createTRPCRouter({
       return users;
     }
   }),
-  delete: protectedProcedure
+  delete: protectedRateLimitedProcedure
     .input(
       z
         .object({
@@ -132,7 +137,7 @@ export const userRouter = createTRPCRouter({
 
       return !!user;
     }),
-  save: protectedProcedure
+  save: protectedRateLimitedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -150,7 +155,7 @@ export const userRouter = createTRPCRouter({
 
       return !!user;
     }),
-  setAdmin: protectedProcedure
+  setAdmin: adminRateLimitedProcedure
     .input(
       z.object({
         userId: z.string(),
@@ -172,7 +177,7 @@ export const userRouter = createTRPCRouter({
       return !!user;
     }),
 
-  setVIP: protectedProcedure
+  setVIP: adminRateLimitedProcedure
     .input(
       z.object({
         userId: z.string(),
