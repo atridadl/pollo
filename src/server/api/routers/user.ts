@@ -6,7 +6,6 @@ import { env } from "~/env.mjs";
 import {
   adminRateLimitedProcedure,
   createTRPCRouter,
-  protectedProcedure,
   protectedRateLimitedProcedure,
 } from "~/server/api/trpc";
 

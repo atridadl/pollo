@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  adminRateLimitedProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { adminRateLimitedProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { invalidateCache } from "~/server/redis";
 
 export const sessionRouter = createTRPCRouter({
