@@ -3,7 +3,6 @@ import { publishToChannel } from "~/server/ably";
 import {
   adminRateLimitedProcedure,
   createTRPCRouter,
-  protectedProcedure,
   protectedRateLimitedProcedure,
 } from "~/server/api/trpc";
 
