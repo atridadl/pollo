@@ -3,14 +3,14 @@ import { publishToChannel } from "~/server/ably";
 
 import type { Room } from "@prisma/client";
 import {
-  adminRateLimitedProcedure,
+  adminProcedure,
   createTRPCRouter,
-  protectedRateLimitedProcedure,
+  protectedProcedure,
 } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const voteRouter = createTRPCRouter({
-  countAll: adminRateLimitedProcedure
+  countAll: adminProcedure
     .input(z.void())
     .output(z.number())
     .meta({ openapi: { method: "GET", path: "/votes/count" } })
@@ -27,7 +27,7 @@ export const voteRouter = createTRPCRouter({
         return votesCount;
       }
     }),
-  getAllByRoomId: protectedRateLimitedProcedure
+  getAllByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
       const cachedResult = await fetchCache<
@@ -71,7 +71,7 @@ export const voteRouter = createTRPCRouter({
         return votesByRoomId;
       }
     }),
-  set: protectedRateLimitedProcedure
+  set: protectedProcedure
     .input(z.object({ value: z.string(), roomId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const vote = await ctx.prisma.vote.upsert({
