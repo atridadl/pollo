@@ -113,14 +113,6 @@ const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  return next({
-    ctx: {
-      session: { ...ctx.session, user: ctx.session.user },
-    },
-  });
-});
-
-const enforceRateLimit = t.middleware(async ({ ctx, next }) => {
   const rateLimit = new Ratelimit({
     redis: Redis.fromEnv(),
     limiter: Ratelimit.slidingWindow(
@@ -129,15 +121,18 @@ const enforceRateLimit = t.middleware(async ({ ctx, next }) => {
     ),
     analytics: true,
   });
-  console.log(`${env.APP_ENV}_${ctx.session?.user.id || ctx.ip}`);
-  console.log(ctx.ip);
+
   const { success } = await rateLimit.limit(
-    `${env.APP_ENV}_${ctx.session?.user.id || ctx.ip}`
+    `${env.APP_ENV}_${ctx.session?.user.id}`
   );
 
   if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-  return next();
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
 });
 
 const enforceAdminRole = t.middleware(async ({ ctx, next }) => {
@@ -161,11 +156,4 @@ const enforceAdminRole = t.middleware(async ({ ctx, next }) => {
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
 
-export const protectedRateLimitedProcedure =
-  protectedProcedure.use(enforceRateLimit);
-
-export const publicRateLimitedProcedure = publicProcedure.use(enforceRateLimit);
-
 export const adminProcedure = t.procedure.use(enforceAdminRole);
-
-export const adminRateLimitedProcedure = adminProcedure.use(enforceAdminRole);
