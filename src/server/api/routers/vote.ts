@@ -2,24 +2,32 @@ import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
 import type { Room } from "@prisma/client";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  adminRateLimitedProcedure,
+  createTRPCRouter,
+  protectedRateLimitedProcedure,
+} from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const voteRouter = createTRPCRouter({
-  countAll: protectedProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
+  countAll: adminRateLimitedProcedure
+    .input(z.void())
+    .output(z.number())
+    .meta({ openapi: { method: "GET", path: "/votes/count" } })
+    .query(async ({ ctx }) => {
+      const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
 
-    if (cachedResult) {
-      return cachedResult;
-    } else {
-      const votesCount = await ctx.prisma.vote.count();
+      if (cachedResult) {
+        return cachedResult;
+      } else {
+        const votesCount = await ctx.prisma.vote.count();
 
-      await setCache(`kv_votecount_admin`, votesCount);
+        await setCache(`kv_votecount_admin`, votesCount);
 
-      return votesCount;
-    }
-  }),
-  getAllByRoomId: protectedProcedure
+        return votesCount;
+      }
+    }),
+  getAllByRoomId: protectedRateLimitedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
       const cachedResult = await fetchCache<
@@ -63,7 +71,7 @@ export const voteRouter = createTRPCRouter({
         return votesByRoomId;
       }
     }),
-  set: protectedProcedure
+  set: protectedRateLimitedProcedure
     .input(z.object({ value: z.string(), roomId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const vote = await ctx.prisma.vote.upsert({

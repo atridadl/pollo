@@ -1,12 +1,17 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  adminRateLimitedProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+  protectedRateLimitedProcedure,
+} from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const roomRouter = createTRPCRouter({
   // Create
-  create: protectedProcedure
+  create: protectedRateLimitedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -42,7 +47,7 @@ export const roomRouter = createTRPCRouter({
     }),
 
   // Get One
-  get: protectedProcedure
+  get: protectedRateLimitedProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       return ctx.prisma.room.findUnique({
@@ -63,7 +68,7 @@ export const roomRouter = createTRPCRouter({
     }),
 
   // Get All
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  getAll: protectedRateLimitedProcedure.query(async ({ ctx }) => {
     const cachedResult = await fetchCache<
       {
         id: string;
@@ -92,7 +97,7 @@ export const roomRouter = createTRPCRouter({
     }
   }),
 
-  countAll: protectedProcedure.query(async ({ ctx }) => {
+  countAll: adminRateLimitedProcedure.query(async ({ ctx }) => {
     const cachedResult = await fetchCache<number>(`kv_roomcount_admin`);
 
     if (cachedResult) {
@@ -107,7 +112,7 @@ export const roomRouter = createTRPCRouter({
   }),
 
   // Update One
-  set: protectedProcedure
+  set: protectedRateLimitedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -208,7 +213,7 @@ export const roomRouter = createTRPCRouter({
     }),
 
   // Delete One
-  delete: protectedProcedure
+  delete: protectedRateLimitedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const deletedRoom = await ctx.prisma.room.delete({
