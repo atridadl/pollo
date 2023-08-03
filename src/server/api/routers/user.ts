@@ -3,14 +3,18 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { Goodbye } from "~/components/templates/Goodbye";
 import { env } from "~/env.mjs";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const userRouter = createTRPCRouter({
-  countAll: protectedProcedure.query(async ({ ctx }) => {
+  countAll: adminProcedure.query(async ({ ctx }) => {
     const cachedResult = await fetchCache<number>(`kv_usercount_admin`);
 
     if (cachedResult) {
@@ -150,7 +154,7 @@ export const userRouter = createTRPCRouter({
 
       return !!user;
     }),
-  setAdmin: protectedProcedure
+  setAdmin: adminProcedure
     .input(
       z.object({
         userId: z.string(),
@@ -172,7 +176,7 @@ export const userRouter = createTRPCRouter({
       return !!user;
     }),
 
-  setVIP: protectedProcedure
+  setVIP: adminProcedure
     .input(
       z.object({
         userId: z.string(),

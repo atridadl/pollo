@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  adminProcedure,
+} from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
@@ -92,7 +96,7 @@ export const roomRouter = createTRPCRouter({
     }
   }),
 
-  countAll: protectedProcedure.query(async ({ ctx }) => {
+  countAll: adminProcedure.query(async ({ ctx }) => {
     const cachedResult = await fetchCache<number>(`kv_roomcount_admin`);
 
     if (cachedResult) {
