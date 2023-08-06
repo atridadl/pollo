@@ -107,7 +107,7 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+const enforceAuthSession = t.middleware(async ({ ctx, next }) => {
   // Auth
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -146,6 +146,20 @@ const enforceAdminRole = t.middleware(async ({ ctx, next }) => {
   });
 });
 
+// const enforceApiToken = t.middleware(async ({ ctx, next, path }) => {
+//   const res = await unkey.keys.verify({
+//     key: ""
+//   })
+//   if (!ctx.session || !ctx.session.user || !ctx.session?.user.isAdmin)
+//     throw new TRPCError({ code: "UNAUTHORIZED" });
+
+//   return next({
+//     ctx: {
+//       session: { ...ctx.session, user: ctx.session.user },
+//     },
+//   });
+// });
+
 /**
  * Protected (authenticated) procedure
  *
@@ -154,6 +168,6 @@ const enforceAdminRole = t.middleware(async ({ ctx, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const protectedProcedure = t.procedure.use(enforceAuthSession);
 
 export const adminProcedure = t.procedure.use(enforceAdminRole);
