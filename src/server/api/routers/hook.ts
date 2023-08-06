@@ -6,7 +6,7 @@ import { TRPCError } from "@trpc/server";
 
 export const hookRouter = createTRPCRouter({
   dbWarmer: publicProcedure
-    .meta({ openapi: { method: "POST", path: "/rest/test" } })
+    .meta({ openapi: { method: "POST", path: "/rest/dbwarmer" } })
     .input(z.object({ key: z.string() }))
     .output(z.string())
     .query(async ({ ctx, input }) => {
