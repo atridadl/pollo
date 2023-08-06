@@ -30,6 +30,7 @@ const server = z.object({
   ABLY_PRIVATE_KEY: z.string(),
   APP_ENV: z.string(),
   RESEND_API_KEY: z.string(),
+  UNKEY_ROOT_KEY: z.string(),
 });
 
 /**
@@ -66,6 +67,7 @@ const processEnv = {
   APP_ENV: process.env.APP_ENV,
   NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
+  UNKEY_ROOT_KEY: process.env.UNKEY_ROOT_KEY,
 };
 
 // Don't touch the part below

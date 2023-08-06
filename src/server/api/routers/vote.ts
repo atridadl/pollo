@@ -10,23 +10,19 @@ import {
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 
 export const voteRouter = createTRPCRouter({
-  countAll: adminProcedure
-    .input(z.void())
-    .output(z.number())
-    .meta({ openapi: { method: "GET", path: "/votes/count" } })
-    .query(async ({ ctx }) => {
-      const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
+  countAll: adminProcedure.query(async ({ ctx }) => {
+    const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
 
-      if (cachedResult) {
-        return cachedResult;
-      } else {
-        const votesCount = await ctx.prisma.vote.count();
+    if (cachedResult) {
+      return cachedResult;
+    } else {
+      const votesCount = await ctx.prisma.vote.count();
 
-        await setCache(`kv_votecount_admin`, votesCount);
+      await setCache(`kv_votecount_admin`, votesCount);
 
-        return votesCount;
-      }
-    }),
+      return votesCount;
+    }
+  }),
   getAllByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
