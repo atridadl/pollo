@@ -2,6 +2,7 @@ import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { EventType, EventTypes } from "~/utils/types";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -95,10 +96,10 @@ const RoomBody: React.FC = ({}) => {
       channelName: `${env.NEXT_PUBLIC_APP_ENV}-${roomId}`,
     },
     ({ name }) => {
-      if (name === "ROOM_UPDATE") {
+      if (name === EventTypes.ROOM_UPDATE) {
         void refetchVotesFromDb();
         void refetchRoomFromDb();
-      } else if (name === "VOTE_UPDATE") {
+      } else if (name === EventTypes.VOTE_UPDATE) {
         void refetchVotesFromDb();
       }
     }
@@ -114,17 +115,6 @@ const RoomBody: React.FC = ({}) => {
       isVIP: sessionData?.user.isVIP || false,
     }
   );
-
-  // Subscribe on mount and unsubscribe on unmount
-  useEffect(() => {
-    window.addEventListener("beforeunload", () => channel.presence.leave());
-    return () => {
-      window.removeEventListener("beforeunload", () =>
-        channel.presence.leave()
-      );
-      channel.presence.leave();
-    };
-  }, [channel.presence, roomId]);
 
   // Init story name
   useEffect(() => {

@@ -8,6 +8,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
+import { EventTypes } from "~/utils/types";
 
 export const voteRouter = createTRPCRouter({
   countAll: adminProcedure.query(async ({ ctx }) => {
@@ -104,7 +105,11 @@ export const voteRouter = createTRPCRouter({
         await invalidateCache(`kv_votecount_admin`);
         await invalidateCache(`kv_votes_${input.roomId}`);
 
-        await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
+        await publishToChannel(
+          `${vote.roomId}`,
+          EventTypes.VOTE_UPDATE,
+          input.value
+        );
       }
 
       return !!vote;
