@@ -91,7 +91,7 @@ const RoomBody: React.FC = ({}) => {
     },
   });
 
-  useChannel(
+  const [channel] = useChannel(
     {
       channelName: `${env.NEXT_PUBLIC_APP_ENV}-${roomId}`,
     },
@@ -115,6 +115,17 @@ const RoomBody: React.FC = ({}) => {
       isVIP: sessionData?.user.isVIP || false,
     }
   );
+
+  // Subscribe on mount and unsubscribe on unmount
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => channel.presence.leave());
+    return () => {
+      window.removeEventListener("beforeunload", () =>
+        channel.presence.leave()
+      );
+      channel.presence.leave();
+    };
+  }, [channel.presence, roomId]);
 
   // Init story name
   useEffect(() => {
