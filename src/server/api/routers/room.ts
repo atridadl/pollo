@@ -1,12 +1,9 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  adminProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
+import { EventTypes } from "~/utils/types";
 
 export const roomRouter = createTRPCRouter({
   // Create
@@ -33,8 +30,8 @@ export const roomRouter = createTRPCRouter({
 
           await publishToChannel(
             `${ctx.session.user.id}`,
-            "ROOM_LIST_UPDATE",
-            "CREATE"
+            EventTypes.ROOM_LIST_UPDATE,
+            JSON.stringify(room)
           );
         }
         // happy path
@@ -93,20 +90,6 @@ export const roomRouter = createTRPCRouter({
       await setCache(`kv_roomlist_${ctx.session.user.id}`, roomList);
 
       return roomList;
-    }
-  }),
-
-  countAll: adminProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchCache<number>(`kv_roomcount_admin`);
-
-    if (cachedResult) {
-      return cachedResult;
-    } else {
-      const roomsCount = await ctx.prisma.room.count();
-
-      await setCache(`kv_roomcount_admin`, roomsCount);
-
-      return roomsCount;
     }
   }),
 
@@ -205,7 +188,11 @@ export const roomRouter = createTRPCRouter({
       });
 
       if (newRoom) {
-        await publishToChannel(`${newRoom.id}`, "ROOM_UPDATE", "UPDATE");
+        await publishToChannel(
+          `${newRoom.id}`,
+          EventTypes.ROOM_UPDATE,
+          JSON.stringify(newRoom)
+        );
       }
 
       return !!newRoom;
@@ -228,11 +215,15 @@ export const roomRouter = createTRPCRouter({
 
         await publishToChannel(
           `${ctx.session.user.id}`,
-          "ROOM_LIST_UPDATE",
-          "DELETE"
+          EventTypes.ROOM_LIST_UPDATE,
+          JSON.stringify(deletedRoom)
         );
 
-        await publishToChannel(`${deletedRoom.id}`, "ROOM_UPDATE", "DELETE");
+        await publishToChannel(
+          `${deletedRoom.id}`,
+          EventTypes.ROOM_UPDATE,
+          JSON.stringify(deletedRoom)
+        );
       }
 
       return !!deletedRoom;

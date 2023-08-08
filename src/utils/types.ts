@@ -1,9 +1,9 @@
 type BetterEnum<T> = T[keyof T];
 
-const EventTypes = {
-  ROOM_LIST_UPDATE: "ROOM_LIST_UPDATE",
-  ROOM_UPDATE: "ROOM_UPDATE",
-  VOTE_UPDATE: "VOTE_UPDATE",
+export const EventTypes = {
+  ROOM_LIST_UPDATE: "room.list.update",
+  ROOM_UPDATE: "room.update",
+  VOTE_UPDATE: "vote.update",
 } as const;
 export type EventType = BetterEnum<typeof EventTypes>;
 

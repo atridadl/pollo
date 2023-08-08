@@ -2,27 +2,11 @@ import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
 import type { Room } from "@prisma/client";
-import {
-  adminProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
+import { EventTypes } from "~/utils/types";
 
 export const voteRouter = createTRPCRouter({
-  countAll: adminProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
-
-    if (cachedResult) {
-      return cachedResult;
-    } else {
-      const votesCount = await ctx.prisma.vote.count();
-
-      await setCache(`kv_votecount_admin`, votesCount);
-
-      return votesCount;
-    }
-  }),
   getAllByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -104,7 +88,11 @@ export const voteRouter = createTRPCRouter({
         await invalidateCache(`kv_votecount_admin`);
         await invalidateCache(`kv_votes_${input.roomId}`);
 
-        await publishToChannel(`${vote.roomId}`, "VOTE_UPDATE", "UPDATE");
+        await publishToChannel(
+          `${vote.roomId}`,
+          EventTypes.VOTE_UPDATE,
+          input.value
+        );
       }
 
       return !!vote;
