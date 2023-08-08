@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
-export const hookRouter = createTRPCRouter({
+export const restRouter = createTRPCRouter({
   dbWarmer: publicProcedure
     .meta({ openapi: { method: "POST", path: "/rest/dbwarmer" } })
     .input(z.object({ key: z.string() }))
