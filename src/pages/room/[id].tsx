@@ -2,7 +2,7 @@ import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { EventType, EventTypes } from "~/utils/types";
+import { EventTypes } from "~/utils/types";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -91,7 +91,7 @@ const RoomBody: React.FC = ({}) => {
     },
   });
 
-  const [channel] = useChannel(
+  useChannel(
     {
       channelName: `${env.NEXT_PUBLIC_APP_ENV}-${roomId}`,
     },
