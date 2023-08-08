@@ -2,11 +2,7 @@ import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
 import type { Room } from "@prisma/client";
-import {
-  adminProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 import { EventTypes } from "~/utils/types";
 
