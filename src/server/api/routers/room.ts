@@ -97,20 +97,6 @@ export const roomRouter = createTRPCRouter({
     }
   }),
 
-  countAll: adminProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchCache<number>(`kv_roomcount_admin`);
-
-    if (cachedResult) {
-      return cachedResult;
-    } else {
-      const roomsCount = await ctx.prisma.room.count();
-
-      await setCache(`kv_roomcount_admin`, roomsCount);
-
-      return roomsCount;
-    }
-  }),
-
   // Update One
   set: protectedProcedure
     .input(

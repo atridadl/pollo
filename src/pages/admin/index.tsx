@@ -61,7 +61,7 @@ const AdminBody: React.FC = () => {
     isLoading: usersCountLoading,
     isFetching: usersCountFetching,
     refetch: refetchUsersCount,
-  } = api.user.countAll.useQuery();
+  } = api.rest.userCount.useQuery();
   const {
     data: users,
     isLoading: usersLoading,
@@ -73,13 +73,13 @@ const AdminBody: React.FC = () => {
     isLoading: roomsCountLoading,
     isFetching: roomsCountFetching,
     refetch: refetchRoomsCount,
-  } = api.room.countAll.useQuery();
+  } = api.rest.roomCount.useQuery();
   const {
     data: votesCount,
     isLoading: votesCountLoading,
     isFetching: votesCountFetching,
     refetch: refetchVotesCount,
-  } = api.vote.countAll.useQuery();
+  } = api.rest.voteCount.useQuery();
 
   const getProviders = (user: {
     createdAt: Date;

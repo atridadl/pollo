@@ -14,20 +14,6 @@ import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const userRouter = createTRPCRouter({
-  countAll: adminProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchCache<number>(`kv_usercount_admin`);
-
-    if (cachedResult) {
-      return cachedResult;
-    } else {
-      const usersCount = await ctx.prisma.user.count();
-
-      await setCache(`kv_usercount_admin`, usersCount);
-
-      return usersCount;
-    }
-  }),
-
   getProviders: protectedProcedure.query(async ({ ctx }) => {
     const providers = await ctx.prisma.user.findUnique({
       where: {

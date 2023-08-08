@@ -11,19 +11,6 @@ import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 import { EventTypes } from "~/utils/types";
 
 export const voteRouter = createTRPCRouter({
-  countAll: adminProcedure.query(async ({ ctx }) => {
-    const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
-
-    if (cachedResult) {
-      return cachedResult;
-    } else {
-      const votesCount = await ctx.prisma.vote.count();
-
-      await setCache(`kv_votecount_admin`, votesCount);
-
-      return votesCount;
-    }
-  }),
   getAllByRoomId: protectedProcedure
     .input(z.object({ roomId: z.string() }))
     .query(async ({ ctx, input }) => {
