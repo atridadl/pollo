@@ -1,6 +1,6 @@
 {
   "name": "sprintpadawan",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Plan. Sprint. Repeat.",
   "private": true,
   "scripts": {
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/eslint": "^8.44.2",
     "@types/json2csv": "^5.0.3",
-    "@types/node": "^20.4.8",
+    "@types/node": "^20.4.9",
     "@types/react": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
