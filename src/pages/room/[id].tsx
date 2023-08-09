@@ -65,7 +65,7 @@ const Room: NextPage = () => {
 
 export default Room;
 
-const RoomBody: React.FC = ({}) => {
+const RoomBody = ({}) => {
   const { data: sessionData } = useSession();
   const { query } = useRouter();
   const roomId = z.string().parse(query.id);

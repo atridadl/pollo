@@ -45,7 +45,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const HomePageBody: React.FC = () => {
+const HomePageBody = () => {
   const { data: sessionData } = useSession();
   const [joinRoomTextBox, setJoinRoomTextBox] = useState<string>("");
   const [tabIndex, setTabIndex] = useState<number>();
