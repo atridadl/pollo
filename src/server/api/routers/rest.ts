@@ -25,14 +25,14 @@ export const restRouter = createTRPCRouter({
     .input(z.void())
     .output(z.number())
     .query(async ({ ctx }) => {
-      const cachedResult = await fetchCache<number>(`kv_votecount_admin`);
+      const cachedResult = await fetchCache<number>(`kv_votecount`);
 
       if (cachedResult) {
         return cachedResult;
       } else {
         const votesCount = await ctx.prisma.vote.count();
 
-        await setCache(`kv_votecount_admin`, votesCount);
+        await setCache(`kv_votecount`, votesCount);
 
         return votesCount;
       }
