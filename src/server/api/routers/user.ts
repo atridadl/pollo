@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { Goodbye } from "~/components/templates/Goodbye";
 import { env } from "~/env.mjs";
+import { publishToChannel } from "~/server/ably";
 import {
   adminProcedure,
   createTRPCRouter,
@@ -10,6 +11,7 @@ import {
 } from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
+import { EventTypes } from "~/utils/types";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -118,6 +120,12 @@ export const userRouter = createTRPCRouter({
 
         await invalidateCache(`kv_usercount_admin`);
         await invalidateCache(`kv_userlist_admin`);
+
+        await publishToChannel(
+          `stats`,
+          EventTypes.STATS_UPDATE,
+          JSON.stringify(user)
+        );
       }
 
       return !!user;

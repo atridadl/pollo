@@ -7,7 +7,7 @@ import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "~/env.mjs";
 import { api } from "~/utils/api";
 
-const RoomList: React.FC = () => {
+const RoomList = () => {
   const { data: sessionData } = useSession();
 
   configureAbly({
@@ -50,7 +50,7 @@ const RoomList: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
-      {/* Modal for Adding Rooms */ }
+      {/* Modal for Adding Rooms */}
       <input type="checkbox" id="new-room-modal" className="modal-toggle" />
       <div className="modal modal-bottom sm:modal-middle">
         <div className="modal-box flex-col flex text-center justify-center items-center">
@@ -72,30 +72,30 @@ const RoomList: React.FC = () => {
               type="text"
               placeholder="Type here"
               className="input input-bordered w-full max-w-xs"
-              onChange={ (event) => {
+              onChange={(event) => {
                 setRoomName(event.target.value);
-              } }
+              }}
             />
           </div>
 
           <div className="modal-action">
-            { roomName.length > 0 && (
+            {roomName.length > 0 && (
               <label
                 htmlFor="new-room-modal"
                 className="btn btn-primary"
-                onClick={ () => createRoomHandler() }
+                onClick={() => createRoomHandler()}
               >
                 Submit
               </label>
-            ) }
+            )}
           </div>
         </div>
       </div>
 
-      { roomsFromDb && roomsFromDb.length > 0 && (
+      {roomsFromDb && roomsFromDb.length > 0 && (
         <div className="overflow-x-auto">
           <table className="table text-center">
-            {/* head */ }
+            {/* head */}
             <thead>
               <tr className="border-white">
                 <th>Room Name</th>
@@ -103,43 +103,43 @@ const RoomList: React.FC = () => {
               </tr>
             </thead>
             <tbody className="">
-              { roomsFromDb?.map((room) => {
+              {roomsFromDb?.map((room) => {
                 return (
-                  <tr key={ room.id } className="hover border-white">
+                  <tr key={room.id} className="hover border-white">
                     <td className="break-all max-w-[200px] md:max-w-[400px]">
-                      { room.roomName }
+                      {room.roomName}
                     </td>
                     <td>
                       <Link
                         className="m-2 no-underline"
-                        href={ `/room/${room.id}` }
+                        href={`/room/${room.id}`}
                       >
                         <IoEnterOutline className="text-xl inline-block hover:text-secondary" />
                       </Link>
 
                       <button
                         className="m-2"
-                        onClick={ () => deleteRoomHandler(room.id) }
+                        onClick={() => deleteRoomHandler(room.id)}
                       >
                         <IoTrashBinOutline className="text-xl inline-block hover:text-error" />
                       </button>
                     </td>
                   </tr>
                 );
-              }) }
+              })}
             </tbody>
           </table>
         </div>
-      ) }
+      )}
       <label htmlFor="new-room-modal" className="btn btn-secondary">
         New Room
       </label>
 
-      { roomsFromDb === undefined && (
+      {roomsFromDb === undefined && (
         <div className="flex items-center justify-center">
           <span className="loading loading-dots loading-lg"></span>
         </div>
-      ) }
+      )}
     </div>
   );
 };

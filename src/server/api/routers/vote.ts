@@ -93,6 +93,12 @@ export const voteRouter = createTRPCRouter({
           EventTypes.VOTE_UPDATE,
           input.value
         );
+
+        await publishToChannel(
+          `stats`,
+          EventTypes.STATS_UPDATE,
+          JSON.stringify(vote)
+        );
       }
 
       return !!vote;

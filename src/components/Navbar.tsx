@@ -8,7 +8,7 @@ interface NavbarProps {
   title: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ title }) => {
+const Navbar = ({ title }: NavbarProps) => {
   const { data: sessionData, status: sessionStatus } = useSession();
   const router = useRouter();
 
