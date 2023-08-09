@@ -118,7 +118,7 @@ export const userRouter = createTRPCRouter({
           react: Goodbye({ name: user.name }),
         });
 
-        await invalidateCache(`kv_usercount_admin`);
+        await invalidateCache(`kv_usercount`);
         await invalidateCache(`kv_userlist_admin`);
 
         await publishToChannel(
