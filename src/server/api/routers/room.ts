@@ -33,6 +33,12 @@ export const roomRouter = createTRPCRouter({
             EventTypes.ROOM_LIST_UPDATE,
             JSON.stringify(room)
           );
+
+          await publishToChannel(
+            `stats`,
+            EventTypes.STATS_UPDATE,
+            JSON.stringify(room)
+          );
         }
         // happy path
         return !!room;
@@ -222,6 +228,12 @@ export const roomRouter = createTRPCRouter({
         await publishToChannel(
           `${deletedRoom.id}`,
           EventTypes.ROOM_UPDATE,
+          JSON.stringify(deletedRoom)
+        );
+
+        await publishToChannel(
+          `stats`,
+          EventTypes.STATS_UPDATE,
           JSON.stringify(deletedRoom)
         );
       }

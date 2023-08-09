@@ -8,6 +8,7 @@ import { SiGithub, SiGoogle } from "react-icons/si";
 import { GiStarFormation } from "react-icons/gi";
 import { api } from "~/utils/api";
 import { getServerAuthSession } from "../../server/auth";
+import Stats from "~/components/Stats";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -55,31 +56,13 @@ const Admin: NextPage = () => {
 
 export default Admin;
 
-const AdminBody: React.FC = () => {
-  const {
-    data: usersCount,
-    isLoading: usersCountLoading,
-    isFetching: usersCountFetching,
-    refetch: refetchUsersCount,
-  } = api.rest.userCount.useQuery();
+const AdminBody = () => {
   const {
     data: users,
     isLoading: usersLoading,
     isFetching: usersFetching,
     refetch: refetchUsers,
   } = api.user.getAll.useQuery();
-  const {
-    data: roomsCount,
-    isLoading: roomsCountLoading,
-    isFetching: roomsCountFetching,
-    refetch: refetchRoomsCount,
-  } = api.rest.roomCount.useQuery();
-  const {
-    data: votesCount,
-    isLoading: votesCountLoading,
-    isFetching: votesCountFetching,
-    refetch: refetchVotesCount,
-  } = api.rest.voteCount.useQuery();
 
   const getProviders = (user: {
     createdAt: Date;
@@ -153,57 +136,16 @@ const AdminBody: React.FC = () => {
   };
 
   const refetchData = async () => {
-    await Promise.all([
-      refetchUsers(),
-      refetchUsersCount(),
-      refetchRoomsCount(),
-      refetchVotesCount(),
-    ]);
+    await Promise.all([refetchUsers()]);
   };
 
   return (
     <>
       <h1 className="text-4xl font-bold">Admin Panel</h1>
 
-      <div className="stats stats-horizontal shadow bg-neutral m-4">
-        <div className="stat">
-          <div className="stat-title">Users</div>
-          <div className="stat-value">
-            {usersCountLoading || usersCountFetching ? (
-              <span className="loading loading-dots loading-lg"></span>
-            ) : (
-              <>{usersCount ? usersCount : "0"}</>
-            )}
-          </div>
-        </div>
+      <Stats />
 
-        <div className="stat">
-          <div className="stat-title">Rooms</div>
-          <div className="stat-value">
-            {roomsCountLoading || roomsCountFetching ? (
-              <span className="loading loading-dots loading-lg"></span>
-            ) : (
-              <>{roomsCount ? roomsCount : "0"}</>
-            )}
-          </div>
-        </div>
-
-        <div className="stat">
-          <div className="stat-title">Votes</div>
-          <div className="stat-value">
-            {votesCountLoading || votesCountFetching ? (
-              <span className="loading loading-dots loading-lg"></span>
-            ) : (
-              <>{votesCount ? votesCount : "0"}</>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {usersCountFetching ||
-      usersFetching ||
-      roomsCountFetching ||
-      votesCountFetching ? (
+      {usersFetching ? (
         <span className="loading loading-dots loading-lg"></span>
       ) : (
         <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">

@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import Stats from "~/components/Stats";
 
 const Home: NextPage = () => {
   return (
@@ -17,7 +18,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const HomePageBody: React.FC = () => {
+const HomePageBody = () => {
   return (
     <>
       <h1 className="text-3xl sm:text-6xl font-bold">
@@ -52,6 +53,13 @@ const HomePageBody: React.FC = () => {
             <li>🚀 CSV Reports for every room!</li>
             <li>🚀 100% free and open-source... forever!</li>
           </ul>
+        </div>
+      </div>
+
+      <div className="card card-compact bg-secondary text-black font-bold text-left">
+        <div className="card-body">
+          <h2 className="card-title">Stats:</h2>
+          <Stats />
         </div>
       </div>
     </>

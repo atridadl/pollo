@@ -48,7 +48,7 @@ const Profile: NextPage = () => {
 
 export default Profile;
 
-const ProfileBody: React.FC = () => {
+const ProfileBody = () => {
   const { data: sessionData } = useSession();
   const [nameText, setNameText] = useState<string>("");
   const router = useRouter();

@@ -12,6 +12,8 @@ import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import { Welcome } from "../components/templates/Welcome";
 import { invalidateCache } from "./redis";
+import { publishToChannel } from "./ably";
+import { EventTypes } from "~/utils/types";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -65,6 +67,12 @@ export const authOptions: NextAuthOptions = {
         });
         await invalidateCache(`kv_userlist_admin`);
         await invalidateCache(`kv_usercount_admin`);
+
+        await publishToChannel(
+          `stats`,
+          EventTypes.STATS_UPDATE,
+          JSON.stringify(user)
+        );
       }
     },
     async signIn({}) {
