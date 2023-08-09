@@ -48,7 +48,7 @@ const Stats = () => {
         <div className="stat-title">Users</div>
         <div className="stat-value">
           {usersCountLoading || usersCountFetching ? (
-            <span className="loading loading-dots loading-lg"></span>
+            <span className="loading loading-infinity loading-lg"></span>
           ) : (
             <>{usersCount ? usersCount : "0"}</>
           )}
@@ -59,7 +59,7 @@ const Stats = () => {
         <div className="stat-title">Rooms</div>
         <div className="stat-value">
           {roomsCountLoading || roomsCountFetching ? (
-            <span className="loading loading-dots loading-lg"></span>
+            <span className="loading loading-infinity loading-lg"></span>
           ) : (
             <>{roomsCount ? roomsCount : "0"}</>
           )}
@@ -70,7 +70,7 @@ const Stats = () => {
         <div className="stat-title">Votes</div>
         <div className="stat-value">
           {votesCountLoading || votesCountFetching ? (
-            <span className="loading loading-dots loading-lg"></span>
+            <span className="loading loading-infinity loading-lg"></span>
           ) : (
             <>{votesCount ? votesCount : "0"}</>
           )}
