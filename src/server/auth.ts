@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
           react: Welcome({ name: user.name }),
         });
         await invalidateCache(`kv_userlist_admin`);
-        await invalidateCache(`kv_usercount_admin`);
+        await invalidateCache(`kv_usercount`);
 
         await publishToChannel(
           `stats`,

@@ -25,7 +25,7 @@ export const roomRouter = createTRPCRouter({
           },
         });
         if (room) {
-          await invalidateCache(`kv_roomcount_admin`);
+          await invalidateCache(`kv_roomcount`);
           await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
           await publishToChannel(
@@ -215,8 +215,8 @@ export const roomRouter = createTRPCRouter({
       });
 
       if (deletedRoom) {
-        await invalidateCache(`kv_roomcount_admin`);
-        await invalidateCache(`kv_votecount_admin`);
+        await invalidateCache(`kv_roomcount`);
+        await invalidateCache(`kv_votecount`);
         await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
 
         await publishToChannel(
