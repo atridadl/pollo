@@ -13,7 +13,7 @@ export const restRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const isValidKey = await validateApiKey(input.key);
       if (isValidKey) {
-        await ctx.prisma.verificationToken.findMany();
+        await ctx.prisma.vote.findMany();
         return "Toasted the DB";
       } else {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -35,24 +35,6 @@ export const restRouter = createTRPCRouter({
         await setCache(`kv_votecount`, votesCount);
 
         return votesCount;
-      }
-    }),
-
-  userCount: publicProcedure
-    .meta({ openapi: { method: "GET", path: "/rest/users/count" } })
-    .input(z.void())
-    .output(z.number())
-    .query(async ({ ctx }) => {
-      const cachedResult = await fetchCache<number>(`kv_usercount`);
-
-      if (cachedResult) {
-        return cachedResult;
-      } else {
-        const usersCount = await ctx.prisma.user.count();
-
-        await setCache(`kv_usercount`, usersCount);
-
-        return usersCount;
       }
     }),
 

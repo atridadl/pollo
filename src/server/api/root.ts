@@ -1,7 +1,5 @@
 import { roomRouter } from "~/server/api/routers/room";
 import { createTRPCRouter } from "~/server/api/trpc";
-import { sessionRouter } from "./routers/session";
-import { userRouter } from "./routers/user";
 import { voteRouter } from "./routers/vote";
 import { restRouter } from "./routers/rest";
 
@@ -13,8 +11,6 @@ import { restRouter } from "./routers/rest";
 export const appRouter = createTRPCRouter({
   room: roomRouter,
   vote: voteRouter,
-  user: userRouter,
-  session: sessionRouter,
   rest: restRouter,
 });
 

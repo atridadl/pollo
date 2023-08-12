@@ -1,5 +1,4 @@
-import type { GetServerSideProps, NextPage } from "next";
-import { useSession } from "next-auth/react";
+import type { NextPage } from "next";
 import Head from "next/head";
 
 import RoomList from "~/components/RoomList";
@@ -7,27 +6,8 @@ import RoomList from "~/components/RoomList";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaShieldAlt } from "react-icons/fa";
-import { getServerAuthSession } from "~/server/auth";
 import { GiStarFormation } from "react-icons/gi";
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-
-  // Redirect to login if not signed in
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/api/auth/signin?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
-
-  // Return session if logged in
-  return {
-    props: { session },
-  };
-};
+import { useUser } from "@clerk/nextjs";
 
 const Home: NextPage = () => {
   return (
@@ -46,23 +26,27 @@ const Home: NextPage = () => {
 export default Home;
 
 const HomePageBody = () => {
-  const { data: sessionData } = useSession();
+  const { isLoaded, user } = useUser();
   const [joinRoomTextBox, setJoinRoomTextBox] = useState<string>("");
   const [tabIndex, setTabIndex] = useState<number>();
 
   useEffect(() => {
     const tabIndexLocal = localStorage.getItem(`dashboardTabIndex`);
     setTabIndex(tabIndexLocal !== null ? Number(tabIndexLocal) : 0);
-  }, [tabIndex, sessionData]);
+  }, [tabIndex, user]);
 
-  return (
+  return !isLoaded ? (
+    <div className="flex items-center justify-center">
+      <span className="loading loading-dots loading-lg"></span>
+    </div>
+  ) : (
     <>
       <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold mx-auto">
-        Hi, {sessionData?.user.name}!{" "}
-        {sessionData?.user.isAdmin && (
+        Hi, {user?.fullName}!{" "}
+        {(user?.publicMetadata.isAdmin as boolean | undefined) && (
           <FaShieldAlt className="inline-block text-primary" />
         )}
-        {sessionData?.user.isVIP && (
+        {(user?.publicMetadata.isVIP as boolean | undefined) && (
           <GiStarFormation className="inline-block text-secondary" />
         )}
       </h1>
