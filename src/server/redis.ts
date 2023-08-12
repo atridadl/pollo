@@ -8,6 +8,7 @@ export const redis = Redis.fromEnv({
 
 export const setCache = async <T>(key: string, value: T) => {
   try {
+    console.log("KEY: ", key);
     await redis.set(`${env.APP_ENV}_${key}`, value, {
       ex: Number(env.UPSTASH_REDIS_EXPIRY_SECONDS),
     });

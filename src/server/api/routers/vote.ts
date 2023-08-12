@@ -17,9 +17,6 @@ export const voteRouter = createTRPCRouter({
           id: string;
           createdAt: Date;
           userId: string;
-          owner: {
-            name: string | null;
-          };
           roomId: string;
         }[]
       >(`kv_votes_${input.roomId}`);
@@ -34,11 +31,6 @@ export const voteRouter = createTRPCRouter({
           select: {
             id: true,
             createdAt: true,
-            owner: {
-              select: {
-                name: true,
-              },
-            },
             room: true,
             roomId: true,
             userId: true,
@@ -58,17 +50,17 @@ export const voteRouter = createTRPCRouter({
         where: {
           userId_roomId: {
             roomId: input.roomId,
-            userId: ctx.session.user.id,
+            userId: ctx.auth.userId,
           },
         },
         create: {
           value: input.value,
-          userId: ctx.session.user.id,
+          userId: ctx.auth.userId,
           roomId: input.roomId,
         },
         update: {
           value: input.value,
-          userId: ctx.session.user.id,
+          userId: ctx.auth.userId,
           roomId: input.roomId,
         },
         select: {
@@ -76,11 +68,6 @@ export const voteRouter = createTRPCRouter({
           userId: true,
           roomId: true,
           id: true,
-          owner: {
-            select: {
-              name: true,
-            },
-          },
         },
       });
 

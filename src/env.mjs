@@ -12,17 +12,6 @@ const server = z.object({
   UPSTASH_RATELIMIT_REQUESTS: z.string(),
   UPSTASH_RATELIMIT_SECONDS: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
-  NEXTAUTH_SECRET:
-    process.env.NODE_ENV === "production"
-      ? z.string().min(1)
-      : z.string().min(1).optional(),
-  NEXTAUTH_URL: z.preprocess(
-    // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
-    // Since NextAuth.js automatically uses the VERCEL_URL if present.
-    (str) => process.env.VERCEL_URL ?? str,
-    // VERCEL_URL doesn't include `https` so it cant be validated as a URL
-    process.env.VERCEL ? z.string().min(1) : z.string().url()
-  ),
   GITHUB_CLIENT_ID: z.string(),
   GITHUB_CLIENT_SECRET: z.string(),
   GOOGLE_CLIENT_ID: z.string(),
@@ -31,6 +20,7 @@ const server = z.object({
   APP_ENV: z.string(),
   RESEND_API_KEY: z.string(),
   UNKEY_ROOT_KEY: z.string(),
+  CLERK_SECRET_KEY: z.string(),
 });
 
 /**
@@ -40,6 +30,7 @@ const server = z.object({
 const client = z.object({
   NEXT_PUBLIC_ABLY_PUBLIC_KEY: z.string(),
   NEXT_PUBLIC_APP_ENV: z.string(),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
 });
 
 /**
@@ -56,8 +47,6 @@ const processEnv = {
   UPSTASH_RATELIMIT_REQUESTS: process.env.UPSTASH_RATELIMIT_REQUESTS,
   UPSTASH_RATELIMIT_SECONDS: process.env.UPSTASH_RATELIMIT_SECONDS,
   NODE_ENV: process.env.NODE_ENV,
-  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
@@ -68,6 +57,9 @@ const processEnv = {
   NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   UNKEY_ROOT_KEY: process.env.UNKEY_ROOT_KEY,
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
 };
 
 // Don't touch the part below

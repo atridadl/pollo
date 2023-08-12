@@ -1,11 +1,11 @@
 {
   "name": "sprintpadawan",
-  "version": "1.2.7",
+  "version": "2.0.0",
   "description": "Plan. Sprint. Repeat.",
   "private": true,
   "scripts": {
     "build": "next build",
-    "serv": "NEXTAUTH_URL=http://localhost:3000 && next dev",
+    "serv": "next dev",
     "dev": "pnpm serv",
     "postinstall": "prisma generate",
     "lint": "next lint",
@@ -14,6 +14,7 @@
   "dependencies": {
     "@ably-labs/react-hooks": "^2.1.1",
     "@auth/prisma-adapter": "^1.0.1",
+    "@clerk/nextjs": "^4.23.2",
     "@prisma/client": "5.1.1",
     "@react-email/components": "^0.0.7",
     "@tanstack/react-query": "^4.32.6",
@@ -28,7 +29,6 @@
     "autoprefixer": "^10.4.14",
     "json2csv": "6.0.0-alpha.2",
     "next": "^13.4.13",
-    "next-auth": "^4.22.5",
     "nextjs-cors": "^2.1.2",
     "postcss": "^8.4.27",
     "react": "18.2.0",

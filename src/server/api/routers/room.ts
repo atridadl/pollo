@@ -14,38 +14,34 @@ export const roomRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session) {
-        const room = await ctx.prisma.room.create({
-          data: {
-            userId: ctx.session.user.id,
-            roomName: input.name,
-            storyName: "First Story!",
-            scale: "0.5,1,2,3,5,8",
-            visible: false,
-          },
-        });
-        if (room) {
-          await invalidateCache(`kv_roomcount`);
-          await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
+      const room = await ctx.prisma.room.create({
+        data: {
+          userId: ctx.auth.userId,
+          roomName: input.name,
+          storyName: "First Story!",
+          scale: "0.5,1,2,3,5,8",
+          visible: false,
+        },
+      });
+      if (room) {
+        await invalidateCache(`kv_roomcount`);
+        console.log("PUBLISHED TO ", `kv_roomlist_${ctx.auth.userId}`);
+        await invalidateCache(`kv_roomlist_${ctx.auth.userId}`);
 
-          await publishToChannel(
-            `${ctx.session.user.id}`,
-            EventTypes.ROOM_LIST_UPDATE,
-            JSON.stringify(room)
-          );
+        await publishToChannel(
+          `${ctx.auth.userId}`,
+          EventTypes.ROOM_LIST_UPDATE,
+          JSON.stringify(room)
+        );
 
-          await publishToChannel(
-            `stats`,
-            EventTypes.STATS_UPDATE,
-            JSON.stringify(room)
-          );
-        }
-        // happy path
-        return !!room;
+        await publishToChannel(
+          `stats`,
+          EventTypes.STATS_UPDATE,
+          JSON.stringify(room)
+        );
       }
-
-      // clinically depressed path
-      return false;
+      // happy path
+      return !!room;
     }),
 
   // Get One
@@ -64,7 +60,6 @@ export const roomRouter = createTRPCRouter({
           storyName: true,
           visible: true,
           scale: true,
-          owner: true,
         },
       });
     }),
@@ -77,14 +72,14 @@ export const roomRouter = createTRPCRouter({
         createdAt: Date;
         roomName: string;
       }[]
-    >(`kv_roomlist_${ctx.session.user.id}`);
+    >(`kv_roomlist_${ctx.auth.userId}`);
 
     if (cachedResult) {
       return cachedResult;
     } else {
       const roomList = await ctx.prisma.room.findMany({
         where: {
-          userId: ctx.session.user.id,
+          userId: ctx.auth.userId,
         },
         select: {
           id: true,
@@ -93,7 +88,7 @@ export const roomRouter = createTRPCRouter({
         },
       });
 
-      await setCache(`kv_roomlist_${ctx.session.user.id}`, roomList);
+      await setCache(`kv_roomlist_${ctx.auth.userId}`, roomList);
 
       return roomList;
     }
@@ -124,11 +119,7 @@ export const roomRouter = createTRPCRouter({
               scale: true,
               votes: {
                 select: {
-                  owner: {
-                    select: {
-                      name: true,
-                    },
-                  },
+                  userId: true,
                   value: true,
                 },
               },
@@ -138,12 +129,12 @@ export const roomRouter = createTRPCRouter({
           oldRoom &&
             (await ctx.prisma.log.create({
               data: {
-                userId: ctx.session.user.id,
+                userId: ctx.auth.userId,
                 roomId: input.roomId,
                 scale: oldRoom.scale,
                 votes: oldRoom.votes.map((vote) => {
                   return {
-                    name: vote.owner.name,
+                    name: vote.userId,
                     value: vote.value,
                   };
                 }),
@@ -168,7 +159,7 @@ export const roomRouter = createTRPCRouter({
         },
         data: {
           storyName: input.name,
-          userId: ctx.session.user.id,
+          userId: ctx.auth.userId,
           visible: input.visible,
           scale: [...new Set(input.scale.split(","))]
             .filter((item) => item !== "")
@@ -182,11 +173,6 @@ export const roomRouter = createTRPCRouter({
           scale: true,
           votes: {
             select: {
-              owner: {
-                select: {
-                  name: true,
-                },
-              },
               value: true,
             },
           },
@@ -217,10 +203,10 @@ export const roomRouter = createTRPCRouter({
       if (deletedRoom) {
         await invalidateCache(`kv_roomcount`);
         await invalidateCache(`kv_votecount`);
-        await invalidateCache(`kv_roomlist_${ctx.session.user.id}`);
+        await invalidateCache(`kv_roomlist_${ctx.auth.userId}`);
 
         await publishToChannel(
-          `${ctx.session.user.id}`,
+          `${ctx.auth.userId}`,
           EventTypes.ROOM_LIST_UPDATE,
           JSON.stringify(deletedRoom)
         );
