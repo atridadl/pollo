@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { FaShieldAlt } from "react-icons/fa";
 import { GiStarFormation } from "react-icons/gi";
 import { useUser } from "@clerk/nextjs";
+import { isAdmin, isVIP } from "~/utils/helpers";
 
 const Home: NextPage = () => {
   return (
@@ -43,10 +44,10 @@ const HomePageBody = () => {
     <>
       <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold mx-auto">
         Hi, {user?.fullName}!{" "}
-        {(user?.publicMetadata.isAdmin as boolean | undefined) && (
+        {isVIP(user?.publicMetadata) && (
           <FaShieldAlt className="inline-block text-primary" />
         )}
-        {(user?.publicMetadata.isVIP as boolean | undefined) && (
+        {isAdmin(user?.publicMetadata) && (
           <GiStarFormation className="inline-block text-secondary" />
         )}
       </h1>

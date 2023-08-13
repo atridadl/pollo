@@ -139,7 +139,6 @@ export const roomRouter = createTRPCRouter({
         .update(rooms)
         .set({
           storyName: input.name,
-          userId: ctx.auth.userId,
           visible: input.visible,
           scale: [...new Set(input.scale.split(","))]
             .filter((item) => item !== "")
