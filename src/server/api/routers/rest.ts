@@ -4,6 +4,8 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { fetchCache, setCache } from "~/server/redis";
+import { sql } from "drizzle-orm";
+import { rooms, votes } from "~/server/schema";
 
 export const restRouter = createTRPCRouter({
   dbWarmer: publicProcedure
@@ -13,7 +15,7 @@ export const restRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const isValidKey = await validateApiKey(input.key);
       if (isValidKey) {
-        await ctx.prisma.vote.findMany();
+        await ctx.db.query.votes.findMany();
         return "Toasted the DB";
       } else {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -30,7 +32,11 @@ export const restRouter = createTRPCRouter({
       if (cachedResult) {
         return cachedResult;
       } else {
-        const votesCount = await ctx.prisma.vote.count();
+        const votesResult = (
+          await ctx.db.select({ count: sql<number>`count(*)` }).from(votes)
+        )[0];
+
+        const votesCount = votesResult ? Number(votesResult.count) : 0;
 
         await setCache(`kv_votecount`, votesCount);
 
@@ -48,7 +54,11 @@ export const restRouter = createTRPCRouter({
       if (cachedResult) {
         return cachedResult;
       } else {
-        const roomsCount = await ctx.prisma.room.count();
+        const roomsResult = (
+          await ctx.db.select({ count: sql<number>`count(*)` }).from(rooms)
+        )[0];
+
+        const roomsCount = roomsResult ? Number(roomsResult.count) : 0;
 
         await setCache(`kv_roomcount`, roomsCount);
 

@@ -3,7 +3,10 @@ import { publishToChannel } from "~/server/ably";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
+import { logs, rooms, votes } from "~/server/schema";
 import { EventTypes } from "~/utils/types";
+import { createId } from "@paralleldrive/cuid2";
+import { eq } from "drizzle-orm";
 
 export const roomRouter = createTRPCRouter({
   // Create
@@ -14,18 +17,18 @@ export const roomRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const room = await ctx.prisma.room.create({
-        data: {
-          userId: ctx.auth.userId,
-          roomName: input.name,
-          storyName: "First Story!",
-          scale: "0.5,1,2,3,5,8",
-          visible: false,
-        },
+      const room = await ctx.db.insert(rooms).values({
+        id: createId(),
+        userId: ctx.auth.userId,
+        roomName: input.name,
+        storyName: "First Story!",
+        scale: "0.5,1,2,3,5,8",
+        visible: false,
       });
+
+      const success = room.rowsAffected > 0;
       if (room) {
         await invalidateCache(`kv_roomcount`);
-        console.log("PUBLISHED TO ", `kv_roomlist_${ctx.auth.userId}`);
         await invalidateCache(`kv_roomlist_${ctx.auth.userId}`);
 
         await publishToChannel(
@@ -40,26 +43,26 @@ export const roomRouter = createTRPCRouter({
           JSON.stringify(room)
         );
       }
-      // happy path
-      return !!room;
+      return success;
     }),
 
   // Get One
   get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.room.findUnique({
-        where: {
-          id: input.id,
-        },
-        select: {
-          id: true,
-          userId: true,
-          logs: true,
-          roomName: true,
-          storyName: true,
-          visible: true,
-          scale: true,
+      return ctx.db.query.rooms.findFirst({
+        where: eq(rooms.id, input.id),
+        with: {
+          logs: {
+            with: {
+              room: true,
+            },
+          },
+          votes: {
+            with: {
+              room: true,
+            },
+          },
         },
       });
     }),
@@ -77,15 +80,8 @@ export const roomRouter = createTRPCRouter({
     if (cachedResult) {
       return cachedResult;
     } else {
-      const roomList = await ctx.prisma.room.findMany({
-        where: {
-          userId: ctx.auth.userId,
-        },
-        select: {
-          id: true,
-          createdAt: true,
-          roomName: true,
-        },
+      const roomList = await ctx.db.query.rooms.findMany({
+        where: eq(rooms.userId, ctx.auth.userId),
       });
 
       await setCache(`kv_roomlist_${ctx.auth.userId}`, roomList);
@@ -109,98 +105,76 @@ export const roomRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       if (input.reset) {
         if (input.log) {
-          const oldRoom = await ctx.prisma.room.findUnique({
-            where: {
-              id: input.roomId,
-            },
-            select: {
-              roomName: true,
-              storyName: true,
-              scale: true,
-              votes: {
-                select: {
-                  userId: true,
-                  value: true,
-                },
-              },
+          const oldRoom = await ctx.db.query.rooms.findFirst({
+            where: eq(rooms.id, input.roomId),
+            with: {
+              votes: true,
+              logs: true,
             },
           });
 
           oldRoom &&
-            (await ctx.prisma.log.create({
-              data: {
-                userId: ctx.auth.userId,
-                roomId: input.roomId,
-                scale: oldRoom.scale,
-                votes: oldRoom.votes.map((vote) => {
-                  return {
-                    name: vote.userId,
-                    value: vote.value,
-                  };
-                }),
-                roomName: oldRoom.roomName,
-                storyName: oldRoom.storyName,
-              },
+            (await ctx.db.insert(logs).values({
+              id: createId(),
+              userId: ctx.auth.userId,
+              roomId: input.roomId,
+              scale: oldRoom.scale,
+              votes: oldRoom.votes.map((vote) => {
+                return {
+                  name: vote.userId,
+                  value: vote.value,
+                };
+              }),
+              roomName: oldRoom.roomName,
+              storyName: oldRoom.storyName,
             }));
         }
 
-        await ctx.prisma.vote.deleteMany({
-          where: {
-            roomId: input.roomId,
-          },
-        });
+        await ctx.db.delete(votes).where(eq(votes.roomId, input.roomId));
 
         await invalidateCache(`kv_votes_${input.roomId}`);
       }
 
-      const newRoom = await ctx.prisma.room.update({
-        where: {
-          id: input.roomId,
-        },
-        data: {
+      const newRoom = await ctx.db
+        .update(rooms)
+        .set({
           storyName: input.name,
           userId: ctx.auth.userId,
           visible: input.visible,
           scale: [...new Set(input.scale.split(","))]
             .filter((item) => item !== "")
             .toString(),
-        },
-        select: {
-          id: true,
-          roomName: true,
-          storyName: true,
-          visible: true,
-          scale: true,
-          votes: {
-            select: {
-              value: true,
-            },
-          },
-        },
-      });
+        })
+        .where(eq(rooms.id, input.roomId));
 
-      if (newRoom) {
+      const success = newRoom.rowsAffected > 0;
+
+      if (success) {
         await publishToChannel(
-          `${newRoom.id}`,
+          `${input.roomId}`,
           EventTypes.ROOM_UPDATE,
           JSON.stringify(newRoom)
         );
       }
 
-      return !!newRoom;
+      return success;
     }),
 
   // Delete One
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const deletedRoom = await ctx.prisma.room.delete({
-        where: {
-          id: input.id,
-        },
-      });
+      const deletedRoom = await ctx.db
+        .delete(rooms)
+        .where(eq(rooms.id, input.id));
 
-      if (deletedRoom) {
+      const success = deletedRoom.rowsAffected > 0;
+
+      if (success) {
+        await ctx.db.delete(votes).where(eq(votes.roomId, input.id));
+
+        await ctx.db.delete(logs).where(eq(logs.roomId, input.id));
+
         await invalidateCache(`kv_roomcount`);
         await invalidateCache(`kv_votecount`);
         await invalidateCache(`kv_roomlist_${ctx.auth.userId}`);
@@ -212,7 +186,7 @@ export const roomRouter = createTRPCRouter({
         );
 
         await publishToChannel(
-          `${deletedRoom.id}`,
+          `${input.id}`,
           EventTypes.ROOM_UPDATE,
           JSON.stringify(deletedRoom)
         );
@@ -224,6 +198,6 @@ export const roomRouter = createTRPCRouter({
         );
       }
 
-      return !!deletedRoom;
+      return success;
     }),
 });

@@ -165,16 +165,16 @@ const RoomBody = ({}) => {
         })
         .concat({
           id: "LATEST",
-          createdAt: new Date(),
+          created_at: new Date(),
           userId: roomFromDb.userId,
           roomId: roomFromDb.id,
           scale: roomScale,
           votes: votesFromDb.map((vote) => {
             return {
-              name: vote.userId,
               value: vote.value,
             };
           }),
+          room: roomFromDb,
           roomName: roomFromDb.roomName,
           storyName: storyNameText,
         });
