@@ -20,9 +20,6 @@ dependencies:
   '@planetscale/database':
     specifier: ^1.10.0
     version: 1.10.0
-  '@prisma/client':
-    specifier: 5.1.1
-    version: 5.1.1(prisma@5.1.1)
   '@react-email/components':
     specifier: ^0.0.7
     version: 0.0.7
@@ -133,9 +130,6 @@ devDependencies:
   eslint-config-next:
     specifier: ^13.4.13
     version: 13.4.13(eslint@8.46.0)(typescript@5.1.6)
-  prisma:
-    specifier: 5.1.1
-    version: 5.1.1
   tailwindcss:
     specifier: ^3.3.3
     version: 3.3.3
@@ -197,7 +191,7 @@ packages:
       '@prisma/client': '>=2.26.0 || >=3 || >=4'
     dependencies:
       '@auth/core': 0.9.0
-      '@prisma/client': 5.1.1(prisma@5.1.1)
+      '@prisma/client': 5.1.1
     transitivePeerDependencies:
       - nodemailer
     dev: false
@@ -1317,7 +1311,7 @@ packages:
     engines: {node: '>=16'}
     dev: false
 
-  /@prisma/client@5.1.1(prisma@5.1.1):
+  /@prisma/client@5.1.1:
     resolution: {integrity: sha512-fxcCeK5pMQGcgCqCrWsi+I2rpIbk0rAhdrN+ke7f34tIrgPwA68ensrpin+9+fZvuV2OtzHmuipwduSY6HswdA==}
     engines: {node: '>=16.13'}
     requiresBuild: true
@@ -1328,16 +1322,11 @@ packages:
         optional: true
     dependencies:
       '@prisma/engines-version': 5.1.1-1.6a3747c37ff169c90047725a05a6ef02e32ac97e
-      prisma: 5.1.1
     dev: false
 
   /@prisma/engines-version@5.1.1-1.6a3747c37ff169c90047725a05a6ef02e32ac97e:
     resolution: {integrity: sha512-owZqbY/wucbr65bXJ/ljrHPgQU5xXTSkmcE/JcbqE1kusuAXV/TLN3/exmz21SZ5rJ7WDkyk70J2G/n68iogbQ==}
     dev: false
-
-  /@prisma/engines@5.1.1:
-    resolution: {integrity: sha512-NV/4nVNWFZSJCCIA3HIFJbbDKO/NARc9ej0tX5S9k2EVbkrFJC4Xt9b0u4rNZWL4V+F5LAjvta8vzEUw0rw+HA==}
-    requiresBuild: true
 
   /@radix-ui/react-compose-refs@1.0.0(react@18.2.0):
     resolution: {integrity: sha512-0KaSv6sx787/hK3eF53iOkiSLwAGlFMx5lotrqD2pTjB18KbybKoEIgkNZTKC60YECDQTKGTRcDBILwZVqVKvA==}
@@ -5229,14 +5218,6 @@ packages:
       extend-shallow: 2.0.1
       js-beautify: 1.14.9
     dev: false
-
-  /prisma@5.1.1:
-    resolution: {integrity: sha512-WJFG/U7sMmcc6TjJTTifTfpI6Wjoh55xl4AzopVwAdyK68L9/ogNo8QQ2cxuUjJf/Wa82z/uhyh3wMzvRIBphg==}
-    engines: {node: '>=16.13'}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      '@prisma/engines': 5.1.1
 
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
