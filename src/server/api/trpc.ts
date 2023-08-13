@@ -23,7 +23,7 @@ import type {
   SignedOutAuthObject,
 } from "@clerk/nextjs/api";
 
-import { prisma } from "../db";
+import { db } from "../db";
 
 interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject;
@@ -40,7 +40,7 @@ interface AuthContext {
 const createInnerTRPCContext = ({ auth }: AuthContext) => {
   return {
     auth,
-    prisma,
+    db,
   };
 };
 
@@ -61,7 +61,7 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import { OpenApiMeta } from "trpc-openapi";
+import type { OpenApiMeta } from "trpc-openapi";
 
 const t = initTRPC
   .context<typeof createTRPCContext>()
