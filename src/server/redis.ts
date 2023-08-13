@@ -1,7 +1,10 @@
 import { Redis } from "@upstash/redis";
 import { env } from "~/env.mjs";
+import https from "https";
 
-export const redis = Redis.fromEnv();
+export const redis = Redis.fromEnv({
+  agent: new https.Agent({ keepAlive: true }),
+});
 
 export const setCache = async <T>(key: string, value: T) => {
   try {
