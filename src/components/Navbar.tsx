@@ -1,4 +1,4 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { UserButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,19 +9,22 @@ interface NavbarProps {
 }
 
 const Navbar = ({ title }: NavbarProps) => {
-  const { data: sessionData, status: sessionStatus } = useSession();
+  const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
 
   const navigationMenu = () => {
-    if (sessionStatus === "authenticated" && router.pathname !== "/dashboard") {
+    if (router.pathname !== "/dashboard" && isSignedIn) {
       return (
         <Link className="btn btn-secondary btn-outline mx-2" href="/dashboard">
           Dashboard
         </Link>
       );
-    } else if (sessionStatus === "unauthenticated") {
+    } else if (!isSignedIn) {
       return (
-        <button className="btn btn-secondary" onClick={() => void signIn()}>
+        <button
+          className="btn btn-secondary"
+          onClick={() => void router.push("/sign-in")}
+        >
           Sign In
         </button>
       );
@@ -51,7 +54,7 @@ const Navbar = ({ title }: NavbarProps) => {
         </Link>
       </div>
 
-      {sessionStatus === "loading" ? (
+      {!isLoaded ? (
         <div className="flex items-center justify-center">
           <span className="loading loading-dots loading-lg"></span>
         </div>
@@ -59,53 +62,7 @@ const Navbar = ({ title }: NavbarProps) => {
         navigationMenu()
       )}
 
-      {sessionData?.user.image && (
-        <div className="flex-none gap-2">
-          <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
-                <Image
-                  src={sessionData.user.image}
-                  alt="Profile picture."
-                  height={32}
-                  width={32}
-                />
-              </div>
-            </label>
-            <ul
-              tabIndex={0}
-              className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box z-50"
-            >
-              <li>
-                <Link
-                  about="Profile Page"
-                  href="/profile"
-                  className="justify-between"
-                >
-                  Profile
-                </Link>
-              </li>
-              {sessionData.user.isAdmin && (
-                <li>
-                  <Link
-                    about="Admin Page"
-                    href="/admin"
-                    className="justify-between"
-                  >
-                    Admin
-                  </Link>
-                </li>
-              )}
-              <button
-                className="btn btn-secondary btn-sm text-center whitespace-nowrap"
-                onClick={() => void signOut({ callbackUrl: "/" })}
-              >
-                Sign Out
-              </button>
-            </ul>
-          </div>
-        </div>
-      )}
+      <UserButton afterSignOutUrl="/" />
     </nav>
   );
 };

@@ -1,25 +1,24 @@
-import { useSession } from "next-auth/react";
 import Link from "next/link";
-
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
 import { useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "~/env.mjs";
 import { api } from "~/utils/api";
+import { useUser } from "@clerk/nextjs";
 
 const RoomList = () => {
-  const { data: sessionData } = useSession();
+  const { isSignedIn, user } = useUser();
 
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
-    clientId: sessionData?.user.id,
+    clientId: user?.id,
     recover: (_, cb) => {
       cb(true);
     },
   });
 
   const [] = useChannel(
-    `${env.NEXT_PUBLIC_APP_ENV}-${sessionData ? sessionData.user.id : ""}`,
+    `${env.NEXT_PUBLIC_APP_ENV}-${user?.id}`,
     () => void refetchRoomsFromDb()
   );
 
@@ -27,7 +26,7 @@ const RoomList = () => {
 
   const { data: roomsFromDb, refetch: refetchRoomsFromDb } =
     api.room.getAll.useQuery(undefined, {
-      enabled: sessionData?.user !== undefined,
+      enabled: isSignedIn,
     });
 
   const createRoom = api.room.create.useMutation({});
@@ -43,7 +42,7 @@ const RoomList = () => {
   const deleteRoom = api.room.delete.useMutation({});
 
   const deleteRoomHandler = (roomId: string) => {
-    if (sessionData) {
+    if (isSignedIn) {
       deleteRoom.mutate({ id: roomId });
     }
   };

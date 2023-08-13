@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
-import type { Room } from "@prisma/client";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 import { EventTypes } from "~/utils/types";
+import { eq } from "drizzle-orm";
+import { votes } from "~/server/schema";
+import { createId } from "@paralleldrive/cuid2";
 
 export const voteRouter = createTRPCRouter({
   getAllByRoomId: protectedProcedure
@@ -12,14 +14,10 @@ export const voteRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const cachedResult = await fetchCache<
         {
-          value: string;
-          room: Room;
           id: string;
-          createdAt: Date;
+          value: string;
+          created_at: Date;
           userId: string;
-          owner: {
-            name: string | null;
-          };
           roomId: string;
         }[]
       >(`kv_votes_${input.roomId}`);
@@ -27,23 +25,8 @@ export const voteRouter = createTRPCRouter({
       if (cachedResult) {
         return cachedResult;
       } else {
-        const votesByRoomId = await ctx.prisma.vote.findMany({
-          where: {
-            roomId: input.roomId,
-          },
-          select: {
-            id: true,
-            createdAt: true,
-            owner: {
-              select: {
-                name: true,
-              },
-            },
-            room: true,
-            roomId: true,
-            userId: true,
-            value: true,
-          },
+        const votesByRoomId = await ctx.db.query.votes.findMany({
+          where: eq(votes.roomId, input.roomId),
         });
 
         await setCache(`kv_votes_${input.roomId}`, votesByRoomId);
@@ -54,42 +37,34 @@ export const voteRouter = createTRPCRouter({
   set: protectedProcedure
     .input(z.object({ value: z.string(), roomId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const vote = await ctx.prisma.vote.upsert({
-        where: {
-          userId_roomId: {
-            roomId: input.roomId,
-            userId: ctx.session.user.id,
-          },
-        },
-        create: {
+      const updateResult = await ctx.db
+        .update(votes)
+        .set({
           value: input.value,
-          userId: ctx.session.user.id,
+          userId: ctx.auth.userId,
           roomId: input.roomId,
-        },
-        update: {
-          value: input.value,
-          userId: ctx.session.user.id,
-          roomId: input.roomId,
-        },
-        select: {
-          value: true,
-          userId: true,
-          roomId: true,
-          id: true,
-          owner: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
+        })
+        .where(eq(votes.userId, ctx.auth.userId));
 
-      if (vote) {
+      let success = updateResult.rowsAffected > 0;
+
+      if (!success) {
+        const vote = await ctx.db.insert(votes).ignore().values({
+          id: createId(),
+          value: input.value,
+          userId: ctx.auth.userId,
+          roomId: input.roomId,
+        });
+
+        success = vote.rowsAffected > 0;
+      }
+
+      if (success) {
         await invalidateCache(`kv_votecount`);
         await invalidateCache(`kv_votes_${input.roomId}`);
 
         await publishToChannel(
-          `${vote.roomId}`,
+          `${input.roomId}`,
           EventTypes.VOTE_UPDATE,
           input.value
         );
@@ -97,10 +72,10 @@ export const voteRouter = createTRPCRouter({
         await publishToChannel(
           `stats`,
           EventTypes.STATS_UPDATE,
-          JSON.stringify(vote)
+          JSON.stringify(success)
         );
       }
 
-      return !!vote;
+      return success;
     }),
 });
