@@ -49,8 +49,8 @@ export const roomRouter = createTRPCRouter({
   // Get One
   get: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.query.rooms.findFirst({
+    .query(async ({ ctx, input }) => {
+      const roomFromDb = await ctx.db.query.rooms.findFirst({
         where: eq(rooms.id, input.id),
         with: {
           logs: {
@@ -65,6 +65,7 @@ export const roomRouter = createTRPCRouter({
           },
         },
       });
+      return roomFromDb || null;
     }),
 
   // Get All
