@@ -61,17 +61,13 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import type { OpenApiMeta } from "trpc-openapi";
 
-const t = initTRPC
-  .context<typeof createTRPCContext>()
-  .meta<OpenApiMeta>()
-  .create({
-    transformer: superjson,
-    errorFormatter({ shape }) {
-      return shape;
-    },
-  });
+const t = initTRPC.context<typeof createTRPCContext>().create({
+  transformer: superjson,
+  errorFormatter({ shape }) {
+    return shape;
+  },
+});
 
 // check if the user is signed in, otherwise through a UNAUTHORIZED CODE
 const isAuthed = t.middleware(({ next, ctx }) => {

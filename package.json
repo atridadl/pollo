@@ -25,7 +25,7 @@
     "@upstash/ratelimit": "^0.4.3",
     "@upstash/redis": "^1.22.0",
     "ably": "^1.2.43",
-    "autoprefixer": "^10.4.14",
+    "autoprefixer": "^10.4.15",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.2",
     "json2csv": "6.0.0-alpha.2",
@@ -39,13 +39,12 @@
     "resend": "^0.17.2",
     "sharp": "^0.32.4",
     "superjson": "1.13.1",
-    "trpc-openapi": "^1.2.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/eslint": "^8.44.2",
     "@types/json2csv": "^5.0.3",
-    "@types/node": "^20.4.10",
+    "@types/node": "^20.5.0",
     "@types/react": "^18.2.20",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
