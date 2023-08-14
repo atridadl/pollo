@@ -39,7 +39,6 @@
     "resend": "^0.17.2",
     "sharp": "^0.32.4",
     "superjson": "1.13.1",
-    "trpc-openapi": "^1.2.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

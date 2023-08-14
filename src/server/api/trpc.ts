@@ -25,9 +25,8 @@ import type {
 
 import { db } from "../db";
 
-interface ContextType {
+interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject;
-  key: string | null;
 }
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use
@@ -38,9 +37,8 @@ interface ContextType {
  * - trpc's `createSSGHelpers` where we don't have req/res
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = ({ auth, key }: ContextType) => {
+const createInnerTRPCContext = ({ auth }: AuthContext) => {
   return {
-    key,
     auth,
     db,
   };
@@ -51,19 +49,8 @@ const createInnerTRPCContext = ({ auth, key }: ContextType) => {
  * process every request that goes through your tRPC endpoint
  * @link https://trpc.io/docs/context
  */
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  let keyValue: string | null = null;
-
-  if (opts.req.headers.authorization) {
-    const key = opts.req.headers.authorization.split("Bearer ").at(1);
-    if (key) {
-      const isValidKey = await validateApiKey(key);
-      if (isValidKey) {
-        keyValue = key;
-      }
-    }
-  }
-  return createInnerTRPCContext({ auth: getAuth(opts.req), key: keyValue });
+export const createTRPCContext = (opts: CreateNextContextOptions) => {
+  return createInnerTRPCContext({ auth: getAuth(opts.req) });
 };
 
 /**
@@ -74,18 +61,13 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import type { OpenApiMeta } from "trpc-openapi";
-import { validateApiKey } from "../unkey";
 
-const t = initTRPC
-  .context<typeof createTRPCContext>()
-  .meta<OpenApiMeta>()
-  .create({
-    transformer: superjson,
-    errorFormatter({ shape }) {
-      return shape;
-    },
-  });
+const t = initTRPC.context<typeof createTRPCContext>().create({
+  transformer: superjson,
+  errorFormatter({ shape }) {
+    return shape;
+  },
+});
 
 // check if the user is signed in, otherwise through a UNAUTHORIZED CODE
 const isAuthed = t.middleware(({ next, ctx }) => {
@@ -96,18 +78,6 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   return next({
     ctx: {
       auth: ctx.auth,
-    },
-  });
-});
-
-const isKeyAuthed = t.middleware(({ next, ctx }) => {
-  if (!ctx.key) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-
-  return next({
-    ctx: {
-      key: ctx.key,
     },
   });
 });
@@ -133,4 +103,3 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
-export const keyProtectedProcedure = t.procedure.use(isKeyAuthed);
