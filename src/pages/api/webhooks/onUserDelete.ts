@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
 import { logs, rooms, votes } from "~/server/schema";
-import { validateApiKey, validateRequest } from "~/server/unkey";
+import { validateRequest } from "~/server/unkey";
 
 export default async function handler(
   req: NextApiRequest,
