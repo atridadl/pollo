@@ -28,8 +28,10 @@ export default async function handler(
     if (deletedRoom.rowsAffected > 0) {
       await db.delete(logs).where(eq(logs.userId, requestBody.data.id));
       await db.delete(votes).where(eq(votes.userId, requestBody.data.id));
-    }
 
-    res.status(200).json({ result: "USER DELETED" });
+      res.status(200).json({ result: "USER DELETED" });
+    } else {
+      res.status(500).json({ result: "ERROR DELETING USER" });
+    }
   }
 }
