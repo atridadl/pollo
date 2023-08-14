@@ -44,10 +44,10 @@ const HomePageBody = () => {
     <>
       <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold mx-auto">
         Hi, {user?.fullName}!{" "}
-        {isVIP(user?.publicMetadata) && (
+        {isAdmin(user?.publicMetadata) && (
           <FaShieldAlt className="inline-block text-primary" />
         )}
-        {isAdmin(user?.publicMetadata) && (
+        {isVIP(user?.publicMetadata) && (
           <GiStarFormation className="inline-block text-secondary" />
         )}
       </h1>
