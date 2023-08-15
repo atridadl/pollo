@@ -28,7 +28,6 @@ export const validateRequest = async (
     }
   }
 
-  // Error if the key is not valid
   if (!isValidKey) {
     res.status(403).json({ error: "UNAUTHORIZED" });
   }
