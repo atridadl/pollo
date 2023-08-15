@@ -8,16 +8,14 @@ export const onUserDeletedHandler = async (
   userId: string,
   res: NextApiResponse
 ) => {
-  const deletedRoom = await db.delete(rooms).where(eq(rooms.userId, userId));
-
-  if (deletedRoom.rowsAffected > 0) {
+  try {
+    await db.delete(rooms).where(eq(rooms.userId, userId));
     await db.delete(logs).where(eq(logs.userId, userId));
     await db.delete(votes).where(eq(votes.userId, userId));
 
-    // res.status(200).json({ result: "USER DELETED" });
     res.status(200).json({ result: "USER DELETED" });
-  } else {
-    res.status(404).json({ error: "USER WITH THIS ID NOT FOUND" });
+  } catch (error) {
+    res.status(500).json({ error: error });
   }
 };
 
