@@ -4,7 +4,7 @@ import {
   onUserCreatedHandler,
   onUserDeletedHandler,
 } from "~/server/webhookHelpers";
-import { WebhookEvent, WebhookEvents } from "~/utils/types";
+import { type WebhookEvent, WebhookEvents } from "~/utils/types";
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,15 +37,15 @@ export default async function handler(
 
   switch (requestBody.type) {
     case WebhookEvents.USER_CREATED:
-      onUserCreatedHandler(requestBody.data.id, res);
-      break;
+      await onUserCreatedHandler(requestBody.data.id, res);
+      return;
 
     case WebhookEvents.USER_DELETED:
-      onUserDeletedHandler(requestBody.data.id, res);
-      break;
+      await onUserDeletedHandler(requestBody.data.id, res);
+      return;
 
     default:
       res.status(400).json({ error: "INVALID WEBHOOK EVENT" });
-      break;
+      return;
   }
 }

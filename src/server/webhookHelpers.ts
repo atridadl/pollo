@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { logs, rooms, votes } from "./schema";
 import { env } from "~/env.mjs";
-import { NextApiResponse } from "next";
+import type { NextApiResponse } from "next";
 
 export const onUserDeletedHandler = async (
   userId: string,
