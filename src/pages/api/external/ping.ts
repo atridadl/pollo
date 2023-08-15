@@ -6,9 +6,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const success = await validateRequest(req, res);
+  const isValid = await validateRequest(req, res);
 
-  if (success) {
+  if (isValid) {
     await db.query.votes.findFirst();
     res.status(200).json({ result: "Pong!" });
   }
