@@ -1,5 +1,5 @@
 import { Unkey } from "@unkey/api";
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "~/env.mjs";
 
 export const unkey = new Unkey({ token: env.UNKEY_ROOT_KEY });
@@ -28,7 +28,6 @@ export const validateRequest = async (
     }
   }
 
-  // Error if the key is not valid
   if (!isValidKey) {
     res.status(403).json({ error: "UNAUTHORIZED" });
   }

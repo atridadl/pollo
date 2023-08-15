@@ -8,6 +8,12 @@ export const EventTypes = {
 } as const;
 export type EventType = BetterEnum<typeof EventTypes>;
 
+export const WebhookEvents = {
+  USER_CREATED: "user.created",
+  USER_DELETED: "user.deleted",
+} as const;
+export type WebhookEvent = BetterEnum<typeof WebhookEvents>;
+
 export interface PresenceItem {
   name: string;
   image: string;
