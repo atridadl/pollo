@@ -10,8 +10,6 @@ export const onUserDeletedHandler = async (
 ) => {
   try {
     await db.delete(rooms).where(eq(rooms.userId, userId));
-    await db.delete(logs).where(eq(logs.userId, userId));
-    await db.delete(votes).where(eq(votes.userId, userId));
 
     res.status(200).json({ result: "USER DELETED" });
   } catch (error) {

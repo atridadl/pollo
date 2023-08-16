@@ -44,19 +44,23 @@ export const voteRouter = createTRPCRouter({
           userId: ctx.auth.userId,
           roomId: input.roomId,
         })
-        .where(eq(votes.userId, ctx.auth.userId));
+        .where(eq(votes.userId, ctx.auth.userId))
+        .returning();
 
-      let success = updateResult.rowsAffected > 0;
+      let success = updateResult.length > 0;
 
       if (!success) {
-        const vote = await ctx.db.insert(votes).ignore().values({
-          id: createId(),
-          value: input.value,
-          userId: ctx.auth.userId,
-          roomId: input.roomId,
-        });
+        const vote = await ctx.db
+          .insert(votes)
+          .values({
+            id: createId(),
+            value: input.value,
+            userId: ctx.auth.userId,
+            roomId: input.roomId,
+          })
+          .returning();
 
-        success = vote.rowsAffected > 0;
+        success = vote.length > 0;
       }
 
       if (success) {
