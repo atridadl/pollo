@@ -1,13 +1,13 @@
 import {
   timestamp,
-  mysqlTable,
+  pgTable,
   varchar,
   boolean,
   json,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-export const rooms = mysqlTable("Room", {
+export const rooms = pgTable("Room", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   created_at: timestamp("created_at").defaultNow(),
   userId: varchar("userId", { length: 255 }).notNull(),
@@ -22,11 +22,13 @@ export const roomsRelations = relations(rooms, ({ many }) => ({
   logs: many(logs),
 }));
 
-export const votes = mysqlTable("Vote", {
+export const votes = pgTable("Vote", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   created_at: timestamp("created_at").defaultNow(),
   userId: varchar("userId", { length: 255 }).notNull(),
-  roomId: varchar("roomId", { length: 255 }).notNull(),
+  roomId: varchar("roomId", { length: 255 })
+    .notNull()
+    .references(() => rooms.id, { onDelete: "cascade" }),
   value: varchar("value", { length: 255 }).notNull(),
 });
 
@@ -37,11 +39,15 @@ export const votesRelations = relations(votes, ({ one }) => ({
   }),
 }));
 
-export const logs = mysqlTable("Log", {
+export const logs = pgTable("Log", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   created_at: timestamp("created_at").defaultNow(),
-  userId: varchar("userId", { length: 255 }).notNull(),
-  roomId: varchar("roomId", { length: 255 }).notNull(),
+  userId: varchar("userId", { length: 255 })
+    .notNull()
+    .references(() => rooms.id, { onDelete: "cascade" }),
+  roomId: varchar("roomId", { length: 255 })
+    .notNull()
+    .references(() => rooms.id, { onDelete: "cascade" }),
   scale: varchar("scale", { length: 255 }),
   votes: json("votes"),
   roomName: varchar("roomName", { length: 255 }),
