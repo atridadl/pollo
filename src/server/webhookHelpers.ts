@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "./db";
-import { logs, rooms, votes } from "./schema";
+import { rooms } from "./schema";
 import { env } from "~/env.mjs";
 import type { NextApiResponse } from "next";
 
