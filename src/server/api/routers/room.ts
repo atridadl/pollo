@@ -17,16 +17,19 @@ export const roomRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const room = await ctx.db.insert(rooms).values({
-        id: createId(),
-        userId: ctx.auth.userId,
-        roomName: input.name,
-        storyName: "First Story!",
-        scale: "0.5,1,2,3,5,8",
-        visible: false,
-      });
+      const room = await ctx.db
+        .insert(rooms)
+        .values({
+          id: createId(),
+          userId: ctx.auth.userId,
+          roomName: input.name,
+          storyName: "First Story!",
+          scale: "0.5,1,2,3,5,8",
+          visible: false,
+        })
+        .returning();
 
-      const success = room.rowsAffected > 0;
+      const success = room.length > 0;
       if (room) {
         await invalidateCache(`kv_roomcount`);
         await invalidateCache(`kv_roomlist_${ctx.auth.userId}`);
@@ -145,9 +148,10 @@ export const roomRouter = createTRPCRouter({
             .filter((item) => item !== "")
             .toString(),
         })
-        .where(eq(rooms.id, input.roomId));
+        .where(eq(rooms.id, input.roomId))
+        .returning();
 
-      const success = newRoom.rowsAffected > 0;
+      const success = newRoom.length > 0;
 
       if (success) {
         await publishToChannel(
@@ -166,15 +170,12 @@ export const roomRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const deletedRoom = await ctx.db
         .delete(rooms)
-        .where(eq(rooms.id, input.id));
+        .where(eq(rooms.id, input.id))
+        .returning();
 
-      const success = deletedRoom.rowsAffected > 0;
+      const success = deletedRoom.length > 0;
 
       if (success) {
-        await ctx.db.delete(votes).where(eq(votes.roomId, input.id));
-
-        await ctx.db.delete(logs).where(eq(logs.roomId, input.id));
-
         await invalidateCache(`kv_roomcount`);
         await invalidateCache(`kv_votecount`);
         await invalidateCache(`kv_roomlist_${ctx.auth.userId}`);
