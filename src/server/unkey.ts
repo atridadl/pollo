@@ -17,6 +17,7 @@ export const validateApiKey = async (key: string) => {
 
 export const validateRequest = async (req: NextRequest) => {
   let isValidKey: boolean = false;
+
   const authorization = req.headers.get("authorization");
   // Get the auth bearer token if it exists
   if (authorization) {

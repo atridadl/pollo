@@ -10,12 +10,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const isValid = await validateRequest(req, res);
-
-  if (!isValid) {
-    return;
-  }
-
   try {
     const requestBody = WebhookEventBodySchema.parse(req.body);
 
