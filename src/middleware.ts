@@ -6,7 +6,6 @@ export default authMiddleware({
   publicRoutes: ["/", "/api/public/(.*)"],
   afterAuth: async (auth, req) => {
     if (!auth.userId && auth.isPublicRoute) {
-      console.log("1");
       return NextResponse.next();
     }
 
@@ -14,9 +13,7 @@ export default authMiddleware({
       req.nextUrl.pathname.includes("/api/webhooks") ||
       req.nextUrl.pathname.includes("/api/private")
     ) {
-      console.log("2");
       const isValid = await validateRequest(req);
-      console.log("Is Valid?: ", isValid);
       if (isValid) {
         return NextResponse.next();
       } else {
@@ -24,9 +21,7 @@ export default authMiddleware({
       }
     }
     if (!auth.userId && !auth.isPublicRoute) {
-      console.log(req.nextUrl);
-      console.log("3");
-      return redirectToSignIn({ returnBackUrl: req.url });
+      redirectToSignIn({ returnBackUrl: req.url });
     }
   },
 });

@@ -5,7 +5,7 @@ export const config = {
   regions: ["pdx1"],
 };
 
-export default async function handler() {
+export default function handler() {
   return NextResponse.json(
     { message: "Public Pong!" },
     { status: 200, statusText: "SUCCESS" }

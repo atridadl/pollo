@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { validateRequest } from "~/server/unkey";
 import {
   onUserCreatedHandler,
   onUserDeletedHandler,
