@@ -54,7 +54,7 @@ export const voteRouter = createTRPCRouter({
           },
         });
 
-      let success = upsertResult.rowCount > 0;
+      const success = upsertResult.rowCount > 0;
 
       if (success) {
         await invalidateCache(`kv_votecount`);
