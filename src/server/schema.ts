@@ -5,6 +5,7 @@ import {
   boolean,
   json,
   index,
+  unique,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -37,6 +38,7 @@ export const votes = pgTable(
   (table) => {
     return {
       userIdx: index("user_idx").on(table.userId),
+      unq: unique().on(table.userId, table.roomId),
     };
   }
 );

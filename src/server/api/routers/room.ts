@@ -20,7 +20,7 @@ export const roomRouter = createTRPCRouter({
       const room = await ctx.db
         .insert(rooms)
         .values({
-          id: createId(),
+          id: `room_${createId()}`,
           userId: ctx.auth.userId,
           roomName: input.name,
           storyName: "First Story!",
@@ -119,7 +119,7 @@ export const roomRouter = createTRPCRouter({
 
           oldRoom &&
             (await ctx.db.insert(logs).values({
-              id: createId(),
+              id: `log_${createId()}`,
               userId: ctx.auth.userId,
               roomId: input.roomId,
               scale: oldRoom.scale,
