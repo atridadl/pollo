@@ -37,31 +37,24 @@ export const voteRouter = createTRPCRouter({
   set: protectedProcedure
     .input(z.object({ value: z.string(), roomId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const updateResult = await ctx.db
-        .update(votes)
-        .set({
+      const upsertResult = await ctx.db
+        .insert(votes)
+        .values({
+          id: `vote_${createId()}`,
           value: input.value,
           userId: ctx.auth.userId,
           roomId: input.roomId,
         })
-        .where(eq(votes.userId, ctx.auth.userId))
-        .returning();
-
-      let success = updateResult.length > 0;
-
-      if (!success) {
-        const vote = await ctx.db
-          .insert(votes)
-          .values({
-            id: createId(),
+        .onConflictDoUpdate({
+          target: [votes.userId, votes.roomId],
+          set: {
             value: input.value,
             userId: ctx.auth.userId,
             roomId: input.roomId,
-          })
-          .returning();
+          },
+        });
 
-        success = vote.length > 0;
-      }
+      let success = upsertResult.rowCount > 0;
 
       if (success) {
         await invalidateCache(`kv_votecount`);
