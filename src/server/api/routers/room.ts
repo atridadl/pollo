@@ -56,16 +56,7 @@ export const roomRouter = createTRPCRouter({
       const roomFromDb = await ctx.db.query.rooms.findFirst({
         where: eq(rooms.id, input.id),
         with: {
-          logs: {
-            with: {
-              room: true,
-            },
-          },
-          votes: {
-            with: {
-              room: true,
-            },
-          },
+          logs: true,
         },
       });
       return roomFromDb || null;
