@@ -156,11 +156,14 @@ const RoomBody = ({}) => {
       const jsonObject = roomFromDb?.logs
         .map((item) => {
           return {
-            ...item,
-            scale: item.scale,
-            votes: item.votes,
+            id: item.id,
+            created_at: item.created_at,
+            userId: item.userId,
+            roomId: item.roomId,
             roomName: item.roomName,
             storyName: item.storyName,
+            scale: item.scale,
+            votes: item.votes,
           };
         })
         .concat({
@@ -168,15 +171,14 @@ const RoomBody = ({}) => {
           created_at: new Date(),
           userId: roomFromDb.userId,
           roomId: roomFromDb.id,
+          roomName: roomFromDb.roomName,
+          storyName: storyNameText,
           scale: roomScale,
           votes: votesFromDb.map((vote) => {
             return {
               value: vote.value,
             };
           }),
-          room: roomFromDb,
-          roomName: roomFromDb.roomName,
-          storyName: storyNameText,
         });
 
       downloadCSV(jsonObject, `sprint-padawan-room-${roomId}.csv`);
