@@ -55,9 +55,7 @@ export const logs = pgTable(
   {
     id: varchar("id", { length: 255 }).notNull().primaryKey(),
     created_at: timestamp("created_at").defaultNow(),
-    userId: varchar("userId", { length: 255 })
-      .notNull()
-      .references(() => rooms.id, { onDelete: "cascade" }),
+    userId: varchar("userId", { length: 255 }).notNull(),
     roomId: varchar("roomId", { length: 255 })
       .notNull()
       .references(() => rooms.id, { onDelete: "cascade" }),
