@@ -181,7 +181,7 @@ const RoomBody = ({}) => {
           }),
         });
 
-      downloadCSV(jsonObject, `sprint-padawan-room-${roomId}.csv`);
+      downloadCSV(jsonObject, `sp_${roomId}.csv`);
     }
   };
 
