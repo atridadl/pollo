@@ -17,6 +17,7 @@ export const config = {
 export default async function handler(req: NextRequest) {
   try {
     const eventBody = (await req.json()) as WebhookEventBody;
+    console.log(eventBody);
     const { data, type } = WebhookEventBodySchema.parse(eventBody);
     let success = false;
 
