@@ -3,7 +3,11 @@ import {
   onUserCreatedHandler,
   onUserDeletedHandler,
 } from "~/server/webhookHelpers";
-import { WebhookEventBodySchema, WebhookEvents } from "~/utils/types";
+import {
+  WebhookEventBody,
+  WebhookEventBodySchema,
+  WebhookEvents,
+} from "~/utils/types";
 
 export const config = {
   runtime: "edge",
@@ -12,12 +16,17 @@ export const config = {
 
 export default async function handler(req: NextRequest) {
   try {
-    const requestBody = WebhookEventBodySchema.parse(await req.json());
+    const eventBody = (await req.json()) as WebhookEventBody;
+    const { data, type } = WebhookEventBodySchema.parse(eventBody);
     let success = false;
 
-    switch (requestBody.type) {
+    switch (type) {
       case WebhookEvents.USER_CREATED:
-        success = await onUserCreatedHandler(requestBody.data.id);
+        success = await onUserCreatedHandler(
+          data.id,
+          `${data.first_name} ${data.last_name}`,
+          data.email_addresses?.map((email) => email.email_address) || []
+        );
         if (success) {
           return NextResponse.json(
             { result: "USER CREATED" },
@@ -31,7 +40,7 @@ export default async function handler(req: NextRequest) {
         }
 
       case WebhookEvents.USER_DELETED:
-        success = await onUserDeletedHandler(requestBody.data.id);
+        success = await onUserDeletedHandler(data.id);
 
         return NextResponse.json(
           { result: "USER DELETED" },
@@ -44,7 +53,8 @@ export default async function handler(req: NextRequest) {
           { status: 400, statusText: "INVALID WEBHOOK EVENT TYPE" }
         );
     }
-  } catch {
+  } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { result: "INVALID WEBHOOK EVENT BODY" },
       { status: 400, statusText: "INVALID WEBHOOK EVENT BODY" }
