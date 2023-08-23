@@ -41,14 +41,16 @@ export const onUserCreatedHandler = async (
     }
   );
 
-  userEmails.forEach((userEmail) => {
-    void resend.sendEmail({
-      from: "no-reply@sprintpadawan.dev",
-      to: userEmail,
-      subject: "🎉 Welcome to Sprint Padawan! 🎉",
-      react: Welcome({ name: userName }),
+  if (userUpdateResponse.ok) {
+    userEmails.forEach((userEmail) => {
+      void resend.sendEmail({
+        from: "no-reply@sprintpadawan.dev",
+        to: userEmail,
+        subject: "🎉 Welcome to Sprint Padawan! 🎉",
+        react: Welcome({ name: userName }),
+      });
     });
-  });
+  }
 
   return userUpdateResponse.ok;
 };

@@ -9,9 +9,7 @@ export const validateApiKey = async (key: string) => {
     const res = await unkey.keys.verify({
       key,
     });
-    // @ts-ignore This is broken...
-    const isValid = res.result?.valid || (res.valid as boolean);
-    return isValid;
+    return res.result?.valid || false;
   } catch {
     return false;
   }
