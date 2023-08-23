@@ -19,8 +19,8 @@ export const onUserDeletedHandler = async (userId: string) => {
 
 export const onUserCreatedHandler = async (
   userId: string,
-  userName: string,
-  userEmails: string[]
+  userEmails: string[],
+  userName?: string
 ) => {
   const userUpdateResponse = await fetch(
     `https://api.clerk.com/v1/users/${userId}/metadata`,
@@ -47,7 +47,7 @@ export const onUserCreatedHandler = async (
         from: "no-reply@sprintpadawan.dev",
         to: userEmail,
         subject: "🎉 Welcome to Sprint Padawan! 🎉",
-        react: Welcome({ name: userName }),
+        react: Welcome({ name: userName ? userEmail : userEmail }),
       });
     });
   }

@@ -24,8 +24,8 @@ export default async function handler(req: NextRequest) {
       case WebhookEvents.USER_CREATED:
         success = await onUserCreatedHandler(
           data.id,
-          `${data.first_name} ${data.last_name}`,
-          data.email_addresses?.map((email) => email.email_address) || []
+          data.email_addresses?.map((email) => email.email_address) || [],
+          `${data.first_name} ${data.last_name}`
         );
         if (success) {
           return NextResponse.json(
