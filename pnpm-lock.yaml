@@ -36,8 +36,8 @@ dependencies:
     specifier: 10.37.1
     version: 10.37.1
   '@unkey/api':
-    specifier: ^0.6.13
-    version: 0.6.13
+    specifier: ^0.6.14
+    version: 0.6.14
   '@upstash/ratelimit':
     specifier: ^0.4.3
     version: 0.4.3
@@ -1869,8 +1869,8 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@unkey/api@0.6.13:
-    resolution: {integrity: sha512-fYIph+wLd+lIuYqc2qXjQ52Zm/jDOhsLiZgOPNOlYzESU1ouU5Tm/9PNYb9lXgzeTqL3rU/EWtR8GoLHu/BfjA==}
+  /@unkey/api@0.6.14:
+    resolution: {integrity: sha512-d2tssSRf4Y4kCF44mloFcqphBenfWN5G2D1Iyz8EMmAoNi+ytvmHmmc1zZf4k3GhK68xLDA7uEO/b/1vtgD5qg==}
     dev: false
 
   /@upstash/core-analytics@0.0.6:
