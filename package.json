@@ -58,8 +58,5 @@
     "typescript": "^5.2.2",
     "utf-8-validate": "5.0.2",
     "ws": "^8.13.0"
-  },
-  "ct3aMetadata": {
-    "initVersion": "7.5.9"
   }
 }
