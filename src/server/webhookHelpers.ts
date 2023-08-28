@@ -2,10 +2,6 @@ import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { rooms } from "./schema";
 import { env } from "~/env.mjs";
-import { Welcome } from "~/components/templates/Welcome";
-import { Resend } from "resend";
-
-const resend = new Resend(env.RESEND_API_KEY);
 
 export const onUserDeletedHandler = async (userId: string) => {
   try {
@@ -17,11 +13,7 @@ export const onUserDeletedHandler = async (userId: string) => {
   }
 };
 
-export const onUserCreatedHandler = async (
-  userId: string,
-  userEmails: string[],
-  userName?: string
-) => {
+export const onUserCreatedHandler = async (userId: string) => {
   const userUpdateResponse = await fetch(
     `https://api.clerk.com/v1/users/${userId}/metadata`,
     {
@@ -40,17 +32,6 @@ export const onUserCreatedHandler = async (
       }),
     }
   );
-
-  if (userUpdateResponse.ok) {
-    userEmails.forEach((userEmail) => {
-      void resend.sendEmail({
-        from: "no-reply@sprintpadawan.dev",
-        to: userEmail,
-        subject: "🎉 Welcome to Sprint Padawan! 🎉",
-        react: Welcome({ name: userName ? userEmail : userEmail }),
-      });
-    });
-  }
 
   return userUpdateResponse.ok;
 };
