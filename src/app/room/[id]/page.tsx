@@ -28,6 +28,8 @@ import type { PresenceItem } from "~/utils/types";
 import { useUser } from "@clerk/nextjs";
 import { trpc } from "~/app/_trpc/client";
 
+export const dynamic = "force-dynamic";
+
 const Room: NextPage = () => {
   const { isSignedIn } = useUser();
   return (

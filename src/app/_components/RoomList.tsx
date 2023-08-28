@@ -8,6 +8,8 @@ import { env } from "~/env.mjs";
 import { useUser } from "@clerk/nextjs";
 import { trpc } from "../_trpc/client";
 
+export const dynamic = "force-dynamic";
+
 const RoomList = () => {
   const { isSignedIn, user } = useUser();
 
