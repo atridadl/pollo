@@ -1,4 +1,7 @@
-import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/nextjs/api";
+import type {
+  SignedInAuthObject,
+  SignedOutAuthObject,
+} from "@clerk/nextjs/api";
 import { getAuth } from "@clerk/nextjs/server";
 import { TRPCError, type inferAsyncReturnType, initTRPC } from "@trpc/server";
 import { db } from "../db";

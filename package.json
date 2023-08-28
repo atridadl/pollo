@@ -48,13 +48,16 @@
     "@types/react": "^18.2.21",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
+    "bufferutil": "^4.0.7",
     "daisyui": "^3.6.3",
     "drizzle-kit": "^0.19.13",
     "eslint": "^8.48.0",
     "eslint-config-next": "^13.4.19",
     "pg": "^8.11.3",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "utf-8-validate": "5.0.2",
+    "ws": "^8.13.0"
   },
   "ct3aMetadata": {
     "initVersion": "7.5.9"
