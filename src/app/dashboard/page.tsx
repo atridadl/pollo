@@ -12,6 +12,8 @@ import { GiStarFormation } from "react-icons/gi";
 import { useUser } from "@clerk/nextjs";
 import { isAdmin, isVIP } from "~/utils/helpers";
 
+export const dynamic = "force-dynamic";
+
 const Home: NextPage = () => {
   return (
     <>
