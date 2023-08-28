@@ -5,7 +5,8 @@ import "~/styles/globals.css";
 import Provider from "./_trpc/Provider";
 
 export const metadata = {
-  title: "Next.js 13 with Clerk",
+  title: "Sprint Padawan",
+  description: "Plan. Sprint. Repeat.",
 };
 
 export default function RootLayout({
