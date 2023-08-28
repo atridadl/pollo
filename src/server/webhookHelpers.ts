@@ -13,11 +13,7 @@ export const onUserDeletedHandler = async (userId: string) => {
   }
 };
 
-export const onUserCreatedHandler = async (
-  userId: string,
-  userEmails: string[],
-  userName?: string
-) => {
+export const onUserCreatedHandler = async (userId: string) => {
   const userUpdateResponse = await fetch(
     `https://api.clerk.com/v1/users/${userId}/metadata`,
     {

@@ -20,11 +20,7 @@ async function handler(req: NextRequest) {
 
     switch (type) {
       case WebhookEvents.USER_CREATED:
-        success = await onUserCreatedHandler(
-          data.id,
-          data.email_addresses?.map((email) => email.email_address) || [],
-          `${data.first_name} ${data.last_name}`
-        );
+        success = await onUserCreatedHandler(data.id);
         if (success) {
           return NextResponse.json(
             { result: "USER CREATED" },
