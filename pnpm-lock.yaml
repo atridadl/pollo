@@ -77,9 +77,6 @@ dependencies:
   react-icons:
     specifier: ^4.10.1
     version: 4.10.1(react@18.2.0)
-  resend:
-    specifier: ^1.0.0
-    version: 1.0.0
   sharp:
     specifier: ^0.32.5
     version: 0.32.5
@@ -4599,18 +4596,6 @@ packages:
     resolution: {integrity: sha512-VzW+TAk2wE4X9maiKMlT+GsPU4OMmR1U9CrHSmd3DFLn2IcZ9VJ6M6BBugGfYUnPCLSYxXdZy17M0BEJyhUTwg==}
     dev: false
 
-  /node-fetch@2.6.12:
-    resolution: {integrity: sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-    dependencies:
-      whatwg-url: 5.0.0
-    dev: false
-
   /node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
     engines: {node: 4.x || >=6.0.0}
@@ -5359,17 +5344,6 @@ packages:
       functions-have-names: 1.2.3
     dev: true
 
-  /resend@1.0.0:
-    resolution: {integrity: sha512-8LEE4gncmcm8bsvxvahZFpFk5hxUrKdagqWoX/MRXVU2YZ9coYxqZDeDYXG9pexz1A694bjE1hiQbBAA+bHAow==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@react-email/render': 0.0.7
-      node-fetch: 2.6.12
-      type-fest: 3.13.0
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /resolve-alpn@1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
     dev: false
@@ -6041,11 +6015,6 @@ packages:
   /type-fest@2.19.0:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
     engines: {node: '>=12.20'}
-    dev: false
-
-  /type-fest@3.13.0:
-    resolution: {integrity: sha512-Gur3yQGM9qiLNs0KPP7LPgeRbio2QTt4xXouobMCarR0/wyW3F+F/+OWwshg3NG0Adon7uQfSZBpB46NfhoF1A==}
-    engines: {node: '>=14.16'}
     dev: false
 
   /type@1.2.0:
