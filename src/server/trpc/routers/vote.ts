@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { publishToChannel } from "~/server/ably";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/trpc/trpc";
 import { fetchCache, invalidateCache, setCache } from "~/server/redis";
 import { EventTypes } from "~/utils/types";
 import { eq } from "drizzle-orm";

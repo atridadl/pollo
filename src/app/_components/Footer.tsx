@@ -1,5 +1,7 @@
+"use client";
+
 import { GiTechnoHeart } from "react-icons/gi";
-import packagejson from "../../package.json";
+import packagejson from "../../../package.json";
 
 const Footer = () => {
   return (

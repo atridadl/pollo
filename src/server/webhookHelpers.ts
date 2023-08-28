@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { rooms } from "./schema";
 import { env } from "~/env.mjs";
-import { Welcome } from "~/components/templates/Welcome";
+import { Welcome } from "~/app/_components/templates/Welcome";
 import { Resend } from "resend";
 
 const resend = new Resend(env.RESEND_API_KEY);
