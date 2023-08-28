@@ -1,10 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
 import { useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "~/env.mjs";
-import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
+import { trpc } from "../_trpc/client";
 
 const RoomList = () => {
   const { isSignedIn, user } = useUser();
@@ -25,11 +27,11 @@ const RoomList = () => {
   const [roomName, setRoomName] = useState<string>("");
 
   const { data: roomsFromDb, refetch: refetchRoomsFromDb } =
-    api.room.getAll.useQuery(undefined, {
+    trpc.room.getAll.useQuery(undefined, {
       enabled: isSignedIn,
     });
 
-  const createRoom = api.room.create.useMutation({});
+  const createRoom = trpc.room.create.useMutation({});
 
   const createRoomHandler = () => {
     createRoom.mutate({ name: roomName });
@@ -39,7 +41,7 @@ const RoomList = () => {
       false;
   };
 
-  const deleteRoom = api.room.delete.useMutation({});
+  const deleteRoom = trpc.room.delete.useMutation({});
 
   const deleteRoomHandler = (roomId: string) => {
     if (isSignedIn) {

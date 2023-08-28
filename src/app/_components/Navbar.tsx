@@ -1,7 +1,9 @@
+"use client";
+
 import { UserButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 import { env } from "~/env.mjs";
 
 interface NavbarProps {
@@ -11,9 +13,10 @@ interface NavbarProps {
 const Navbar = ({ title }: NavbarProps) => {
   const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
 
   const navigationMenu = () => {
-    if (router.pathname !== "/dashboard" && isSignedIn) {
+    if (pathname !== "/dashboard" && isSignedIn) {
       return (
         <Link className="btn btn-secondary btn-outline mx-2" href="/dashboard">
           Dashboard

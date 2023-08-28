@@ -1,10 +1,12 @@
+"use client";
+
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { EventTypes } from "~/utils/types";
 
-import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
 import {
   IoCheckmarkCircleOutline,
   IoCopyOutline,
@@ -16,7 +18,6 @@ import {
   IoSaveOutline,
 } from "react-icons/io5";
 import { GiStarFormation } from "react-icons/gi";
-import { api } from "~/utils/api";
 import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
 import Link from "next/link";
 import { FaShieldAlt } from "react-icons/fa";
@@ -25,6 +26,7 @@ import { env } from "~/env.mjs";
 import { downloadCSV, isAdmin, isVIP } from "~/utils/helpers";
 import type { PresenceItem } from "~/utils/types";
 import { useUser } from "@clerk/nextjs";
+import { trpc } from "~/app/_trpc/client";
 
 const Room: NextPage = () => {
   const { isSignedIn } = useUser();
@@ -52,21 +54,21 @@ export default Room;
 
 const RoomBody = ({}) => {
   const { isSignedIn, user } = useUser();
-  const { query } = useRouter();
-  const roomId = query.id as string;
+  const params = useParams();
+  const roomId = params?.id as string;
 
   const [storyNameText, setStoryNameText] = useState<string>("");
   const [roomScale, setRoomScale] = useState<string>("");
   const [copied, setCopied] = useState<boolean>(false);
 
   const { data: roomFromDb, refetch: refetchRoomFromDb } =
-    api.room.get.useQuery({ id: roomId });
+    trpc.room.get.useQuery({ id: roomId });
 
   const { data: votesFromDb, refetch: refetchVotesFromDb } =
-    api.vote.getAllByRoomId.useQuery({ roomId });
+    trpc.vote.getAllByRoomId.useQuery({ roomId });
 
-  const setVoteInDb = api.vote.set.useMutation({});
-  const setRoomInDb = api.room.set.useMutation({});
+  const setVoteInDb = trpc.vote.set.useMutation({});
+  const setRoomInDb = trpc.room.set.useMutation({});
 
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,

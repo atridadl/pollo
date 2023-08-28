@@ -1,4 +1,8 @@
+"use client";
+
 import { SignUp } from "@clerk/nextjs";
+
+export const dynamic = "force-static";
 
 const SignUpPage = () => (
   <div style={styles}>
