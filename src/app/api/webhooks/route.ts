@@ -9,12 +9,10 @@ import {
   WebhookEvents,
 } from "~/utils/types";
 
-export const config = {
-  runtime: "edge",
-  regions: ["pdx1"],
-};
+export const runtime = "edge";
+export const preferredRegion = ["pdx1"];
 
-export default async function handler(req: NextRequest) {
+async function handler(req: NextRequest) {
   try {
     const eventBody = (await req.json()) as WebhookEventBody;
     const { data, type } = WebhookEventBodySchema.parse(eventBody);
@@ -61,3 +59,5 @@ export default async function handler(req: NextRequest) {
     );
   }
 }
+
+export { handler as POST };

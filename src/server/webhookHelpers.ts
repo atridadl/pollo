@@ -2,10 +2,6 @@ import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { rooms } from "./schema";
 import { env } from "~/env.mjs";
-import { Welcome } from "~/app/_components/templates/Welcome";
-import { Resend } from "resend";
-
-const resend = new Resend(env.RESEND_API_KEY);
 
 export const onUserDeletedHandler = async (userId: string) => {
   try {
@@ -40,17 +36,6 @@ export const onUserCreatedHandler = async (
       }),
     }
   );
-
-  if (userUpdateResponse.ok) {
-    userEmails.forEach((userEmail) => {
-      void resend.sendEmail({
-        from: "no-reply@sprintpadawan.dev",
-        to: userEmail,
-        subject: "🎉 Welcome to Sprint Padawan! 🎉",
-        react: Welcome({ name: userName ? userEmail : userEmail }),
-      });
-    });
-  }
 
   return userUpdateResponse.ok;
 };
