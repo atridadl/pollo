@@ -1,6 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
+export const dynamic = "force-static";
+
 const Home: NextPage = () => {
   return (
     <>
