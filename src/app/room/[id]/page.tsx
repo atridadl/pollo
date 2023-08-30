@@ -1,7 +1,5 @@
 "use client";
 
-import { type NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { EventTypes } from "~/utils/types";
@@ -30,25 +28,18 @@ import { trpc } from "~/app/_trpc/client";
 
 export const dynamic = "force-dynamic";
 
-const Room: NextPage = () => {
+const Room = () => {
   const { isSignedIn } = useUser();
   return (
-    <>
-      <Head>
-        <title>Sprint Padawan</title>
-        <meta name="description" content="Plan. Sprint. Repeat." />
-        <meta http-equiv="Cache-control" content="no-cache" />
-      </Head>
-      <div className="flex flex-col items-center justify-center text-center gap-2">
-        {!isSignedIn ? (
-          <div className="flex items-center justify-center">
-            <span className="loading loading-dots loading-lg"></span>
-          </div>
-        ) : (
-          <RoomBody />
-        )}
-      </div>
-    </>
+    <div className="flex flex-col items-center justify-center text-center gap-2">
+      {!isSignedIn ? (
+        <div className="flex items-center justify-center">
+          <span className="loading loading-dots loading-lg"></span>
+        </div>
+      ) : (
+        <RoomBody />
+      )}
+    </div>
   );
 };
 
