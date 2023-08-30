@@ -1,19 +1,10 @@
-import { type NextPage } from "next";
-import Head from "next/head";
-
 export const dynamic = "force-static";
 
-const Home: NextPage = () => {
+const Home = () => {
   return (
-    <>
-      <Head>
-        <title>Sprint Padawan</title>
-        <meta name="description" content="Plan. Sprint. Repeat." />
-      </Head>
-      <div className="flex flex-col text-center items-center justify-center px-4 py-16 gap-4">
-        <HomePageBody />
-      </div>
-    </>
+    <div className="flex flex-col text-center items-center justify-center px-4 py-16 gap-4">
+      <HomePageBody />
+    </div>
   );
 };
 

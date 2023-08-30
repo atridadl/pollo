@@ -1,8 +1,5 @@
 "use client";
 
-import type { NextPage } from "next";
-import Head from "next/head";
-
 import RoomList from "~/app/_components/RoomList";
 
 import Link from "next/link";
