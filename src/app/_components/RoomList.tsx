@@ -98,7 +98,6 @@ const RoomList = () => {
       {roomsFromDb && roomsFromDb.length > 0 && (
         <div className="overflow-x-auto">
           <table className="table text-center">
-            {/* head */}
             <thead>
               <tr className="border-white">
                 <th>Room Name</th>
