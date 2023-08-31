@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { EventTypes } from "~/utils/types";
+import { EventTypes } from "@/utils/types";
 
 import { useParams } from "next/navigation";
 import {
@@ -20,11 +20,11 @@ import { configureAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
 import Link from "next/link";
 import { FaShieldAlt } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
-import { env } from "~/env.mjs";
-import { downloadCSV, isAdmin, isVIP } from "~/utils/helpers";
-import type { PresenceItem } from "~/utils/types";
+import { env } from "@/env.mjs";
+import { downloadCSV, isAdmin, isVIP } from "@/utils/helpers";
+import type { PresenceItem } from "@/utils/types";
 import { useUser } from "@clerk/nextjs";
-import { trpc } from "~/app/_trpc/client";
+import { trpc } from "@/app/_trpc/client";
 
 export const dynamic = "force-dynamic";
 

@@ -1,13 +1,13 @@
 "use client";
 
-import RoomList from "~/app/_components/RoomList";
+import RoomList from "@/app/_components/RoomList";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaShieldAlt } from "react-icons/fa";
 import { GiStarFormation } from "react-icons/gi";
 import { useUser } from "@clerk/nextjs";
-import { isAdmin, isVIP } from "~/utils/helpers";
+import { isAdmin, isVIP } from "@/utils/helpers";
 
 export const dynamic = "force-dynamic";
 
