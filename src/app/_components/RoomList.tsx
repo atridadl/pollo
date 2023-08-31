@@ -4,7 +4,7 @@ import Link from "next/link";
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
 import { useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
-import { env } from "~/env.mjs";
+import { env } from "@/env.mjs";
 import { useUser } from "@clerk/nextjs";
 import { trpc } from "../_trpc/client";
 
