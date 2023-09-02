@@ -31,18 +31,11 @@ export const roomRouter = createTRPCRouter({
 
       const success = room.length > 0;
       if (room) {
-        await invalidateCache(`kv_roomcount`);
         await invalidateCache(`kv_roomlist_${ctx.auth.userId}`);
 
         await publishToChannel(
           `${ctx.auth.userId}`,
           EventTypes.ROOM_LIST_UPDATE,
-          JSON.stringify(room)
-        );
-
-        await publishToChannel(
-          `stats`,
-          EventTypes.STATS_UPDATE,
           JSON.stringify(room)
         );
       }

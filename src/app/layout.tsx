@@ -19,7 +19,7 @@ export default function RootLayout({
       <html lang="en" className="h-[100%] w-[100%] fixed overflow-y-auto">
         <body className="h-[100%] w-[100%] fixed overflow-y-auto">
           <ClerkLoaded>
-            <Header title="Sprint Padawan" />
+            <Header title={metadata.title} />
             <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
               <Provider>{children}</Provider>
             </div>
