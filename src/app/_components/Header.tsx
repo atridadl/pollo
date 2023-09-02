@@ -5,27 +5,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { env } from "@/env.mjs";
+import Loading from "./Loading";
 
 interface NavbarProps {
   title: string;
 }
 
+export const dynamic = "force-dynamic";
+
 const Navbar = ({ title }: NavbarProps) => {
-  const { isSignedIn } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
   const router = useRouter();
   const pathname = usePathname();
 
   const navigationMenu = () => {
     if (pathname !== "/dashboard" && isSignedIn) {
       return (
-        <Link className="btn btn-secondary btn-outline mx-2" href="/dashboard">
+        <Link className="btn btn-primary btn-outline mx-2" href="/dashboard">
           Dashboard
         </Link>
       );
     } else if (!isSignedIn) {
       return (
         <button
-          className="btn btn-secondary"
+          className="btn btn-primary"
           onClick={() => void router.push("/sign-in")}
         >
           Sign In
@@ -57,9 +60,8 @@ const Navbar = ({ title }: NavbarProps) => {
         </Link>
       </div>
 
-      {navigationMenu()}
-
-      <UserButton afterSignOutUrl="/" />
+      {!isLoaded ? <Loading /> : navigationMenu()}
+      <UserButton afterSignOutUrl="/" userProfileMode="modal" />
     </nav>
   );
 };
