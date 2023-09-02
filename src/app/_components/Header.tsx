@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { env } from "@/env.mjs";
-import { dark } from "@clerk/themes";
 
 interface NavbarProps {
   title: string;
@@ -61,11 +60,7 @@ const Navbar = ({ title }: NavbarProps) => {
       </div>
 
       {navigationMenu()}
-      <UserButton
-        afterSignOutUrl="/"
-        userProfileMode="modal"
-        appearance={{ baseTheme: dark }}
-      />
+      <UserButton afterSignOutUrl="/" userProfileMode="modal" />
     </nav>
   );
 };

@@ -1,18 +1,12 @@
 "use client";
 
 import { SignUp } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 
 export const dynamic = "force-static";
 
 const SignUpPage = () => (
   <div style={styles}>
-    <SignUp
-      path="/sign-up"
-      routing="path"
-      signInUrl="/sign-in"
-      appearance={{ baseTheme: dark }}
-    />
+    <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
   </div>
 );
 

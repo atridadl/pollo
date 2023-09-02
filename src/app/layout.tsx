@@ -3,6 +3,7 @@ import Footer from "@/app/_components/Footer";
 import Header from "@/app/_components/Header";
 import "@/styles/globals.css";
 import Provider from "./_trpc/Provider";
+import { dark } from "@clerk/themes";
 
 export const metadata = {
   title: "Sprint Padawan",
@@ -15,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en" className="h-[100%] w-[100%] fixed overflow-y-auto">
         <body className="h-[100%] w-[100%] fixed overflow-y-auto">
           <ClerkLoaded>
