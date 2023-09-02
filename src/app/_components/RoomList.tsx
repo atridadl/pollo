@@ -2,36 +2,37 @@
 
 import Link from "next/link";
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "@/env.mjs";
-import { useUser } from "@clerk/nextjs";
+import { useOrganization } from "@clerk/nextjs";
 import { trpc } from "../_trpc/client";
+import Loading from "./Loading";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-const RoomList = () => {
-  const { isSignedIn, user } = useUser();
+const RoomList = ({ userId }: { userId: string }) => {
+  const { organization } = useOrganization();
 
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
-    clientId: user?.id,
+    clientId: userId,
     recover: (_, cb) => {
       cb(true);
     },
   });
 
-  const [] = useChannel(
-    `${env.NEXT_PUBLIC_APP_ENV}-${user?.id}`,
+  useChannel(
+    `${env.NEXT_PUBLIC_APP_ENV}-${organization ? organization.id : userId}`,
     () => void refetchRoomsFromDb()
   );
 
   const [roomName, setRoomName] = useState<string>("");
 
   const { data: roomsFromDb, refetch: refetchRoomsFromDb } =
-    trpc.room.getAll.useQuery(undefined, {
-      enabled: isSignedIn,
-    });
+    trpc.room.getAll.useQuery(undefined);
 
   const createRoom = trpc.room.create.useMutation({});
 
@@ -46,10 +47,12 @@ const RoomList = () => {
   const deleteRoom = trpc.room.delete.useMutation({});
 
   const deleteRoomHandler = (roomId: string) => {
-    if (isSignedIn) {
-      deleteRoom.mutate({ id: roomId });
-    }
+    deleteRoom.mutate({ id: roomId });
   };
+
+  useEffect(() => {
+    void refetchRoomsFromDb();
+  }, [organization]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -98,6 +101,7 @@ const RoomList = () => {
       {roomsFromDb && roomsFromDb.length > 0 && (
         <div className="overflow-x-auto">
           <table className="table text-center">
+            {/* head */}
             <thead>
               <tr className="border-white">
                 <th>Room Name</th>
@@ -116,7 +120,7 @@ const RoomList = () => {
                         className="m-2 no-underline"
                         href={`/room/${room.id}`}
                       >
-                        <IoEnterOutline className="text-xl inline-block hover:text-secondary" />
+                        <IoEnterOutline className="text-xl inline-block hover:text-primary" />
                       </Link>
 
                       <button
@@ -133,15 +137,11 @@ const RoomList = () => {
           </table>
         </div>
       )}
-      <label htmlFor="new-room-modal" className="btn btn-secondary">
+      <label htmlFor="new-room-modal" className="btn btn-primary">
         New Room
       </label>
 
-      {roomsFromDb === undefined && (
-        <div className="flex items-center justify-center">
-          <span className="loading loading-dots loading-lg"></span>
-        </div>
-      )}
+      {roomsFromDb === undefined && <Loading />}
     </div>
   );
 };
