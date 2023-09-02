@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { configureAbly, useChannel } from "@ably-labs/react-hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "@/env.mjs";
-import { useOrganization } from "@clerk/nextjs";
 import { trpc } from "../_trpc/client";
 import Loading from "./Loading";
 
@@ -14,8 +13,6 @@ export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
 const RoomList = ({ userId }: { userId: string }) => {
-  const { organization } = useOrganization();
-
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
     clientId: userId,
@@ -25,7 +22,7 @@ const RoomList = ({ userId }: { userId: string }) => {
   });
 
   useChannel(
-    `${env.NEXT_PUBLIC_APP_ENV}-${organization ? organization.id : userId}`,
+    `${env.NEXT_PUBLIC_APP_ENV}-${userId}`,
     () => void refetchRoomsFromDb()
   );
 
@@ -49,10 +46,6 @@ const RoomList = ({ userId }: { userId: string }) => {
   const deleteRoomHandler = (roomId: string) => {
     deleteRoom.mutate({ id: roomId });
   };
-
-  useEffect(() => {
-    void refetchRoomsFromDb();
-  }, [organization]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
