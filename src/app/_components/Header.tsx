@@ -11,7 +11,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ title }: NavbarProps) => {
-  const { isLoaded, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -57,13 +57,7 @@ const Navbar = ({ title }: NavbarProps) => {
         </Link>
       </div>
 
-      {!isLoaded ? (
-        <div className="flex items-center justify-center">
-          <span className="loading loading-dots loading-lg"></span>
-        </div>
-      ) : (
-        navigationMenu()
-      )}
+      {navigationMenu()}
 
       <UserButton afterSignOutUrl="/" />
     </nav>
