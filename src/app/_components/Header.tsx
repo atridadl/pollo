@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { env } from "@/env.mjs";
-import Loading from "./Loading";
 import { dark } from "@clerk/themes";
 
 interface NavbarProps {
@@ -15,7 +14,7 @@ interface NavbarProps {
 export const dynamic = "force-dynamic";
 
 const Navbar = ({ title }: NavbarProps) => {
-  const { isLoaded, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -61,7 +60,7 @@ const Navbar = ({ title }: NavbarProps) => {
         </Link>
       </div>
 
-      {!isLoaded ? <Loading /> : navigationMenu()}
+      {navigationMenu()}
       <UserButton
         afterSignOutUrl="/"
         userProfileMode="modal"
