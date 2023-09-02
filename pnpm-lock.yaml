@@ -56,9 +56,6 @@ dependencies:
   drizzle-orm:
     specifier: ^0.28.5
     version: 0.28.5(@neondatabase/serverless@0.6.0)(pg@8.11.3)
-  install:
-    specifier: ^0.13.0
-    version: 0.13.0
   json2csv:
     specifier: 6.0.0-alpha.2
     version: 6.0.0-alpha.2
@@ -68,9 +65,6 @@ dependencies:
   nextjs-cors:
     specifier: ^2.1.2
     version: 2.1.2(next@13.4.19)
-  pnpm:
-    specifier: ^8.7.1
-    version: 8.7.1
   postcss:
     specifier: ^8.4.29
     version: 8.4.29
@@ -3524,11 +3518,6 @@ packages:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
     dev: false
 
-  /install@0.13.0:
-    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
-    engines: {node: '>= 0.10'}
-    dev: false
-
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
     engines: {node: '>= 0.4'}
@@ -4540,12 +4529,6 @@ packages:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
     dev: true
-
-  /pnpm@8.7.1:
-    resolution: {integrity: sha512-Qbt3EhYUaXFS2k4FLQA7r2/eYz/JoDeG680/3UXG0Ga03LPuY4GgdvCLe+zO3M7ZnWG4VI4bAwk7QpJyfr5eqA==}
-    engines: {node: '>=16.14'}
-    hasBin: true
-    dev: false
 
   /postcss-import@15.1.0(postcss@8.4.29):
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
