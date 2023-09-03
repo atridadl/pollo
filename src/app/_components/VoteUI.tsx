@@ -21,7 +21,7 @@ import Link from "next/link";
 import { FaShieldAlt } from "react-icons/fa";
 import { RiVipCrownFill } from "react-icons/ri";
 import { env } from "@/env.mjs";
-import { isAdmin, isVIP } from "@/utils/helpers";
+import { isAdmin, isVIP, jsonToCsv } from "@/utils/helpers";
 import type { PresenceItem } from "@/utils/types";
 import { trpc } from "@/app/_trpc/client";
 import Loading from "@/app/_components/Loading";
@@ -162,16 +162,7 @@ const VoteUI = ({ user }: { user: Partial<User> }) => {
           }),
         });
 
-      const csv = parse(jsonObject);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `sp_${roomId}.csv`);
-      link.style.visibility = "hidden";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      jsonToCsv(jsonObject, `sp_${roomId}.csv`);
     }
   };
 
