@@ -25,7 +25,6 @@ import { isAdmin, isVIP, jsonToCsv } from "@/utils/helpers";
 import type { PresenceItem } from "@/utils/types";
 import { trpc } from "@/app/_trpc/client";
 import Loading from "@/app/_components/Loading";
-import { parse } from "json2csv";
 import { User } from "@clerk/nextjs/dist/types/server";
 
 export const dynamic = "force-dynamic";
