@@ -14,7 +14,7 @@ export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
 const RoomList = () => {
-  const { isSignedIn, user } = useUser();
+  const { user } = useUser();
 
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
