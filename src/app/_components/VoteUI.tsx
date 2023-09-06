@@ -25,8 +25,11 @@ import { isAdmin, isVIP, jsonToCsv } from "@/utils/helpers";
 import type { PresenceItem } from "@/utils/types";
 import { trpc } from "@/app/_trpc/client";
 import Loading from "@/app/_components/Loading";
-import { User } from "@clerk/nextjs/dist/types/server";
 import { useUser } from "@clerk/nextjs";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 const VoteUI = () => {
   const params = useParams();
