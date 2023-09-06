@@ -3,11 +3,12 @@ import { FaShieldAlt } from "react-icons/fa";
 import { GiStarFormation } from "react-icons/gi";
 import { isAdmin, isVIP } from "@/utils/helpers";
 import { currentUser } from "@clerk/nextjs";
-import { Suspense } from "react";
-import Loading from "../_components/Loading";
 
 export const runtime = "edge";
 export const preferredRegion = ["pdx1"];
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export default async function Dashboard() {
   const user = await currentUser();
@@ -24,9 +25,7 @@ export default async function Dashboard() {
         )}
       </h1>
 
-      <Suspense fallback={<Loading />}>
-        <RoomList />
-      </Suspense>
+      <RoomList />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "@/env.mjs";
 import { trpc } from "../_trpc/client";
-import Loading from "./Loading";
+import LoadingIndicator from "./LoadingIndicator";
 import { useUser } from "@clerk/nextjs";
 
 export const dynamic = "force-dynamic";
@@ -137,7 +137,7 @@ const RoomList = () => {
         New Room
       </label>
 
-      {roomsFromDb === undefined && <Loading />}
+      {roomsFromDb === undefined && <LoadingIndicator />}
     </div>
   );
 };
