@@ -24,7 +24,7 @@ import { env } from "@/env.mjs";
 import { isAdmin, isVIP, jsonToCsv } from "@/utils/helpers";
 import type { PresenceItem } from "@/utils/types";
 import { trpc } from "@/app/_trpc/client";
-import Loading from "@/app/_components/Loading";
+import LoadingIndicator from "@/app/_components/LoadingIndicator";
 import { useUser } from "@clerk/nextjs";
 
 export const dynamic = "force-dynamic";
@@ -211,7 +211,7 @@ const VoteUI = () => {
 
   // Room is loading
   if (roomFromDb === undefined) {
-    return <Loading />;
+    return <LoadingIndicator />;
     // Room has been loaded
   } else if (roomFromDb) {
     return (
