@@ -26,10 +26,12 @@ import type { PresenceItem } from "@/utils/types";
 import { trpc } from "@/app/_trpc/client";
 import Loading from "@/app/_components/Loading";
 import { User } from "@clerk/nextjs/dist/types/server";
+import { useUser } from "@clerk/nextjs";
 
-const VoteUI = ({ user }: { user: Partial<User> }) => {
+const VoteUI = () => {
   const params = useParams();
   const roomId = params?.id as string;
+  const { isSignedIn, user } = useUser();
 
   const [storyNameText, setStoryNameText] = useState<string>("");
   const [roomScale, setRoomScale] = useState<string>("");
@@ -99,7 +101,9 @@ const VoteUI = ({ user }: { user: Partial<User> }) => {
   // Helper functions
   const getVoteForCurrentUser = () => {
     if (roomFromDb) {
-      return votesFromDb && votesFromDb.find((vote) => vote.userId === user.id);
+      return (
+        votesFromDb && votesFromDb.find((vote) => vote.userId === user?.id)
+      );
     } else {
       return null;
     }
@@ -322,7 +326,7 @@ const VoteUI = ({ user }: { user: Partial<User> }) => {
         )}
 
         {!!roomFromDb &&
-          (roomFromDb.userId === user.id || isAdmin(user?.publicMetadata)) && (
+          (roomFromDb.userId === user?.id || isAdmin(user?.publicMetadata)) && (
             <>
               <div className="card card-compact bg-base-100 shadow-xl mx-auto m-4">
                 <div className="card-body flex flex-col flex-wrap">
