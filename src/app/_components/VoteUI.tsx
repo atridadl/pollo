@@ -34,7 +34,7 @@ export const fetchCache = "force-no-store";
 const VoteUI = () => {
   const params = useParams();
   const roomId = params?.id as string;
-  const { isSignedIn, user } = useUser();
+  const { user } = useUser();
 
   const [storyNameText, setStoryNameText] = useState<string>("");
   const [roomScale, setRoomScale] = useState<string>("");

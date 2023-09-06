@@ -5,7 +5,7 @@ import { Suspense } from "react";
 export const runtime = "edge";
 export const preferredRegion = ["pdx1"];
 
-export default async function Room() {
+export default function Room() {
   return (
     <div className="flex flex-col items-center justify-center text-center gap-2">
       <Suspense fallback={<Loading />}>
