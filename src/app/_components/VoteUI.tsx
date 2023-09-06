@@ -74,7 +74,7 @@ const VoteUI = () => {
   const [presenceData] = usePresence<PresenceItem>(
     `${env.NEXT_PUBLIC_APP_ENV}-${roomId}`,
     {
-      name: `${user?.firstName} ${user?.lastName}` || "",
+      name: (user?.fullName ?? user?.username) || "",
       image: user?.imageUrl || "",
       client_id: user?.id || "unknown",
       isAdmin: isAdmin(user?.publicMetadata),
