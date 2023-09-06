@@ -24,12 +24,17 @@ import { env } from "@/env.mjs";
 import { isAdmin, isVIP, jsonToCsv } from "@/utils/helpers";
 import type { PresenceItem } from "@/utils/types";
 import { trpc } from "@/app/_trpc/client";
-import Loading from "@/app/_components/Loading";
-import { User } from "@clerk/nextjs/dist/types/server";
+import LoadingIndicator from "@/app/_components/LoadingIndicator";
+import { useUser } from "@clerk/nextjs";
 
-const VoteUI = ({ user }: { user: Partial<User> }) => {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
+const VoteUI = () => {
   const params = useParams();
   const roomId = params?.id as string;
+  const { user } = useUser();
 
   const [storyNameText, setStoryNameText] = useState<string>("");
   const [roomScale, setRoomScale] = useState<string>("");
@@ -99,7 +104,9 @@ const VoteUI = ({ user }: { user: Partial<User> }) => {
   // Helper functions
   const getVoteForCurrentUser = () => {
     if (roomFromDb) {
-      return votesFromDb && votesFromDb.find((vote) => vote.userId === user.id);
+      return (
+        votesFromDb && votesFromDb.find((vote) => vote.userId === user?.id)
+      );
     } else {
       return null;
     }
@@ -204,7 +211,7 @@ const VoteUI = ({ user }: { user: Partial<User> }) => {
 
   // Room is loading
   if (roomFromDb === undefined) {
-    return <Loading />;
+    return <LoadingIndicator />;
     // Room has been loaded
   } else if (roomFromDb) {
     return (
@@ -322,7 +329,7 @@ const VoteUI = ({ user }: { user: Partial<User> }) => {
         )}
 
         {!!roomFromDb &&
-          (roomFromDb.userId === user.id || isAdmin(user?.publicMetadata)) && (
+          (roomFromDb.userId === user?.id || isAdmin(user?.publicMetadata)) && (
             <>
               <div className="card card-compact bg-base-100 shadow-xl mx-auto m-4">
                 <div className="card-body flex flex-col flex-wrap">

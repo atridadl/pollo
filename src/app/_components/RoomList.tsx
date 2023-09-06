@@ -6,19 +6,26 @@ import { useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "@/env.mjs";
 import { trpc } from "../_trpc/client";
-import Loading from "./Loading";
+import LoadingIndicator from "./LoadingIndicator";
+import { useUser } from "@clerk/nextjs";
 
-const RoomList = ({ userId }: { userId: string }) => {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
+const RoomList = () => {
+  const { user } = useUser();
+
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
-    clientId: userId,
+    clientId: user?.id,
     recover: (_, cb) => {
       cb(true);
     },
   });
 
   useChannel(
-    `${env.NEXT_PUBLIC_APP_ENV}-${userId}`,
+    `${env.NEXT_PUBLIC_APP_ENV}-${user?.id}`,
     () => void refetchRoomsFromDb()
   );
 
@@ -130,7 +137,7 @@ const RoomList = ({ userId }: { userId: string }) => {
         New Room
       </label>
 
-      {roomsFromDb === undefined && <Loading />}
+      {roomsFromDb === undefined && <LoadingIndicator />}
     </div>
   );
 };
