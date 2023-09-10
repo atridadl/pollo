@@ -1,5 +1,4 @@
-// @ts-check
-!process.env.SKIP_ENV_VALIDATION && (await import("./src/env.mjs"));
+import "./src/env.mjs";
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -15,6 +14,11 @@ const config = {
       "lh3.googleusercontent.com",
       "img.clerk.com",
     ],
+  },
+  experimental: {
+    serverActions: true,
+    serverMinification: true,
+    swcMinify: true,
   },
 };
 
