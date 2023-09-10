@@ -23,9 +23,10 @@ import { RiVipCrownFill } from "react-icons/ri";
 import { env } from "@/env.mjs";
 import { isAdmin, isVIP, jsonToCsv } from "@/utils/helpers";
 import type { PresenceItem } from "@/utils/types";
-import { trpc } from "@/app/_trpc/client";
 import LoadingIndicator from "@/app/_components/LoadingIndicator";
 import { useUser } from "@clerk/nextjs";
+import { getRoom, setRoom } from "@/server/actions/room";
+import { getVotes, setVote } from "@/server/actions/vote";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -40,14 +41,51 @@ const VoteUI = () => {
   const [roomScale, setRoomScale] = useState<string>("");
   const [copied, setCopied] = useState<boolean>(false);
 
-  const { data: roomFromDb, refetch: refetchRoomFromDb } =
-    trpc.room.get.useQuery({ id: roomId });
+  const [roomFromDb, setRoomFromDb] = useState<
+    | {
+        id: string;
+        created_at: Date | null;
+        userId: string;
+        roomName: string | null;
+        storyName: string | null;
+        visible: boolean;
+        scale: string | null;
+        logs: {
+          id: string;
+          created_at: Date | null;
+          userId: string;
+          roomId: string;
+          roomName: string | null;
+          storyName: string | null;
+          scale: string | null;
+          votes: unknown;
+        }[];
+      }
+    | undefined
+    | null
+  >();
 
-  const { data: votesFromDb, refetch: refetchVotesFromDb } =
-    trpc.vote.getAllByRoomId.useQuery({ roomId });
+  const [votesFromDb, setVotesFromDb] = useState<
+    | {
+        id: string;
+        created_at: Date | null;
+        userId: string;
+        roomId: string;
+        value: string;
+      }[]
+    | undefined
+    | null
+  >(undefined);
 
-  const setVoteInDb = trpc.vote.set.useMutation({});
-  const setRoomInDb = trpc.room.set.useMutation({});
+  const getRoomHandler = async () => {
+    const dbRoom = await getRoom(roomId);
+    setRoomFromDb(dbRoom);
+  };
+
+  const getVotesHandler = async () => {
+    const dbVotes = await getVotes(roomId);
+    setVotesFromDb(dbVotes);
+  };
 
   configureAbly({
     key: env.NEXT_PUBLIC_ABLY_PUBLIC_KEY,
@@ -63,10 +101,10 @@ const VoteUI = () => {
     },
     ({ name }) => {
       if (name === EventTypes.ROOM_UPDATE) {
-        void refetchVotesFromDb();
-        void refetchRoomFromDb();
+        void getVotesHandler();
+        void getRoomHandler();
       } else if (name === EventTypes.VOTE_UPDATE) {
-        void refetchVotesFromDb();
+        void getVotesHandler();
       }
     }
   );
@@ -98,6 +136,8 @@ const VoteUI = () => {
     if (roomFromDb) {
       setStoryNameText(roomFromDb.storyName || "");
       setRoomScale(roomFromDb.scale || "ERROR");
+    } else {
+      void getRoomHandler();
     }
   }, [roomFromDb, roomId, user]);
 
@@ -112,25 +152,26 @@ const VoteUI = () => {
     }
   };
 
-  const setVote = (value: string) => {
+  const setVoteHandler = async (value: string) => {
     if (roomFromDb) {
-      setVoteInDb.mutate({
-        roomId: roomFromDb.id,
-        value: value,
-      });
+      await setVote(value, roomFromDb.id);
     }
   };
 
-  const saveRoom = (visible: boolean, reset = false, log = false) => {
+  const setRoomHandler = async (
+    visible: boolean,
+    reset = false,
+    log = false
+  ) => {
     if (roomFromDb) {
-      setRoomInDb.mutate({
-        name: storyNameText,
-        roomId: roomFromDb.id,
-        scale: roomScale,
-        visible: visible,
-        reset: reset,
-        log: log,
-      });
+      await setRoom(
+        storyNameText,
+        visible,
+        roomScale,
+        roomFromDb.id,
+        reset,
+        log
+      );
     }
   };
 
@@ -308,7 +349,7 @@ const VoteUI = () => {
               </ul>
 
               <div className="join md:btn-group-horizontal mx-auto">
-                {roomFromDb.scale.split(",").map((scaleItem, index) => {
+                {roomFromDb.scale?.split(",").map((scaleItem, index) => {
                   return (
                     <button
                       key={index}
@@ -317,7 +358,7 @@ const VoteUI = () => {
                           ? "btn btn-active btn-primary"
                           : "btn"
                       }`}
-                      onClick={() => setVote(scaleItem)}
+                      onClick={() => void setVoteHandler(scaleItem)}
                     >
                       {scaleItem}
                     </button>
@@ -364,7 +405,9 @@ const VoteUI = () => {
                   <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">
                     <div>
                       <button
-                        onClick={() => saveRoom(!roomFromDb.visible, false)}
+                        onClick={() =>
+                          void setRoomHandler(!roomFromDb.visible, false)
+                        }
                         className="btn btn-primary inline-flex"
                       >
                         {roomFromDb.visible ? (
@@ -384,7 +427,7 @@ const VoteUI = () => {
                     <div>
                       <button
                         onClick={() =>
-                          saveRoom(
+                          void setRoomHandler(
                             false,
                             true,
                             roomFromDb.storyName === storyNameText ||
