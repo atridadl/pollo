@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoEnterOutline, IoTrashBinOutline } from "react-icons/io5";
 import { env } from "env.mjs";
 import LoadingIndicator from "@/_components/LoadingIndicator";
@@ -48,6 +48,10 @@ const RoomList = () => {
       method: "DELETE",
     });
   };
+
+  useEffect(() => {
+    void getRoomsHandler();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
