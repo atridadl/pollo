@@ -1,13 +1,13 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-import { db } from "@/_lib/db";
-import { logs, rooms, votes } from "@/_lib/schema";
-import { eq } from "drizzle-orm";
 import { publishToChannel } from "@/_lib/ably";
-import { EventTypes } from "@/_utils/types";
+import { db } from "@/_lib/db";
 import { invalidateCache } from "@/_lib/redis";
-import { createId } from "@paralleldrive/cuid2";
+import { logs, rooms, votes } from "@/_lib/schema";
+import { EventTypes } from "@/_utils/types";
 import { getAuth } from "@clerk/nextjs/server";
+import { createId } from "@paralleldrive/cuid2";
+import { eq } from "drizzle-orm";
 
 export const runtime = "edge";
 export const preferredRegion = ["pdx1"];
@@ -30,10 +30,17 @@ export async function GET(
     },
   });
 
-  return NextResponse.json(roomFromDb, {
-    status: 200,
-    statusText: "SUCCESS",
-  });
+  if (roomFromDb) {
+    return NextResponse.json(roomFromDb, {
+      status: 200,
+      statusText: "SUCCESS",
+    });
+  } else {
+    return new NextResponse("ROOM NOT FOUND", {
+      status: 404,
+      statusText: "ROOM NOT FOUND",
+    });
+  }
 }
 
 export async function DELETE(
