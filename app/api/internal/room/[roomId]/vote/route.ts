@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-import { invalidateCache } from "@/_lib/redis";
 import { db } from "@/_lib/db";
 import { votes } from "@/_lib/schema";
 import { createId } from "@paralleldrive/cuid2";
