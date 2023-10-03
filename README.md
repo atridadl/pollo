@@ -9,8 +9,8 @@ A scrum poker tool that helps agile teams plan their sprints in real-time.
 - Rendering method: SSR SPA
 - Hosting: Vercel
 - Real-time pub/sub: Ably
-- ORM: Prisma
-- Database: PostgreSQL
+- ORM: Drizzle ORM
+- Database: Turso (libSQL)
 - Cache: Redis
 
 ## Versioning
