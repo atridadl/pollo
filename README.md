@@ -11,7 +11,7 @@ A scrum poker tool that helps agile teams plan their sprints in real-time.
 - Real-time pub/sub: Ably
 - ORM: Drizzle ORM
 - Database: Turso (libSQL)
-- Cache: Redis
+- Cache: Upstash (Redis)
 
 ## Versioning
 
