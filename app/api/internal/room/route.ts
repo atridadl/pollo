@@ -10,7 +10,6 @@ import { EventTypes } from "@/_utils/types";
 import { getAuth } from "@clerk/nextjs/server";
 
 export const runtime = "edge";
-export const preferredRegion = ["pdx1"];
 
 export async function GET(request: Request) {
   const { userId } = getAuth(request as NextRequest);
@@ -55,7 +54,7 @@ export async function POST(request: Request) {
       roomName: reqBody.name,
       storyName: "First Story!",
       scale: "0.5,1,2,3,5,8",
-      visible: false,
+      visible: 0,
     })
     .returning();
 
