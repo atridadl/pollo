@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-import { invalidateCache } from "@/_lib/redis";
 import { db } from "@/_lib/db";
 import { votes } from "@/_lib/schema";
 import { createId } from "@paralleldrive/cuid2";
@@ -47,18 +46,10 @@ export async function PUT(
   const success = upsertResult.rowsAffected > 0;
 
   if (success) {
-    await invalidateCache(`kv_votes_${params.roomId}`);
-
     await publishToChannel(
       `${params.roomId}`,
       EventTypes.VOTE_UPDATE,
       reqBody.value
-    );
-
-    await publishToChannel(
-      `stats`,
-      EventTypes.STATS_UPDATE,
-      JSON.stringify(success)
     );
 
     return NextResponse.json(upsertResult, {
