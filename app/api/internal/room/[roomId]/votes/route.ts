@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { fetchCache, setCache } from "@/_lib/redis";
 import { db } from "@/_lib/db";
 import { votes } from "@/_lib/schema";
 import { eq } from "drizzle-orm";
