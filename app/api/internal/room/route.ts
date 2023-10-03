@@ -50,6 +50,7 @@ export async function POST(request: Request) {
     .insert(rooms)
     .values({
       id: `room_${createId()}`,
+      created_at: Date.now().toString(),
       userId: userId || "",
       roomName: reqBody.name,
       storyName: "First Story!",

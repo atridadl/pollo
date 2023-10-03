@@ -132,6 +132,7 @@ export async function PUT(
       oldRoom &&
         (await db.insert(logs).values({
           id: `log_${createId()}`,
+          created_at: Date.now().toString(),
           userId: userId || "",
           roomId: params.roomId,
           scale: oldRoom.scale,
