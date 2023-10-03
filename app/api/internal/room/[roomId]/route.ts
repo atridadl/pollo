@@ -10,7 +10,6 @@ import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
 
 export const runtime = "edge";
-export const preferredRegion = ["pdx1"];
 
 export async function GET(
   request: Request,
@@ -107,7 +106,7 @@ export async function PUT(
 
   const reqBody = (await request.json()) as {
     name: string;
-    visible: boolean;
+    visible: number;
     scale: string;
     reset: boolean;
     log: boolean;
@@ -136,12 +135,14 @@ export async function PUT(
           userId: userId || "",
           roomId: params.roomId,
           scale: oldRoom.scale,
-          votes: oldRoom.votes.map((vote) => {
-            return {
-              name: vote.userId,
-              value: vote.value,
-            };
-          }),
+          votes: JSON.stringify(
+            oldRoom.votes.map((vote) => {
+              return {
+                name: vote.userId,
+                value: vote.value,
+              };
+            })
+          ),
           roomName: oldRoom.roomName,
           storyName: oldRoom.storyName,
         }));
