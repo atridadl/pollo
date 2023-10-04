@@ -14,14 +14,14 @@ import { useParams } from "next/navigation";
 import { FaShieldAlt } from "react-icons/fa";
 import { GiStarFormation } from "react-icons/gi";
 import {
-    IoCheckmarkCircleOutline,
-    IoCopyOutline,
-    IoDownloadOutline,
-    IoEyeOffOutline,
-    IoEyeOutline,
-    IoHourglassOutline,
-    IoReloadOutline,
-    IoSaveOutline,
+  IoCheckmarkCircleOutline,
+  IoCopyOutline,
+  IoDownloadOutline,
+  IoEyeOffOutline,
+  IoEyeOutline,
+  IoHourglassOutline,
+  IoReloadOutline,
+  IoSaveOutline,
 } from "react-icons/io5";
 import { RiVipCrownFill } from "react-icons/ri";
 import NoRoomUI from "./NoRoomUI";
@@ -43,12 +43,14 @@ const VoteUI = () => {
     fetch(`/api/internal/room/${roomId}`, {
       cache: "no-cache",
       method: "GET",
-    }).then(async (response) => {
-      const dbRoom = (await response.json()) as RoomResponse;
-      setRoomFromDb(dbRoom);
-    }).catch(() => {
-      setRoomFromDb(null);
-    });
+    })
+      .then(async (response) => {
+        const dbRoom = (await response.json()) as RoomResponse;
+        setRoomFromDb(dbRoom);
+      })
+      .catch(() => {
+        setRoomFromDb(null);
+      });
   };
 
   const getVotesHandler = async () => {
@@ -199,7 +201,7 @@ const VoteUI = () => {
 
     if (visible) {
       if (!!matchedVote) {
-        return <div>{ matchedVote.value }</div>;
+        return <div>{matchedVote.value}</div>;
       } else {
         return <IoHourglassOutline className="text-xl text-error" />;
       }
@@ -219,30 +221,32 @@ const VoteUI = () => {
   } else if (roomFromDb) {
     return (
       <div className="flex flex-col gap-4 text-center justify-center items-center">
-        <div className="text-2xl">{ roomFromDb.roomName }</div>
+        <div className="text-2xl">{roomFromDb.roomName}</div>
         <div className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md">
           <div>ID:</div>
-          <div>{ roomFromDb.id }</div>
+          <div>{roomFromDb.id}</div>
 
           <button>
-            { copied ? (
+            {copied ? (
               <IoCheckmarkCircleOutline className="mx-1 text-success animate-bounce" />
             ) : (
               <IoCopyOutline
                 className="mx-1 hover:text-primary"
-                onClick={ copyRoomURLHandler }
+                onClick={copyRoomURLHandler}
               ></IoCopyOutline>
-            ) }
+            )}
           </button>
         </div>
 
-        { roomFromDb && (
+        {roomFromDb && (
           <div className="card card-compact bg-base-100 shadow-xl">
             <div className="card-body">
-              <h2 className="card-title">Story: { roomFromDb.storyName }</h2>
+              <h2 className="card-title mx-auto">
+                Story: {roomFromDb.storyName}
+              </h2>
 
               <ul className="p-0 flex flex-row flex-wrap justify-center items-center text-ceter gap-4">
-                { presenceData &&
+                {presenceData &&
                   presenceData
                     .filter(
                       (value, index, self) =>
@@ -255,80 +259,81 @@ const VoteUI = () => {
                     .map((presenceItem) => {
                       return (
                         <li
-                          key={ presenceItem.clientId }
+                          key={presenceItem.clientId}
                           className="flex flex-row items-center justify-center gap-2"
                         >
                           <div className="w-10 rounded-full avatar">
                             <Image
-                              src={ presenceItem.data.image }
-                              alt={ `${presenceItem.data.name}'s Profile Picture` }
-                              height={ 32 }
-                              width={ 32 }
+                              src={presenceItem.data.image}
+                              alt={`${presenceItem.data.name}'s Profile Picture`}
+                              height={32}
+                              width={32}
                             />
                           </div>
 
                           <p className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md">
-                            { presenceItem.data.name }{ " " }
-                            { presenceItem.data.isAdmin && (
+                            {presenceItem.data.name}{" "}
+                            {presenceItem.data.isAdmin && (
                               <span
                                 className="tooltip tooltip-primary"
                                 data-tip="Admin"
                               >
                                 <FaShieldAlt className="inline-block text-primary" />
                               </span>
-                            ) }{ " " }
-                            { presenceItem.data.isVIP && (
+                            )}{" "}
+                            {presenceItem.data.isVIP && (
                               <span
                                 className="tooltip tooltip-secondary"
                                 data-tip="VIP"
                               >
                                 <GiStarFormation className="inline-block text-secondary" />
                               </span>
-                            ) }{ " " }
-                            { presenceItem.clientId === roomFromDb.userId && (
+                            )}{" "}
+                            {presenceItem.clientId === roomFromDb.userId && (
                               <span
                                 className="tooltip tooltip-warning"
                                 data-tip="Room Owner"
                               >
                                 <RiVipCrownFill className="inline-block text-yellow-500" />
                               </span>
-                            ) }
-                            { " : " }
+                            )}
+                            {" : "}
                           </p>
 
-                          { roomFromDb &&
+                          {roomFromDb &&
                             votesFromDb &&
                             voteString(
                               roomFromDb.visible,
                               votesFromDb,
                               presenceItem.data
-                            ) }
+                            )}
                         </li>
                       );
-                    }) }
+                    })}
               </ul>
 
-              <div className="join md:btn-group-horizontal">
-                { roomFromDb.scale?.split(",").map((scaleItem, index) => {
+              <div className="join md:btn-group-horizontal mx-auto">
+                {roomFromDb.scale?.split(",").map((scaleItem, index) => {
                   return (
                     <button
-                      key={ index }
-                      className={ `join-item ${getVoteForCurrentUser()?.value === scaleItem
-                        ? "btn btn-active btn-primary"
-                        : "btn"
-                        }` }
-                      onClick={ () => void setVoteHandler(scaleItem) }
+                      key={index}
+                      className={`join-item ${
+                        getVoteForCurrentUser()?.value === scaleItem
+                          ? "btn btn-active btn-primary"
+                          : "btn"
+                      }`}
+                      onClick={() => void setVoteHandler(scaleItem)}
                     >
-                      { scaleItem }
+                      {scaleItem}
                     </button>
                   );
-                }) }
+                })}
               </div>
             </div>
           </div>
-        ) }
+        )}
 
-        { !!roomFromDb &&
+        {!!roomFromDb &&
           (roomFromDb.userId === user?.id || isAdmin(user?.publicMetadata)) && (
             <>
               <div className="card card-compact bg-base-100 shadow-xl">
@@ -336,40 +341,40 @@ const VoteUI = () => {
                   <h2 className="card-title">Room Settings</h2>
 
                   <label className="label">
-                    { "Vote Scale (Comma Separated):" }{ " " }
+                    {"Vote Scale (Comma Separated):"}{" "}
                   </label>
 
                   <input
                     type="text"
                     placeholder="Scale (Comma Separated)"
                     className="input input-bordered"
-                    value={ roomScale }
-                    onChange={ (event) => {
+                    value={roomScale}
+                    onChange={(event) => {
                       setRoomScale(event.target.value);
-                    } }
+                    }}
                   />
 
-                  <label className="label">{ "Story Name:" } </label>
+                  <label className="label">{"Story Name:"} </label>
 
                   <input
                     type="text"
                     placeholder="Story Name"
                     className="input input-bordered"
-                    value={ storyNameText }
-                    onChange={ (event) => {
+                    value={storyNameText}
+                    onChange={(event) => {
                       setStoryNameText(event.target.value);
-                    } }
+                    }}
                   />
 
                   <div className="flex flex-row flex-wrap text-center items-center justify-center gap-2">
                     <div>
                       <button
-                        onClick={ () =>
+                        onClick={() =>
                           void setRoomHandler(!roomFromDb.visible, false)
                         }
                         className="btn btn-primary inline-flex"
                       >
-                        { roomFromDb.visible ? (
+                        {roomFromDb.visible ? (
                           <>
                             <IoEyeOffOutline className="text-xl mr-1" />
                             Hide
@@ -379,13 +384,13 @@ const VoteUI = () => {
                             <IoEyeOutline className="text-xl mr-1" />
                             Show
                           </>
-                        ) }
+                        )}
                       </button>
                     </div>
 
                     <div>
                       <button
-                        onClick={ () =>
+                        onClick={() =>
                           void setRoomHandler(
                             false,
                             true,
@@ -402,8 +407,8 @@ const VoteUI = () => {
                           ).length <= 1
                         }
                       >
-                        { roomFromDb.storyName === storyNameText ||
-                          votesFromDb?.length === 0 ? (
+                        {roomFromDb.storyName === storyNameText ||
+                        votesFromDb?.length === 0 ? (
                           <>
                             <IoReloadOutline className="text-xl mr-1" /> Reset
                           </>
@@ -411,16 +416,16 @@ const VoteUI = () => {
                           <>
                             <IoSaveOutline className="text-xl mr-1" /> Save
                           </>
-                        ) }
+                        )}
                       </button>
                     </div>
 
-                    { votesFromDb &&
+                    {votesFromDb &&
                       (roomFromDb.logs.length > 0 ||
                         votesFromDb.length > 0) && (
                         <div>
                           <button
-                            onClick={ () => downloadLogs() }
+                            onClick={() => downloadLogs()}
                             className="btn btn-primary inline-flex hover:animate-pulse"
                           >
                             <>
@@ -428,12 +433,12 @@ const VoteUI = () => {
                             </>
                           </button>
                         </div>
-                      ) }
+                      )}
                   </div>
                 </div>
               </div>
             </>
-          ) }
+          )}
       </div>
     );
     // Room does not exist
