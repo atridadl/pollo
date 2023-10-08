@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../_lib/db";
 import { rooms } from "../_lib/schema";
 import { env } from "env.mjs";
-import { track } from "@vercel/analytics";
+import { track } from "@vercel/analytics/server";
 
 export const onUserDeletedHandler = async (userId: string | undefined) => {
   if (!userId) {
