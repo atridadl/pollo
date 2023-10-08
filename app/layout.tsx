@@ -3,6 +3,7 @@ import Footer from "@/_components/Footer";
 import Header from "@/_components/Header";
 import "@/globals.css";
 import { dark } from "@clerk/themes";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   title: "Sprint Padawan",
@@ -30,6 +31,7 @@ export default function RootLayout({
             <Header title={metadata.title} />
             <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
               {children}
+              <Analytics />
             </div>
             <Footer />
           </ClerkLoaded>
