@@ -12,7 +12,7 @@ export const onUserDeletedHandler = async (userId: string | undefined) => {
   try {
     await db.delete(rooms).where(eq(rooms.userId, userId));
 
-    track("User Deleted");
+    void track("User Deleted");
     return true;
   } catch (error) {
     return false;
@@ -44,7 +44,7 @@ export const onUserCreatedHandler = async (userId: string | undefined) => {
   );
 
   if (userUpdateResponse.ok) {
-    track("User Created");
+    void track("User Created");
   }
 
   return userUpdateResponse.ok;
