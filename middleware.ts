@@ -1,6 +1,6 @@
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { authMiddleware } from "@clerk/nextjs";
 import { validateRequest } from "./app/_lib/unkey";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { env } from "./env.mjs";
@@ -16,13 +16,9 @@ const rateLimit = new Ratelimit({
 
 export default authMiddleware({
   ignoredRoutes: ["/"],
-  publicRoutes: [
-    "/api/external/public/(.*)",
-    "/api/webhooks",
-    "/api/webhooks/(.*)",
-  ],
-  apiRoutes: ["/api/external/private/(.*)", "/api/internal/(.*)"],
-  beforeAuth: async (req) => {
+  publicRoutes: ["/api/external/(.*)", "/api/webhooks/(.*)"],
+  apiRoutes: ["/api/internal/(.*)"],
+  beforeAuth: async (req: NextRequest) => {
     const { success } = await rateLimit.limit(req.ip || "");
     if (success) {
       if (req.nextUrl.pathname.includes("/api/external/private")) {
