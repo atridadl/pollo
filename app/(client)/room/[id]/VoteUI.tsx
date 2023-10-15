@@ -39,9 +39,14 @@ const VoteUI = () => {
 
   const queryClient = useQueryClient();
 
-  const { data: roomFromDb } = useQuery({
+  const {
+    data: roomFromDb,
+    isLoading: roomFromDbLoading,
+    isFetching: roomFromDbFetching,
+  } = useQuery({
     queryKey: ["room"],
     queryFn: getRoomHandler,
+    retry: false,
   });
 
   const { data: votesFromDb } = useQuery({
@@ -312,11 +317,11 @@ const VoteUI = () => {
   // UI
   // =================================
   // Room is loading
-  if (roomFromDb === undefined) {
+  if (roomFromDbLoading || roomFromDbFetching) {
     return <LoadingIndicator />;
     // Room has been loaded
-  } else if (roomFromDb) {
-    return (
+  } else {
+    return roomFromDb ? (
       <div className="flex flex-col gap-4 text-center justify-center items-center">
         <div className="text-2xl">{roomFromDb.roomName}</div>
         <div className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md">
@@ -542,10 +547,9 @@ const VoteUI = () => {
             </>
           )}
       </div>
+    ) : (
+      <NoRoomUI />
     );
-    // Room does not exist
-  } else {
-    return <NoRoomUI />;
   }
 };
 
