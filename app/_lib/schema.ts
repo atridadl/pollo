@@ -36,6 +36,7 @@ export const votes = sqliteTable(
   (table) => {
     return {
       unq: unique().on(table.userId, table.roomId),
+      userVoteIdx: index("user_vote_idx").on(table.userId),
     };
   }
 );
@@ -61,7 +62,7 @@ export const logs = sqliteTable(
   },
   (table) => {
     return {
-      userIdx: index("user_idx").on(table.userId),
+      userLogIdx: index("user_log_idx").on(table.userId),
     };
   }
 );
