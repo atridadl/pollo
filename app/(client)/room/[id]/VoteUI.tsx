@@ -173,11 +173,6 @@ const VoteUI = () => {
     reset: boolean | undefined;
     log: boolean | undefined;
   }) {
-    console.log({
-      visible: data.visible,
-      reset: data.reset ? data.reset : false,
-      log: data.log ? data.log : false,
-    });
     if (roomFromDb) {
       await fetch(`/api/internal/room/${roomId}`, {
         cache: "no-cache",
