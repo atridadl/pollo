@@ -39,10 +39,7 @@ const VoteUI = () => {
 
   const queryClient = useQueryClient();
 
-  const {
-    data: roomFromDb,
-    isLoading: roomFromDbLoading,
-  } = useQuery({
+  const { data: roomFromDb, isLoading: roomFromDbLoading } = useQuery({
     queryKey: ["room"],
     queryFn: getRoomHandler,
     retry: false,
@@ -83,7 +80,7 @@ const VoteUI = () => {
     },
     // If the mutation fails,
     // use the context returned from onMutate to roll back
-    onError: (err, newTodo, context) => {
+    onError: (err, newVote, context) => {
       queryClient.setQueryData(["votes"], context?.previousVotes);
     },
     // Always refetch after error or success:
@@ -116,9 +113,9 @@ const VoteUI = () => {
               id: old?.id,
               userId: old?.userId,
               logs: old?.logs,
-              storyName: storyNameText,
+              storyName: data.reset ? storyNameText : old.storyName,
               visible: data.visible,
-              scale: roomScale,
+              scale: data.reset ? roomScale : old.scale,
               reset: data.reset,
               log: data.log,
             }
@@ -130,7 +127,7 @@ const VoteUI = () => {
     },
     // If the mutation fails,
     // use the context returned from onMutate to roll back
-    onError: (err, newTodo, context) => {
+    onError: (err, newRoom, context) => {
       queryClient.setQueryData(["room"], context?.previousRoom);
     },
     // Always refetch after error or success:
@@ -176,6 +173,11 @@ const VoteUI = () => {
     reset: boolean | undefined;
     log: boolean | undefined;
   }) {
+    console.log({
+      visible: data.visible,
+      reset: data.reset ? data.reset : false,
+      log: data.log ? data.log : false,
+    });
     if (roomFromDb) {
       await fetch(`/api/internal/room/${roomId}`, {
         cache: "no-cache",
@@ -307,11 +309,8 @@ const VoteUI = () => {
     if (roomFromDb) {
       setStoryNameText(roomFromDb.storyName || "");
       setRoomScale(roomFromDb.scale || "ERROR");
-    } else {
-      void getRoomHandler();
-      void getVotesHandler();
     }
-  }, [roomFromDb, roomId, user]);
+  }, [roomFromDb]);
 
   // UI
   // =================================
