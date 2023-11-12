@@ -9,10 +9,25 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: [
-      "avatars.githubusercontent.com",
-      "lh3.googleusercontent.com",
-      "img.clerk.com",
+    remotePatterns: [
+      {
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/.*",
+        protocol: "https",
+        port: "443",
+      },
+      {
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/.*",
+        protocol: "https",
+        port: "443",
+      },
+      {
+        hostname: "img.clerk.com",
+        pathname: "/.*",
+        protocol: "https",
+        port: "443",
+      },
     ],
   },
 };
