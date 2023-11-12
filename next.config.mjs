@@ -12,21 +12,12 @@ const config = {
     remotePatterns: [
       {
         hostname: "avatars.githubusercontent.com",
-        pathname: "/.*",
-        protocol: "https",
-        port: "443",
       },
       {
         hostname: "lh3.googleusercontent.com",
-        pathname: "/.*",
-        protocol: "https",
-        port: "443",
       },
       {
         hostname: "img.clerk.com",
-        pathname: "/.*",
-        protocol: "https",
-        port: "443",
       },
     ],
   },
