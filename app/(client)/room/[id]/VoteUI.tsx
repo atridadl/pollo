@@ -210,7 +210,7 @@ const VoteUI = () => {
             userId: item.userId,
             roomId: item.roomId,
             roomName: item.roomName,
-            topicName: item.storyName,
+            storyName: item.storyName,
             scale: item.scale,
             votes: item.votes,
           };
@@ -221,7 +221,7 @@ const VoteUI = () => {
           userId: roomFromDb.userId,
           roomId: roomFromDb.id,
           roomName: roomFromDb.roomName,
-          topicName: storyNameText,
+          storyName: storyNameText,
           scale: roomScale,
           votes: votesFromDb.map((vote) => {
             return {
@@ -337,7 +337,7 @@ const VoteUI = () => {
           <div className="card card-compact bg-base-100 shadow-xl">
             <div className="card-body">
               <h2 className="card-title mx-auto">
-                Topic: {roomFromDb.storyName}
+                Story: {roomFromDb.storyName}
               </h2>
 
               <ul className="p-0 flex flex-row flex-wrap justify-center items-center text-ceter gap-4">
@@ -449,11 +449,11 @@ const VoteUI = () => {
                     }}
                   />
 
-                  <label className="label">{"Topic Name:"} </label>
+                  <label className="label">{"Story Name:"} </label>
 
                   <input
                     type="text"
-                    placeholder="Topic Name"
+                    placeholder="Story Name"
                     className="input input-bordered"
                     value={storyNameText}
                     onChange={(event) => {
