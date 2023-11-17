@@ -2,7 +2,6 @@ import { eq } from "drizzle-orm";
 import { db } from "../_lib/db";
 import { rooms } from "../_lib/schema";
 import { env } from "env.mjs";
-import { track } from "@vercel/analytics/server";
 
 export const onUserDeletedHandler = async (userId: string | undefined) => {
   if (!userId) {
@@ -12,7 +11,6 @@ export const onUserDeletedHandler = async (userId: string | undefined) => {
   try {
     await db.delete(rooms).where(eq(rooms.userId, userId));
 
-    void track("User Deleted");
     return true;
   } catch (error) {
     return false;
@@ -42,10 +40,6 @@ export const onUserCreatedHandler = async (userId: string | undefined) => {
       }),
     }
   );
-
-  if (userUpdateResponse.ok) {
-    void track("User Created");
-  }
 
   return userUpdateResponse.ok;
 };
