@@ -13,6 +13,13 @@ A scrum poker tool that helps agile teams plan their sprints in real-time.
 - Database: Turso (libSQL)
 - Cache: Upstash (Redis)
 
+## Environment Vars
+
+Add variables to the following places:
+
+- Github Secrets
+- Fly Secrets
+
 ## Versioning
 
 - I use a bastardized version of semantic versioning. I jump to a new minor release whenever I feel like I made enough patch releases.
