@@ -9,8 +9,6 @@ import { publishToChannel } from "@/_lib/ably";
 import { EventTypes } from "@/_utils/types";
 import { getAuth } from "@clerk/nextjs/server";
 
-export const runtime = "edge";
-
 export async function GET(request: Request) {
   const { userId } = getAuth(request as NextRequest);
 

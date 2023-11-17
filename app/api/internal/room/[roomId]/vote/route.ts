@@ -7,8 +7,6 @@ import { publishToChannel } from "@/_lib/ably";
 import { EventTypes } from "@/_utils/types";
 import { getAuth } from "@clerk/nextjs/server";
 
-export const runtime = "edge";
-
 export async function PUT(
   request: Request,
   { params }: { params: { roomId: string } }
