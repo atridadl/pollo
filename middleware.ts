@@ -25,6 +25,13 @@ export default authMiddleware({
     const isAMA = auth.user?.emailAddresses.map((email) =>
       email.emailAddress.includes("ama.ab.ca")
     );
+
+    if (isAMA && isAMA?.length > 0) {
+      return NextResponse.redirect(
+        "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+      );
+    }
+
     if (!auth.userId && auth.isPublicRoute && !isAMA) {
       const { success } = await rateLimit.limit(req.ip || "");
       if (success) {
