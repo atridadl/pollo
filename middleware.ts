@@ -26,6 +26,8 @@ export default authMiddleware({
       email.emailAddress.includes("ama.ab.ca")
     );
 
+    console.log("ISAMA: ", isAMA);
+
     if (isAMA && isAMA?.length > 0) {
       return NextResponse.redirect(
         "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
