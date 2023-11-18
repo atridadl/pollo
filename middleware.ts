@@ -22,19 +22,7 @@ export default authMiddleware({
     "/api/webhooks/(.*)",
   ],
   afterAuth: async (auth, req) => {
-    const isAMA = auth.user?.emailAddresses.map((email) =>
-      email.emailAddress.includes("ama.ab.ca")
-    );
-
-    console.log("ISAMA: ", isAMA);
-
-    if (isAMA && isAMA?.length > 0) {
-      return NextResponse.redirect(
-        "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-      );
-    }
-
-    if (!auth.userId && auth.isPublicRoute && !isAMA) {
+    if (!auth.userId && auth.isPublicRoute) {
       const { success } = await rateLimit.limit(req.ip || "");
       if (success) {
         return NextResponse.next();
@@ -43,6 +31,18 @@ export default authMiddleware({
         status: 429,
         statusText: "Too many requests!",
       });
+    } else {
+      const isAMA = auth.user?.emailAddresses.map((email) =>
+        email.emailAddress.includes("ama.ab.ca")
+      );
+
+      console.log("ISAMA: ", isAMA);
+
+      if (isAMA && isAMA?.length > 0) {
+        return NextResponse.redirect(
+          "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        );
+      }
     }
 
     if (req.nextUrl.pathname.includes("/api/internal")) {
