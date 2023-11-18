@@ -1,4 +1,8 @@
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import {
+  authMiddleware,
+  redirectToSignIn,
+  auth as authFunc,
+} from "@clerk/nextjs";
 import { validateRequest } from "./app/_lib/unkey";
 import { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
@@ -33,14 +37,9 @@ export default authMiddleware({
       });
     }
 
-    if (auth.userId && !auth.isPublicRoute) {
-      const isAMA = auth.user?.emailAddresses.map((email) =>
-        email.emailAddress.includes("ama.ab.ca")
-      );
-
-      console.log("ISAMA: ", isAMA);
-
-      if (isAMA && isAMA?.length > 0) {
+    if (auth.userId) {
+      const email = auth.sessionClaims.email as string;
+      if (email.includes("ama.ab.ca")) {
         return NextResponse.redirect(
           "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         );
