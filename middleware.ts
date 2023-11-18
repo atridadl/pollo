@@ -1,8 +1,4 @@
-import {
-  authMiddleware,
-  redirectToSignIn,
-  auth as authFunc,
-} from "@clerk/nextjs";
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
 import { validateRequest } from "./app/_lib/unkey";
 import { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
