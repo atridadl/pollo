@@ -22,7 +22,10 @@ export default authMiddleware({
     "/api/webhooks/(.*)",
   ],
   afterAuth: async (auth, req) => {
-    if (!auth.userId && auth.isPublicRoute) {
+    const isAMA = auth.user?.emailAddresses.map((email) =>
+      email.emailAddress.includes("ama.ab.ca")
+    );
+    if (!auth.userId && auth.isPublicRoute && !isAMA) {
       const { success } = await rateLimit.limit(req.ip || "");
       if (success) {
         return NextResponse.next();
