@@ -43,7 +43,7 @@
     "@flydotio/dockerfile": "^0.4.10",
     "@tanstack/eslint-plugin-query": "5.8.4",
     "@types/eslint": "8.44.7",
-    "@types/node": "20.9.1",
+    "@types/node": "20.9.2",
     "@types/react": "18.2.37",
     "@typescript-eslint/eslint-plugin": "6.11.0",
     "@typescript-eslint/parser": "6.11.0",
