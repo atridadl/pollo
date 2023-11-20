@@ -5,6 +5,8 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { env } from "./env.mjs";
 
+const shitList = ["ama.ab.ca"];
+
 const rateLimit = new Ratelimit({
   redis: Redis.fromEnv(),
   limiter: Ratelimit.slidingWindow(
@@ -35,9 +37,17 @@ export default authMiddleware({
 
     if (auth.userId) {
       const email = auth.sessionClaims.email as string;
-      if (email.includes("ama.ab.ca")) {
+
+      let isShit = false;
+      shitList.forEach((shitItem) => {
+        if (email.includes(shitItem)) {
+          isShit = true;
+        }
+      });
+
+      if (isShit) {
         return NextResponse.redirect(
-          "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          "https://www.youtube.com/watch?v=L_jWHffIx5E"
         );
       }
     }
