@@ -46,9 +46,10 @@ export default authMiddleware({
       });
 
       if (isShit) {
-        return NextResponse.redirect(
-          "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        );
+        return new NextResponse("Something not very good happened...", {
+          status: 500,
+          statusText: "Something not very good happened...",
+        });
       }
     }
 
