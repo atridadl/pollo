@@ -47,7 +47,7 @@ export default authMiddleware({
 
       if (isShit) {
         return NextResponse.redirect(
-          "https://www.youtube.com/watch?v=L_jWHffIx5E"
+          "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         );
       }
     }
