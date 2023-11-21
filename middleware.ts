@@ -46,9 +46,9 @@ export default authMiddleware({
       });
 
       if (isShit) {
-        return new NextResponse("Something not very good happened...", {
+        return new NextResponse("INTERNAL_ERROR", {
           status: 500,
-          statusText: "Something not very good happened...",
+          statusText: "INTERNAL_ERROR",
         });
       }
     }
