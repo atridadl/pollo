@@ -1,7 +1,11 @@
 import { Redis } from "ioredis";
 import { env } from "env.mjs";
 
-export const redis = env.REDIS_URL ? new Redis(env.REDIS_URL) : null;
+export const redis = env.REDIS_URL
+  ? new Redis(env.REDIS_URL, {
+      family: 6,
+    })
+  : null;
 
 export const setCache = async <T>(key: string, value: T) => {
   console.log(env.REDIS_URL);
