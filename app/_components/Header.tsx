@@ -3,7 +3,6 @@
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { env } from "env.mjs";
 
 interface NavbarProps {
   title: string;
