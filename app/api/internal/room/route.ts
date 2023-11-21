@@ -8,17 +8,21 @@ import { createId } from "@paralleldrive/cuid2";
 import { publishToChannel } from "@/_lib/ably";
 import { EventTypes } from "@/_utils/types";
 import { getAuth } from "@clerk/nextjs/server";
+import { env } from "env.mjs";
 
 export async function GET(request: Request) {
   const { userId } = getAuth(request as NextRequest);
 
-  const cachedResult = await fetchCache<
-    {
-      id: string;
-      createdAt: Date;
-      roomName: string;
-    }[]
-  >(`kv_roomlist_${userId}`);
+  const cachedResult =
+    env.APP_ENV === "production"
+      ? await fetchCache<
+          {
+            id: string;
+            createdAt: Date;
+            roomName: string;
+          }[]
+        >(`kv_roomlist_${userId}`)
+      : null;
 
   if (cachedResult) {
     return NextResponse.json(cachedResult, {
@@ -30,7 +34,8 @@ export async function GET(request: Request) {
       where: eq(rooms.userId, userId || ""),
     });
 
-    await setCache(`kv_roomlist_${userId}`, roomList);
+    if (env.APP_ENV === "production")
+      await setCache(`kv_roomlist_${userId}`, roomList);
 
     return NextResponse.json(roomList, {
       status: 200,
@@ -60,7 +65,8 @@ export async function POST(request: Request) {
   const success = room.length > 0;
 
   if (room) {
-    await invalidateCache(`kv_roomlist_${userId}`);
+    if (env.APP_ENV === "production")
+      await invalidateCache(`kv_roomlist_${userId}`);
 
     await publishToChannel(
       `${userId}`,

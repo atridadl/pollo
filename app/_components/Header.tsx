@@ -48,10 +48,7 @@ const Navbar = ({ title }: NavbarProps) => {
             width={32}
             height={32}
           />
-          <span className="hidden md:inline-flex">
-            {title}
-            {env.NEXT_PUBLIC_APP_ENV === "development" && " >> Staging"}
-          </span>
+          <span className="hidden md:inline-flex">{title}</span>
         </Link>
       </div>
 

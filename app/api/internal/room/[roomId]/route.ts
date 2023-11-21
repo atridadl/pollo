@@ -8,6 +8,7 @@ import { EventTypes } from "@/_utils/types";
 import { getAuth } from "@clerk/nextjs/server";
 import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
+import { env } from "env.mjs";
 
 export async function GET(
   request: Request,
@@ -61,7 +62,8 @@ export async function DELETE(
   const success = deletedRoom.length > 0;
 
   if (success) {
-    await invalidateCache(`kv_roomlist_${userId}`);
+    if (env.APP_ENV === "production")
+      await invalidateCache(`kv_roomlist_${userId}`);
 
     await publishToMultipleChannels(
       [`${userId}`, `${params.roomId}`],
