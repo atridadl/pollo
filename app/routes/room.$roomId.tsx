@@ -2,7 +2,6 @@ import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
 import { AblyProvider, useChannel, usePresence } from "ably/react";
-import {} from "ably/react";
 import * as Ably from "ably";
 import {
   CheckCircleIcon,
