@@ -38,7 +38,7 @@ export const loader: LoaderFunction = async (args) => {
   return {};
 };
 
-export default function Room() {
+function RoomContent() {
   const { user } = useUser();
   const params = useParams();
   const roomId = params.roomId;
@@ -476,4 +476,16 @@ export default function Room() {
       </span>
     );
   }
+}
+
+export default function Room() {
+  const client = new Ably.Realtime.Promise({
+    authUrl: "/api/ably",
+  });
+
+  return (
+    <AblyProvider client={client}>
+      <RoomContent />
+    </AblyProvider>
+  );
 }
