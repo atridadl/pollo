@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { eventStream } from "remix-utils/sse/server";
 import { db } from "~/services/db.server";
 import { emitter } from "~/services/emitter.server";
-import { presence } from "~/services/schema";
+import { presence, rooms } from "~/services/schema";
 import { createId } from "@paralleldrive/cuid2";
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -23,6 +23,17 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     return json("Not Signed In!", {
       status: 403,
       statusText: "UNAUTHORIZED!",
+    });
+  }
+
+  const room = await db.query.rooms.findFirst({
+    where: eq(rooms.id, roomId),
+  });
+
+  if (!room) {
+    return json("Room is Missing!", {
+      status: 404,
+      statusText: "BAD REQUEST!",
     });
   }
 

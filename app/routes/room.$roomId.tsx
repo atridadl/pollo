@@ -47,7 +47,9 @@ export default function Room() {
     event: `${user?.id}-${params.roomId}`,
   });
 
-  let roomFromDbParsed = JSON.parse(roomFromDb!) as RoomResponse | undefined;
+  let roomFromDbParsed = (roomFromDb ? JSON.parse(roomFromDb!) : undefined) as
+    | RoomResponse
+    | undefined;
   let votesFromDbParsed = JSON.parse(votesFromDb!) as VoteResponse | undefined;
   let presenceDateParsed = JSON.parse(presenceData!) as
     | PresenceItem[]
@@ -124,7 +126,7 @@ export default function Room() {
   };
 
   const downloadLogs = () => {
-    if (roomFromDb && votesFromDb) {
+    if (roomFromDbParsed && votesFromDbParsed) {
       const jsonObject = roomFromDbParsed?.logs
         .map((item) => {
           return {
@@ -206,16 +208,16 @@ export default function Room() {
   // UI
   // =================================
   // Room is loading
-  if (!roomFromDbParsed) {
+  if (roomFromDbParsed === null) {
     return <LoadingIndicator />;
     // Room has been loaded
   } else {
     return roomFromDb ? (
       <div className="flex flex-col gap-4 text-center justify-center items-center">
-        <div className="text-2xl">{roomFromDbParsed.roomName}</div>
+        <div className="text-2xl">{roomFromDbParsed?.roomName}</div>
         <div className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md">
           <div>ID:</div>
-          <div>{roomFromDbParsed.id}</div>
+          <div>{roomFromDbParsed?.id}</div>
 
           <button>
             {copied ? (
@@ -233,7 +235,7 @@ export default function Room() {
           <div className="card card-compact bg-base-100 shadow-xl">
             <div className="card-body">
               <h2 className="card-title mx-auto">
-                Story: {roomFromDbParsed.storyName}
+                Story: {roomFromDbParsed?.storyName}
               </h2>
 
               <ul className="p-0 flex flex-row flex-wrap justify-center items-center text-ceter gap-4">
@@ -304,7 +306,7 @@ export default function Room() {
               </ul>
 
               <div className="join md:btn-group-horizontal mx-auto">
-                {roomFromDbParsed.scale?.split(",").map((scaleItem, index) => {
+                {roomFromDbParsed?.scale?.split(",").map((scaleItem, index) => {
                   return (
                     <button
                       key={index}
