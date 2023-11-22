@@ -28,6 +28,10 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   const name = sessionClaims.name as string;
   const image = sessionClaims.image as string;
+  const metadata = sessionClaims.metadata as {
+    isAdmin: boolean;
+    isVIP: boolean;
+  };
 
   return eventStream(request.signal, function setup(send) {
     async function handler() {
@@ -37,7 +41,15 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
       send({
         event: `${userId}-${params.roomId}`,
-        data: JSON.stringify(presenceData),
+        data: JSON.stringify(
+          presenceData.map((presenceItem) => {
+            return {
+              ...presenceItem,
+              isAdmin: presenceItem.isAdmin === 0 ? false : true,
+              isVIP: presenceItem.isVIP === 0 ? false : true,
+            };
+          })
+        ),
       });
     }
 
@@ -48,8 +60,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
         userFullName: name,
         userId: userId,
         userImageUrl: image,
-        isAdmin: 0,
-        isVIP: 0,
+        isAdmin: metadata.isAdmin ? 1 : 0,
+        isVIP: metadata.isVIP ? 1 : 0,
       })
       .onConflictDoUpdate({
         target: [presence.userId, presence.roomId],
@@ -58,8 +70,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
           userFullName: name,
           userId: userId,
           userImageUrl: image,
-          isAdmin: 0,
-          isVIP: 0,
+          isAdmin: metadata.isAdmin ? 1 : 0,
+          isVIP: metadata.isVIP ? 1 : 0,
         },
       })
       .then(async () => {
