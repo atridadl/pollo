@@ -1,4 +1,3 @@
-import { useUser } from "@clerk/remix";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Link } from "@remix-run/react";
@@ -6,6 +5,7 @@ import { LogInIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import LoadingIndicator from "~/components/LoadingIndicator";
 import { useEventSource } from "remix-utils/sse/react";
+import { useAuth } from "@clerk/remix";
 
 export const loader: LoaderFunction = async (args) => {
   const { userId } = await getAuth(args);
@@ -34,8 +34,9 @@ type RoomsResponse =
   | null
   | undefined;
 
-export default function Index() {
-  let roomsFromDb = useEventSource("/api/room/get/all", { event: "roomlist" });
+export default function Dashboard() {
+  const { userId } = useAuth();
+  let roomsFromDb = useEventSource("/api/room/get/all", { event: userId! });
 
   let roomsFromDbParsed = JSON.parse(roomsFromDb!) as RoomsResponse;
 

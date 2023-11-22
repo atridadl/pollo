@@ -18,6 +18,8 @@
     "@remix-run/node": "^2.3.0",
     "@remix-run/react": "^2.3.0",
     "@remix-run/serve": "^2.3.0",
+    "ably": "1.2.47",
+    "csv42": "^5.0.0",
     "drizzle-orm": "^0.29.0",
     "isbot": "^3.7.1",
     "lucide-react": "^0.292.0",

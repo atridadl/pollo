@@ -10,10 +10,12 @@ import { rooms } from "~/services/schema";
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const { userId } = await getAuth({ context, params, request });
 
-  if (!userId) {
-    return json("Not Signed In!", {
-      status: 403,
-      statusText: "UNAUTHORIZED!",
+  const roomId = params.roomId;
+
+  if (!roomId) {
+    return json("RoomId Missing!", {
+      status: 400,
+      statusText: "BAD REQUEST!",
     });
   }
 
@@ -22,8 +24,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       const roomList = await db.query.rooms.findMany({
         where: eq(rooms.userId, userId || ""),
       });
-
-      send({ event: userId!, data: JSON.stringify(roomList) });
+      send({ event: roomId, data: JSON.stringify(roomList) });
     }
 
     // Initial fetch
@@ -32,7 +33,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
         where: eq(rooms.userId, userId || ""),
       })
       .then((roomList) => {
-        send({ event: userId!, data: JSON.stringify(roomList) });
+        send({ event: roomId, data: JSON.stringify(roomList) });
       });
 
     emitter.on("roomlist", handler);
