@@ -73,3 +73,23 @@ export const logsRelations = relations(logs, ({ one }) => ({
     references: [rooms.id],
   }),
 }));
+
+export const presence = sqliteTable(
+  "Presence",
+  {
+    id: text("id", { length: 255 }).notNull().primaryKey(),
+    userId: text("userId", { length: 255 }).notNull(),
+    userFullName: text("userFullName", { length: 255 }).notNull(),
+    userImageUrl: text("userImageUrl", { length: 255 }).notNull(),
+    isVIP: integer("isVIP").default(0).notNull(),
+    isAdmin: integer("isAdmin").default(0).notNull(),
+    roomId: text("roomId", { length: 255 })
+      .notNull()
+      .references(() => rooms.id, { onDelete: "cascade" }),
+  },
+  (table) => {
+    return {
+      unq: unique().on(table.userId, table.roomId),
+    };
+  }
+);

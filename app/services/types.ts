@@ -8,9 +8,12 @@ export const EventTypes = {
 export type EventType = BetterEnum<typeof EventTypes>;
 
 export interface PresenceItem {
-  name: string;
-  image: string;
-  client_id: string;
+  id: string;
+  userId: string;
+  userFullName: string;
+  userImageUrl: string;
+  roomId: string;
+  value: string;
   isAdmin: boolean;
   isVIP: boolean;
 }
@@ -66,11 +69,3 @@ export type VoteResponse =
     }[]
   | null
   | undefined;
-
-export type AblyTokenResponse = {
-  token: string;
-  issued: number;
-  expires: number;
-  capability: string;
-  clientId: string;
-};

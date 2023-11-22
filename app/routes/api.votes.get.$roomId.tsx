@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { eventStream } from "remix-utils/sse/server";
 import { db } from "~/services/db.server";
 import { emitter } from "~/services/emitter.server";
-import { rooms } from "~/services/schema";
+import { votes } from "~/services/schema";
 
 // Get Room List
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
@@ -28,39 +28,28 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   return eventStream(request.signal, function setup(send) {
     async function handler() {
-      const roomFromDb = await db.query.rooms.findFirst({
-        where: eq(rooms.id, roomId || ""),
-        with: {
-          logs: true,
-        },
+      const votesByRoomId = await db.query.votes.findMany({
+        where: eq(votes.roomId, roomId || ""),
       });
-      send({
-        event: `room-${roomId}`,
-        data: JSON.stringify(roomFromDb),
-      });
+      send({ event: `votes-${roomId}`, data: JSON.stringify(votesByRoomId) });
     }
 
     // Initial fetch
-    console.log("HI");
-    db.query.rooms
-      .findFirst({
-        where: eq(rooms.id, roomId || ""),
-        with: {
-          logs: true,
-        },
+    db.query.votes
+      .findMany({
+        where: eq(votes.roomId, roomId || ""),
       })
-      .then((roomFromDb) => {
-        console.log(roomId);
+      .then((votesByRoomId) => {
         return send({
-          event: `room-${roomId}`,
-          data: JSON.stringify(roomFromDb),
+          event: `votes-${roomId}`,
+          data: JSON.stringify(votesByRoomId),
         });
       });
 
-    emitter.on("room", handler);
+    emitter.on("votes", handler);
 
     return function clear() {
-      emitter.off("room", handler);
+      emitter.off("votes", handler);
     };
   });
 }

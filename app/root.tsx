@@ -1,5 +1,5 @@
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
-import { ClerkApp, ClerkErrorBoundary } from "@clerk/remix";
+import { ClerkApp, ClerkErrorBoundary, ClerkLoaded } from "@clerk/remix";
 import type {
   LinksFunction,
   LoaderFunction,
@@ -42,11 +42,14 @@ function App() {
         <Links />
       </head>
       <body className="h-[100%] w-[100%] fixed overflow-y-auto">
-        <Header title={"Sprint Padawan"} />
-        <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
-          <Outlet />
-        </div>
-        <Footer />
+        <ClerkLoaded>
+          <Header title={"Sprint Padawan"} />
+          <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
+            <Outlet />
+          </div>
+          <Footer />
+        </ClerkLoaded>
+
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

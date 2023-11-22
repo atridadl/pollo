@@ -3,7 +3,7 @@ import { ActionFunctionArgs, json } from "@remix-run/node";
 import { createId } from "@paralleldrive/cuid2";
 import { db } from "~/services/db.server";
 import { emitter } from "~/services/emitter.server";
-import { rooms } from "~/services/schema";
+import { votes } from "~/services/schema";
 
 export async function action({ request, params, context }: ActionFunctionArgs) {
   const { userId } = await getAuth({ context, params, request });
@@ -16,26 +16,33 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   }
 
   const data = await request.json();
+  const roomId = params.roomId;
 
-  const room = await db
-    .insert(rooms)
+  const upsertResult = await db
+    .insert(votes)
     .values({
-      id: `room_${createId()}`,
+      id: `vote_${createId()}`,
       created_at: Date.now().toString(),
+      value: data.value,
       userId: userId || "",
-      roomName: data.name,
-      storyName: "First Story!",
-      scale: "0.5,1,2,3,5,8",
-      visible: 0,
+      roomId: roomId || "",
     })
-    .returning();
+    .onConflictDoUpdate({
+      target: [votes.userId, votes.roomId],
+      set: {
+        created_at: Date.now().toString(),
+        value: data.value,
+        userId: userId || "",
+        roomId: roomId,
+      },
+    });
 
-  const success = room.length > 0;
+  const success = upsertResult.rowsAffected > 0;
 
   if (success) {
-    emitter.emit("roomlist");
+    emitter.emit("votes");
 
-    return json(room, {
+    return json(upsertResult, {
       status: 200,
       statusText: "SUCCESS",
     });

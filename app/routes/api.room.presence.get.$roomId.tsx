@@ -1,12 +1,11 @@
 import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { eventStream } from "remix-utils/sse/server";
 import { db } from "~/services/db.server";
 import { emitter } from "~/services/emitter.server";
-import { rooms } from "~/services/schema";
+import { presence, rooms } from "~/services/schema";
 
-// Get Room List
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
   const { userId } = await getAuth({ context, params, request });
 
@@ -28,39 +27,38 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   return eventStream(request.signal, function setup(send) {
     async function handler() {
-      const roomFromDb = await db.query.rooms.findFirst({
-        where: eq(rooms.id, roomId || ""),
-        with: {
-          logs: true,
-        },
+      const presenceData = await db.query.presence.findMany({
+        where: and(
+          eq(presence.userId, userId || ""),
+          eq(presence.roomId, roomId || "")
+        ),
       });
+
       send({
-        event: `room-${roomId}`,
-        data: JSON.stringify(roomFromDb),
+        event: `${userId}-${params.roomId}`,
+        data: JSON.stringify(presenceData),
       });
     }
 
     // Initial fetch
-    console.log("HI");
-    db.query.rooms
-      .findFirst({
-        where: eq(rooms.id, roomId || ""),
-        with: {
-          logs: true,
-        },
+    db.query.presence
+      .findMany({
+        where: and(
+          eq(presence.userId, userId || ""),
+          eq(presence.roomId, roomId || "")
+        ),
       })
-      .then((roomFromDb) => {
-        console.log(roomId);
+      .then((presenceData) => {
         return send({
-          event: `room-${roomId}`,
-          data: JSON.stringify(roomFromDb),
+          event: `${userId}-${params.roomId}`,
+          data: JSON.stringify(presenceData),
         });
       });
 
-    emitter.on("room", handler);
+    emitter.on("presence", handler);
 
     return function clear() {
-      emitter.off("room", handler);
+      emitter.off("presence", handler);
     };
   });
 }

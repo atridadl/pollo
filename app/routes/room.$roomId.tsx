@@ -1,8 +1,6 @@
 import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
-import { AblyProvider, useChannel, usePresence } from "ably/react";
-import * as Ably from "ably";
 import {
   CheckCircleIcon,
   CopyIcon,
@@ -19,13 +17,8 @@ import {
 import { useEffect, useState } from "react";
 import LoadingIndicator from "~/components/LoadingIndicator";
 import { useEventSource } from "remix-utils/sse/react";
-import {
-  EventTypes,
-  PresenceItem,
-  RoomResponse,
-  VoteResponse,
-} from "~/services/types";
-import { isAdmin, isVIP, jsonToCsv } from "~/services/helpers";
+import { PresenceItem, RoomResponse, VoteResponse } from "~/services/types";
+import { isAdmin, jsonToCsv } from "~/services/helpers";
 import { useUser } from "@clerk/remix";
 
 export const loader: LoaderFunction = async (args) => {
@@ -37,21 +30,32 @@ export const loader: LoaderFunction = async (args) => {
   return {};
 };
 
-function RoomContent() {
+export default function Room() {
   const { user } = useUser();
   const params = useParams();
   const roomId = params.roomId;
 
-  let roomFromDb = useEventSource("/api/room/get", { event: params.roomId });
-  let votesFromDb = useEventSource("/api/votes/get/all", {
-    event: params.roomId,
+  let roomFromDb = useEventSource(`/api/room/get/${roomId}`, {
+    event: `room-${params.roomId}`,
   });
 
-  let roomFromDbParsed = JSON.parse(roomFromDb!) as RoomResponse;
-  let votesFromDbParsed = JSON.parse(votesFromDb!) as VoteResponse;
+  let votesFromDb = useEventSource(`/api/votes/get/${roomId}`, {
+    event: `votes-${params.roomId}`,
+  });
+
+  let presenceData = useEventSource(`/api/room/presence/get/${roomId}`, {
+    event: `${user?.id}-${params.roomId}`,
+  });
+
+  let roomFromDbParsed = JSON.parse(roomFromDb!) as RoomResponse | undefined;
+  let votesFromDbParsed = JSON.parse(votesFromDb!) as VoteResponse | undefined;
+  let presenceDateParsed = JSON.parse(presenceData!) as
+    | PresenceItem[]
+    | undefined;
 
   const [storyNameText, setStoryNameText] = useState<string>("");
   const [roomScale, setRoomScale] = useState<string>("");
+
   const [copied, setCopied] = useState<boolean>(false);
 
   // Handlers
@@ -76,7 +80,7 @@ function RoomContent() {
 
   async function setVoteHandler(value: string) {
     if (roomFromDb) {
-      await fetch(`/api/internal/room/${roomId}/vote`, {
+      await fetch(`/api/vote/set/${roomId}`, {
         cache: "no-cache",
         method: "PUT",
         body: JSON.stringify({
@@ -92,7 +96,7 @@ function RoomContent() {
     log: boolean | undefined;
   }) {
     if (roomFromDb) {
-      await fetch(`/api/internal/room/${roomId}`, {
+      await fetch(`/api/room/set/${roomId}`, {
         cache: "no-cache",
         method: "PUT",
         body: JSON.stringify({
@@ -174,7 +178,7 @@ function RoomContent() {
     presenceItem: PresenceItem
   ) => {
     const matchedVote = votes?.find(
-      (vote) => vote.userId === presenceItem.client_id
+      (vote) => vote.userId === presenceItem.userId
     );
 
     if (visible) {
@@ -192,31 +196,6 @@ function RoomContent() {
 
   // Hooks
   // =================================
-  useChannel(
-    {
-      channelName: `${process.env.APP_ENV}-${roomId}`,
-    },
-    ({ name }: { name: string }) => {
-      if (name === EventTypes.ROOM_UPDATE) {
-        void getRoomHandler();
-        void getVotesHandler();
-      } else if (name === EventTypes.VOTE_UPDATE) {
-        void getVotesHandler();
-      }
-    }
-  );
-
-  const { presenceData } = usePresence<PresenceItem>(
-    `${process.env.APP_ENV}-${roomId}`,
-    {
-      name: (user?.fullName ?? user?.username) || "",
-      image: user?.imageUrl || "",
-      client_id: user?.id || "unknown",
-      isAdmin: isAdmin(user?.publicMetadata),
-      isVIP: isVIP(user?.publicMetadata),
-    }
-  );
-
   useEffect(() => {
     if (roomFromDb) {
       setStoryNameText(roomFromDbParsed?.storyName || "");
@@ -259,33 +238,32 @@ function RoomContent() {
 
               <ul className="p-0 flex flex-row flex-wrap justify-center items-center text-ceter gap-4">
                 {presenceData &&
-                  presenceData
-                    .filter(
+                  presenceDateParsed
+                    ?.filter(
                       (value, index, self) =>
                         index ===
                         self.findIndex(
-                          (presenceItem) =>
-                            presenceItem.clientId === value.clientId
+                          (presenceItem) => presenceItem.userId === value.userId
                         )
                     )
                     .map((presenceItem) => {
                       return (
                         <li
-                          key={presenceItem.clientId}
+                          key={presenceItem.userId}
                           className="flex flex-row items-center justify-center gap-2"
                         >
                           <div className="w-10 rounded-full avatar">
                             <img
-                              src={presenceItem.data.image}
-                              alt={`${presenceItem.data.name}'s Profile Picture`}
+                              src={presenceItem.userImageUrl}
+                              alt={`${presenceItem.userFullName}'s Profile Picture`}
                               height={32}
                               width={32}
                             />
                           </div>
 
                           <p className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md">
-                            {presenceItem.data.name}{" "}
-                            {presenceItem.data.isAdmin && (
+                            {presenceItem.userFullName}{" "}
+                            {presenceItem.isAdmin && (
                               <span
                                 className="tooltip tooltip-primary"
                                 data-tip="Admin"
@@ -293,7 +271,7 @@ function RoomContent() {
                                 <ShieldIcon className="inline-block text-primary" />
                               </span>
                             )}{" "}
-                            {presenceItem.data.isVIP && (
+                            {presenceItem.isVIP && (
                               <span
                                 className="tooltip tooltip-secondary"
                                 data-tip="VIP"
@@ -301,7 +279,7 @@ function RoomContent() {
                                 <StarIcon className="inline-block text-secondary" />
                               </span>
                             )}{" "}
-                            {presenceItem.clientId ===
+                            {presenceItem.userId ===
                               roomFromDbParsed?.userId && (
                               <span
                                 className="tooltip tooltip-warning"
@@ -318,7 +296,7 @@ function RoomContent() {
                             voteString(
                               roomFromDbParsed?.visible!,
                               votesFromDbParsed,
-                              presenceItem.data
+                              presenceItem
                             )}
                         </li>
                       );
@@ -475,16 +453,4 @@ function RoomContent() {
       </span>
     );
   }
-}
-
-export default function Room() {
-  const client = new Ably.Realtime.Promise({
-    authUrl: "/api/ably",
-  });
-
-  return (
-    <AblyProvider client={client}>
-      <RoomContent />
-    </AblyProvider>
-  );
 }
