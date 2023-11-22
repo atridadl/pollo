@@ -41,7 +41,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     }
 
     // Initial fetch
-    console.log("HI");
     db.query.rooms
       .findFirst({
         where: eq(rooms.id, roomId || ""),
@@ -50,7 +49,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
         },
       })
       .then((roomFromDb) => {
-        console.log(roomId);
         return send({
           event: `room-${roomId}`,
           data: JSON.stringify(roomFromDb),
