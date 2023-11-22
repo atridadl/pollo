@@ -4,10 +4,11 @@ import { and, eq } from "drizzle-orm";
 import { eventStream } from "remix-utils/sse/server";
 import { db } from "~/services/db.server";
 import { emitter } from "~/services/emitter.server";
-import { presence, rooms } from "~/services/schema";
+import { presence } from "~/services/schema";
+import { createId } from "@paralleldrive/cuid2";
 
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
-  const { userId } = await getAuth({ context, params, request });
+  const { userId, sessionClaims } = await getAuth({ context, params, request });
 
   const roomId = params.roomId;
 
@@ -25,13 +26,13 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     });
   }
 
+  const name = sessionClaims.name as string;
+  const image = sessionClaims.image as string;
+
   return eventStream(request.signal, function setup(send) {
     async function handler() {
       const presenceData = await db.query.presence.findMany({
-        where: and(
-          eq(presence.userId, userId || ""),
-          eq(presence.roomId, roomId || "")
-        ),
+        where: and(eq(presence.roomId, roomId || "")),
       });
 
       send({
@@ -40,24 +41,41 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
       });
     }
 
-    // Initial fetch
-    db.query.presence
-      .findMany({
-        where: and(
-          eq(presence.userId, userId || ""),
-          eq(presence.roomId, roomId || "")
-        ),
+    db.insert(presence)
+      .values({
+        id: `presence_${createId()}`,
+        roomId: roomId || "",
+        userFullName: name,
+        userId: userId,
+        userImageUrl: image,
+        isAdmin: 0,
+        isVIP: 0,
       })
-      .then((presenceData) => {
-        return send({
-          event: `${userId}-${params.roomId}`,
-          data: JSON.stringify(presenceData),
-        });
+      .onConflictDoUpdate({
+        target: [presence.userId, presence.roomId],
+        set: {
+          roomId: roomId || "",
+          userFullName: name,
+          userId: userId,
+          userImageUrl: image,
+          isAdmin: 0,
+          isVIP: 0,
+        },
+      })
+      .then(async () => {
+        emitter.emit("presence");
       });
 
+    // Initial fetch
     emitter.on("presence", handler);
 
     return function clear() {
+      db.delete(presence)
+        .where(and(eq(presence.roomId, roomId), eq(presence.userId, userId)))
+        .returning()
+        .then(async () => {
+          emitter.emit("presence");
+        });
       emitter.off("presence", handler);
     };
   });
