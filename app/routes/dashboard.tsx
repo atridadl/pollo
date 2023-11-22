@@ -35,16 +35,14 @@ type RoomsResponse =
   | undefined;
 
 export default function Index() {
-  const { user } = useUser();
-  let roomsFromDb = useEventSource("/api/room", { event: "roomlist" });
+  let roomsFromDb = useEventSource("/api/room/get/all", { event: "roomlist" });
 
   let roomsFromDbParsed = JSON.parse(roomsFromDb!) as RoomsResponse;
 
   const [roomName, setRoomName] = useState<string>("");
-  // const [roomsFromDb, setRoomsFromDb] = useState<RoomsResponse>(undefined);
 
   const createRoomHandler = async () => {
-    await fetch("/api/room", {
+    await fetch("/api/room/create", {
       cache: "no-cache",
       method: "POST",
       body: JSON.stringify({ name: roomName }),
@@ -56,25 +54,12 @@ export default function Index() {
       false;
   };
 
-  // const getRoomsHandler = async () => {
-  //   const dbRoomsResponse = await fetch("/api/room", {
-  //     cache: "no-cache",
-  //     method: "GET",
-  //   });
-  //   const dbRooms = (await dbRoomsResponse.json()) as RoomsResponse;
-  //   setRoomsFromDb(dbRooms);
-  // };
-
   const deleteRoomHandler = async (roomId: string) => {
-    await fetch(`/api/room/${roomId}`, {
+    await fetch(`/api/room/delete/${roomId}`, {
       cache: "no-cache",
       method: "DELETE",
     });
   };
-
-  // useEffect(() => {
-  //   void getRoomsHandler();
-  // }, []);
 
   return (
     <div className="flex flex-col items-center justify-center gap-8">
@@ -163,7 +148,7 @@ export default function Index() {
         New Room
       </label>
 
-      {roomsFromDb === undefined && <LoadingIndicator />}
+      {!roomsFromDbParsed && <LoadingIndicator />}
     </div>
   );
 }
