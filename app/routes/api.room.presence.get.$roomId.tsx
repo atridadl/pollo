@@ -26,17 +26,6 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     });
   }
 
-  const room = await db.query.rooms.findFirst({
-    where: eq(rooms.id, roomId),
-  });
-
-  if (!room) {
-    return json("Room is Missing!", {
-      status: 404,
-      statusText: "BAD REQUEST!",
-    });
-  }
-
   const name = sessionClaims.name as string;
   const image = sessionClaims.image as string;
   const metadata = sessionClaims.metadata as {

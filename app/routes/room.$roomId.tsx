@@ -1,6 +1,6 @@
 import { getAuth } from "@clerk/remix/ssr.server";
-import { LoaderFunction, redirect } from "@remix-run/node";
-import { Link, useParams } from "@remix-run/react";
+import { LoaderFunction, json, redirect } from "@remix-run/node";
+import { Link, useParams, useRouteError } from "@remix-run/react";
 import {
   CheckCircleIcon,
   CopyIcon,
@@ -20,15 +20,66 @@ import { useEventSource } from "remix-utils/sse/react";
 import { PresenceItem, RoomResponse, VoteResponse } from "~/services/types";
 import { isAdmin, jsonToCsv } from "~/services/helpers";
 import { useUser } from "@clerk/remix";
+import { db } from "~/services/db.server";
+import { rooms } from "~/services/schema";
+import { eq } from "drizzle-orm";
+import { shitList } from "~/services/consts";
 
+// Loader
 export const loader: LoaderFunction = async (args) => {
-  const { userId } = await getAuth(args);
+  const { userId, sessionClaims } = await getAuth(args);
 
   if (!userId) {
     return redirect("/sign-in");
   }
+
+  const room = await db.query.rooms.findFirst({
+    where: eq(rooms.id, args.params.roomId as string),
+  });
+
+  if (!room) {
+    throw new Response(null, {
+      status: 404,
+      statusText: "Not Found",
+    });
+  }
+
+  let isShit = false;
+  const email = sessionClaims.email as string;
+
+  shitList.forEach((shitItem) => {
+    if (email.includes(shitItem)) {
+      isShit = true;
+    }
+  });
+
+  if (isShit) {
+    return redirect(
+      "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"
+    );
+  }
+
   return {};
 };
+
+// Checks for 404
+export function ErrorBoundary() {
+  return (
+    <span className="text-center">
+      <h1 className="text-5xl font-bold m-2">4️⃣0️⃣4️⃣</h1>
+      <h1 className="text-5xl font-bold m-2">
+        Oops! This room does not appear to exist, or may have been deleted! 😢
+      </h1>
+      <Link
+        about="Back to home."
+        to="/"
+        className="btn btn-secondary normal-case text-xl m-2"
+      >
+        Back to Home
+      </Link>
+    </span>
+  );
+}
 
 export default function Room() {
   const { user } = useUser();
@@ -49,7 +100,9 @@ export default function Room() {
 
   let roomFromDbParsed = (roomFromDb ? JSON.parse(roomFromDb!) : undefined) as
     | RoomResponse
+    | null
     | undefined;
+
   let votesFromDbParsed = JSON.parse(votesFromDb!) as VoteResponse | undefined;
   let presenceDateParsed = JSON.parse(presenceData!) as
     | PresenceItem[]
@@ -62,24 +115,6 @@ export default function Room() {
 
   // Handlers
   // =================================
-  async function getRoomHandler() {
-    const response = await fetch(`/api/internal/room/${roomId}`, {
-      cache: "no-cache",
-      method: "GET",
-    });
-
-    return (await response.json()) as RoomResponse;
-  }
-
-  async function getVotesHandler() {
-    const dbVotesResponse = await fetch(`/api/internal/room/${roomId}/votes`, {
-      cache: "no-cache",
-      method: "GET",
-    });
-    const dbVotes = (await dbVotesResponse.json()) as VoteResponse;
-    return dbVotes;
-  }
-
   async function setVoteHandler(value: string) {
     if (roomFromDb) {
       await fetch(`/api/vote/set/${roomId}`, {
@@ -208,11 +243,11 @@ export default function Room() {
   // UI
   // =================================
   // Room is loading
-  if (roomFromDbParsed === null) {
+  if (!roomFromDbParsed) {
     return <LoadingIndicator />;
     // Room has been loaded
   } else {
-    return roomFromDb ? (
+    return (
       <div className="flex flex-col gap-4 text-center justify-center items-center">
         <div className="text-2xl">{roomFromDbParsed?.roomName}</div>
         <div className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md">
@@ -439,20 +474,6 @@ export default function Room() {
             </>
           )}
       </div>
-    ) : (
-      <span className="text-center">
-        <h1 className="text-5xl font-bold m-2">4️⃣0️⃣4️⃣</h1>
-        <h1 className="text-5xl font-bold m-2">
-          Oops! This room does not appear to exist, or may have been deleted! 😢
-        </h1>
-        <Link
-          about="Back to home."
-          to="/"
-          className="btn btn-secondary normal-case text-xl m-2"
-        >
-          Back to Home
-        </Link>
-      </span>
     );
   }
 }
