@@ -1,6 +1,6 @@
 import { getAuth } from "@clerk/remix/ssr.server";
-import { LoaderFunction, json, redirect } from "@remix-run/node";
-import { Link, useParams, useRouteError } from "@remix-run/react";
+import { LoaderFunction, redirect } from "@remix-run/node";
+import { Link, useParams } from "@remix-run/react";
 import {
   CheckCircleIcon,
   CopyIcon,
