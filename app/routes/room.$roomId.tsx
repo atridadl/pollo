@@ -54,9 +54,10 @@ export const loader: LoaderFunction = async (args) => {
   });
 
   if (isShit) {
-    return redirect(
-      "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUXbmV2ZXIgZ29ubmEgZ2l2ZSB5b3UgdXA%3D"
-    );
+    throw new Response(null, {
+      status: 404,
+      statusText: "Not Found",
+    });
   }
 
   return {};
@@ -322,7 +323,7 @@ export default function Room() {
                                 className="tooltip tooltip-warning"
                                 data-tip="Room Owner"
                               >
-                                <CrownIcon className="inline-block text-yellow-500" />
+                                <CrownIcon className="inline-block text-warning" />
                               </span>
                             )}
                             {" : "}
