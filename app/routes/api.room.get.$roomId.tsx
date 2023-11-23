@@ -31,9 +31,9 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   });
 
   if (!room) {
-    return json("Room is Missing!", {
+    return json(undefined, {
       status: 404,
-      statusText: "BAD REQUEST!",
+      statusText: "NOT FOUND!",
     });
   }
 

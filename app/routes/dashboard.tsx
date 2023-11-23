@@ -13,7 +13,8 @@ export const loader: LoaderFunction = async (args) => {
   if (!userId) {
     return redirect("/sign-in");
   }
-  return {};
+
+  if (userId) return {};
 };
 
 type RoomsResponse =
