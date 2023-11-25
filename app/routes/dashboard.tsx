@@ -1,11 +1,12 @@
 import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Link } from "@remix-run/react";
-import { LogInIcon, TrashIcon } from "lucide-react";
+import { LogInIcon, ShieldIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import LoadingIndicator from "~/components/LoadingIndicator";
 import { useEventSource } from "remix-utils/sse/react";
-import { useAuth } from "@clerk/remix";
+import { useUser } from "@clerk/remix";
+import { isAdmin, isVIP } from "~/services/helpers";
 
 export const loader: LoaderFunction = async (args) => {
   const { userId } = await getAuth(args);
@@ -36,8 +37,8 @@ type RoomsResponse =
   | undefined;
 
 export default function Dashboard() {
-  const { userId } = useAuth();
-  let roomsFromDb = useEventSource("/api/room/get/all", { event: userId! });
+  const { user, isLoaded } = useUser();
+  let roomsFromDb = useEventSource("/api/room/get/all", { event: user?.id! });
 
   let roomsFromDbParsed = JSON.parse(roomsFromDb!) as RoomsResponse;
 
@@ -107,6 +108,16 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <h1 className="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold">
+        Hi, {user?.firstName ?? user?.username}!{" "}
+        {isAdmin(user?.publicMetadata) && (
+          <ShieldIcon className="inline-block text-primary" />
+        )}
+        {isVIP(user?.publicMetadata) && (
+          <ShieldIcon className="inline-block text-secondary" />
+        )}
+      </h1>
+
       {roomsFromDbParsed && roomsFromDbParsed.length > 0 && (
         <div className="overflow-x-auto">
           <table className="table text-center">
@@ -150,7 +161,7 @@ export default function Dashboard() {
         New Room
       </label>
 
-      {!roomsFromDbParsed && <LoadingIndicator />}
+      {(!roomsFromDbParsed || !isLoaded) && <LoadingIndicator />}
     </div>
   );
 }
