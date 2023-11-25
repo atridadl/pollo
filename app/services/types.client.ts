@@ -1,11 +1,4 @@
-type BetterEnum<T> = T[keyof T];
-
-export const EventTypes = {
-  ROOM_LIST_UPDATE: "room.list.update",
-  ROOM_UPDATE: "room.update",
-  VOTE_UPDATE: "vote.update",
-} as const;
-export type EventType = BetterEnum<typeof EventTypes>;
+// type BetterEnum<T> = T[keyof T];
 
 export interface PresenceItem {
   id: string;
