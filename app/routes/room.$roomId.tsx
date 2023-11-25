@@ -17,13 +17,17 @@ import {
 import { useEffect, useState } from "react";
 import LoadingIndicator from "~/components/LoadingIndicator";
 import { useEventSource } from "remix-utils/sse/react";
-import { PresenceItem, RoomResponse, VoteResponse } from "~/services/types";
-import { isAdmin, jsonToCsv } from "~/services/helpers";
+import {
+  PresenceItem,
+  RoomResponse,
+  VoteResponse,
+} from "~/services/types.client";
+import { isAdmin, jsonToCsv } from "~/services/helpers.client";
 import { useUser } from "@clerk/remix";
 import { db } from "~/services/db.server";
 import { rooms } from "~/services/schema";
 import { eq } from "drizzle-orm";
-import { shitList } from "~/services/consts";
+import { shitList } from "~/services/consts.server";
 
 // Loader
 export const loader: LoaderFunction = async (args) => {

@@ -6,7 +6,7 @@ import { useState } from "react";
 import LoadingIndicator from "~/components/LoadingIndicator";
 import { useEventSource } from "remix-utils/sse/react";
 import { useUser } from "@clerk/remix";
-import { isAdmin, isVIP } from "~/services/helpers";
+import { isAdmin, isVIP } from "~/services/helpers.client";
 
 export const loader: LoaderFunction = async (args) => {
   const { userId } = await getAuth(args);
