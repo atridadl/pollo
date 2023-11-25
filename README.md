@@ -1,4 +1,4 @@
-# Sprint Padawan
+# Sprint Padawan ![Status](https://status.atri.dad/api/badge/4/status?upColor=%23d10ace&downColor=%23ff0400&pendingColor=%23ff0400&style=for-the-badge)
 
 A scrum poker tool that helps agile teams plan their sprints in real-time.
 
