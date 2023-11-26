@@ -24,7 +24,7 @@
     "lucide-react": "^0.293.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "remix-utils": "^7.2.0",
+    "remix-utils": "^7.3.0",
     "svix": "^1.14.0"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
     "@types/react-dom": "^18.2.17",
     "autoprefixer": "^10.4.16",
     "better-sqlite3": "^9.1.1",
-    "daisyui": "^4.4.6",
+    "daisyui": "^4.4.8",
     "dotenv": "^16.3.1",
     "drizzle-kit": "^0.20.4",
     "eslint": "^8.54.0",

@@ -1,7 +1,7 @@
 import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { Link } from "@remix-run/react";
-import { LogInIcon, ShieldIcon, TrashIcon } from "lucide-react";
+import { LogInIcon, ShieldIcon, StarIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import LoadingIndicator from "~/components/LoadingIndicator";
 import { useEventSource } from "remix-utils/sse/react";
@@ -114,7 +114,7 @@ export default function Dashboard() {
           <ShieldIcon className="inline-block text-primary" />
         )}
         {isVIP(user?.publicMetadata) && (
-          <ShieldIcon className="inline-block text-secondary" />
+          <StarIcon className="inline-block text-secondary" />
         )}
       </h1>
 
