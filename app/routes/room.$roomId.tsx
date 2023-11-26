@@ -1,6 +1,6 @@
 import { getAuth } from "@clerk/remix/ssr.server";
 import { LoaderFunction, redirect } from "@remix-run/node";
-import { Link, useParams } from "@remix-run/react";
+import { useParams } from "@remix-run/react";
 import {
   CheckCircleIcon,
   CopyIcon,
@@ -28,6 +28,7 @@ import { db } from "~/services/db.server";
 import { rooms } from "~/services/schema";
 import { eq } from "drizzle-orm";
 import { shitList } from "~/services/consts.server";
+import FourOhFour from "~/components/FourOhFour";
 
 // Loader
 export const loader: LoaderFunction = async (args) => {
@@ -69,21 +70,7 @@ export const loader: LoaderFunction = async (args) => {
 
 // Checks for 404
 export function ErrorBoundary() {
-  return (
-    <span className="text-center">
-      <h1 className="text-5xl font-bold m-2">4️⃣0️⃣4️⃣</h1>
-      <h1 className="text-5xl font-bold m-2">
-        Oops! This room does not appear to exist, or may have been deleted! 😢
-      </h1>
-      <Link
-        about="Back to home."
-        to="/"
-        className="btn btn-secondary normal-case text-xl m-2"
-      >
-        Back to Home
-      </Link>
-    </span>
-  );
+  return <FourOhFour />;
 }
 
 export default function Room() {
