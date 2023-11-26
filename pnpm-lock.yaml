@@ -45,8 +45,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   remix-utils:
-    specifier: ^7.2.0
-    version: 7.2.0(@remix-run/node@2.3.1)(@remix-run/react@2.3.1)(react@18.2.0)
+    specifier: ^7.3.0
+    version: 7.3.0(@remix-run/node@2.3.1)(@remix-run/react@2.3.1)(react@18.2.0)
   svix:
     specifier: ^1.14.0
     version: 1.14.0
@@ -74,8 +74,8 @@ devDependencies:
     specifier: ^9.1.1
     version: 9.1.1
   daisyui:
-    specifier: ^4.4.6
-    version: 4.4.6(postcss@8.4.31)
+    specifier: ^4.4.8
+    version: 4.4.8(postcss@8.4.31)
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -2923,8 +2923,8 @@ packages:
       type: 1.2.0
     dev: true
 
-  /daisyui@4.4.6(postcss@8.4.31):
-    resolution: {integrity: sha512-Zum9dWsYufduID4IfwI1h/+qQIuoXBpVaG9l/rOlLOVbCmpvE7LQK/GDYE7YOT8NDXHOH+EqMqT8uzGqlbTFig==}
+  /daisyui@4.4.8(postcss@8.4.31):
+    resolution: {integrity: sha512-snl26WEyX/IoT789Fw5yBoSZA5YHKHJokcVfJ7p7xZa9Dwee3rvlWzBlRUuvJk0FeEGbaSpULcKo42qXkR5wDg==}
     engines: {node: '>=16.9.0'}
     dependencies:
       css-selector-tokenizer: 0.8.0
@@ -6752,8 +6752,8 @@ packages:
       unified: 10.1.2
     dev: true
 
-  /remix-utils@7.2.0(@remix-run/node@2.3.1)(@remix-run/react@2.3.1)(react@18.2.0):
-    resolution: {integrity: sha512-eFfwUZnGwKvINpC10HaF6fzywp0CsJ3cI/voNM7tv3NN+mbrqiwuOb/ANkVCOj51wdoXyGyvi1rix6j1IJf21w==}
+  /remix-utils@7.3.0(@remix-run/node@2.3.1)(@remix-run/react@2.3.1)(react@18.2.0):
+    resolution: {integrity: sha512-Ea5eNL04Ke4YYKI79ZR5doWtULe3ABkYkqhaP7mKiYcNVYAg6pA0PMuFYR2uyJYCGW43+/WlTfr3D4X5A0PsUA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@remix-run/cloudflare': ^2.0.0
