@@ -29,6 +29,7 @@ import { rooms } from "~/services/schema";
 import { eq } from "drizzle-orm";
 import { shitList } from "~/services/consts.server";
 import FourOhFour from "~/components/FourOhFour";
+import { isShit } from "~/services/helpers.server";
 
 // Loader
 export const loader: LoaderFunction = async (args) => {
@@ -46,24 +47,17 @@ export const loader: LoaderFunction = async (args) => {
     throw new Response(null, {
       status: 404,
       statusText:
-        "Oops! This room does not appear to exist, or may have been deleted! 😢",
+        "Oops! This room does not appear to exist, or may have been deleted!",
     });
   }
 
-  let isShit = false;
   const email = sessionClaims.email as string;
 
-  shitList.forEach((shitItem) => {
-    if (email.includes(shitItem)) {
-      isShit = true;
-    }
-  });
-
-  if (isShit) {
+  if (isShit(email)) {
     throw new Response(null, {
       status: 404,
       statusText:
-        "Wowee zowee! This wasn't supposed to happen! Maybe try refreshing the page... 🤔🧐",
+        "Wowee zowee! I'm sure I put that room around here somewhere...",
     });
   }
 
