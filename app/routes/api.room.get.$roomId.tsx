@@ -15,7 +15,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   if (!roomId) {
     return json("RoomId Missing!", {
       status: 400,
-      statusText: "BAD REQUEST!",
+      statusText: "The RoomId is Missing!",
     });
   }
 
@@ -31,9 +31,9 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
   });
 
   if (!room) {
-    return json(undefined, {
+    throw new Response(null, {
       status: 404,
-      statusText: "NOT FOUND!",
+      statusText: "NOT NOOOOOO!",
     });
   }
 
