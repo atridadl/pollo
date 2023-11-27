@@ -45,7 +45,8 @@ export const loader: LoaderFunction = async (args) => {
   if (!room) {
     throw new Response(null, {
       status: 404,
-      statusText: "Not Found",
+      statusText:
+        "Oops! This room does not appear to exist, or may have been deleted! 😢",
     });
   }
 
@@ -61,7 +62,8 @@ export const loader: LoaderFunction = async (args) => {
   if (isShit) {
     throw new Response(null, {
       status: 404,
-      statusText: "Not Found",
+      statusText:
+        "Wowee zowee! This wasn't supposed to happen! Maybe try refreshing the page... 🤔🧐",
     });
   }
 
