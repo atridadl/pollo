@@ -27,7 +27,6 @@ import { useUser } from "@clerk/remix";
 import { db } from "~/services/db.server";
 import { rooms } from "~/services/schema";
 import { eq } from "drizzle-orm";
-import { shitList } from "~/services/consts.server";
 import FourOhFour from "~/components/FourOhFour";
 import { isShit } from "~/services/helpers.server";
 
@@ -44,21 +43,25 @@ export const loader: LoaderFunction = async (args) => {
   });
 
   if (!room) {
-    throw new Response(null, {
-      status: 404,
-      statusText:
-        "Oops! This room does not appear to exist, or may have been deleted!",
-    });
+    throw new Response(
+      "Oops! This room does not appear to exist, or may have been deleted!",
+      {
+        status: 404,
+        statusText: "NOT FOUND",
+      }
+    );
   }
 
   const email = sessionClaims.email as string;
-
-  if (isShit(email)) {
-    throw new Response(null, {
-      status: 404,
-      statusText:
-        "Wowee zowee! I'm sure I put that room around here somewhere...",
-    });
+  const shit = isShit(email);
+  if (shit) {
+    throw new Response(
+      "Wowee zowee! I'm sure I put that room around here somewhere...",
+      {
+        status: 404,
+        statusText: "NOT FOUND",
+      }
+    );
   }
 
   return {};
