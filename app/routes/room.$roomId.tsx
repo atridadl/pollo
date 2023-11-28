@@ -58,8 +58,8 @@ export const loader: LoaderFunction = async (args) => {
     throw new Response(
       "Gee Willikers! I'm sure I put that room around here somewhere... sorry one moment while I look around... I swear I just had it...",
       {
-        status: 404,
-        statusText: "NOT FOUND",
+        status: 418,
+        statusText: "I'M A LITTLE TEA POT",
       }
     );
   }
