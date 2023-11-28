@@ -7,8 +7,11 @@ export default function FourOhFour() {
   if (isRouteErrorResponse(error)) {
     return (
       <span className="text-center">
-        <h1 className="text-5xl font-bold m-2">Error {error.status}</h1>
-        <h1 className="text-5xl font-bold m-2">{error.data}</h1>
+        <h1 className="text-5xl text-error font-bold m-2">
+          Error {error.status}
+        </h1>
+        <h1 className="text-3xl font-bold m-2">{error.data}</h1>
+
         <h2 className="text-2xl font-bold m-2">
           If you believe you reached this page in error, please file an issue{" "}
           <a
@@ -30,7 +33,9 @@ export default function FourOhFour() {
   } else if (error instanceof Error) {
     return (
       <span className="text-center">
-        <h1 className="text-5xl font-bold m-2">Error {error.name}</h1>
+        <h1 className="text-5xl text-error font-bold m-2">
+          Error {error.name}
+        </h1>
         <h1 className="text-3xl font-bold m-2">Error {error.message}</h1>
 
         <h2 className="text-2xl font-bold m-2">
@@ -54,7 +59,7 @@ export default function FourOhFour() {
   } else {
     return (
       <span className="text-center">
-        <h1 className="text-5xl font-bold m-2">Error 500</h1>
+        <h1 className="text-5xl text-error font-bold m-2">Error 500</h1>
         <h2 className="text-2xl font-bold m-2">
           If you believe you reached this page in error, please file an issue{" "}
           <a
