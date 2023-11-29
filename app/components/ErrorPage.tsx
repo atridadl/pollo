@@ -1,6 +1,6 @@
 import { Link, isRouteErrorResponse, useRouteError } from "@remix-run/react";
 
-export default function FourOhFour() {
+export default function ErrorPage() {
   const error = useRouteError();
 
   // If error response is sent, use correct errors
