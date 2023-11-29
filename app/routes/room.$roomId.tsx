@@ -27,7 +27,7 @@ import { ClerkLoaded, ClerkLoading, useUser } from "@clerk/remix";
 import { db } from "~/services/db.server";
 import { rooms } from "~/services/schema";
 import { eq } from "drizzle-orm";
-import FourOhFour from "~/components/FourOhFour";
+import ErrorPage from "~/components/ErrorPage";
 import { isShit } from "~/services/helpers.server";
 
 // Loader
@@ -67,9 +67,9 @@ export const loader: LoaderFunction = async (args) => {
   return {};
 };
 
-// Checks for 404
+// Error handler
 export function ErrorBoundary() {
-  return <FourOhFour />;
+  return <ErrorPage />;
 }
 
 export default function Room() {
