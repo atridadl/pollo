@@ -15,8 +15,8 @@ A scrum poker tool that helps agile teams plan their sprints in real-time.
 
 Add variables to the following places:
 
-- Github Secrets
-- Fly Secrets
+- Github Secrets: FLY_API_TOKEN
+- Fly Secrets: Everything in .env
 
 ## Versioning
 
