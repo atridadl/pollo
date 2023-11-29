@@ -23,7 +23,7 @@ import {
   VoteResponse,
 } from "~/services/types.client";
 import { isAdmin, jsonToCsv } from "~/services/helpers.client";
-import { useUser } from "@clerk/remix";
+import { ClerkLoaded, ClerkLoading, useUser } from "@clerk/remix";
 import { db } from "~/services/db.server";
 import { rooms } from "~/services/schema";
 import { eq } from "drizzle-orm";
@@ -73,6 +73,19 @@ export function ErrorBoundary() {
 }
 
 export default function Room() {
+  return (
+    <>
+      <ClerkLoaded>
+        <RoomContent />
+      </ClerkLoaded>
+      <ClerkLoading>
+        <LoadingIndicator />
+      </ClerkLoading>
+    </>
+  );
+}
+
+function RoomContent() {
   const { user } = useUser();
   const params = useParams();
   const roomId = params.roomId;
