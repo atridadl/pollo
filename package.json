@@ -5,21 +5,21 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev --manual",
+    "build": "vite build && vite build --ssr",
+    "dev": "vite dev",
     "start": "remix-serve ./build/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
     "@clerk/remix": "^3.1.6",
-    "@libsql/client": "0.4.0-pre.4",
+    "@libsql/client": "0.4.0-pre.5",
     "@paralleldrive/cuid2": "^2.2.2",
     "@remix-run/css-bundle": "^2.3.1",
     "@remix-run/node": "^2.3.1",
     "@remix-run/react": "^2.3.1",
     "@remix-run/serve": "^2.3.1",
     "csv42": "^5.0.0",
-    "drizzle-orm": "^0.29.0",
+    "drizzle-orm": "^0.29.1",
     "isbot": "^3.7.1",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
@@ -35,13 +35,15 @@
     "@types/react-dom": "^18.2.17",
     "autoprefixer": "^10.4.16",
     "better-sqlite3": "^9.1.1",
-    "daisyui": "^4.4.14",
+    "daisyui": "^4.4.17",
     "dotenv": "^16.3.1",
     "drizzle-kit": "^0.20.6",
     "eslint": "^8.54.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.2",
+    "vite": "^5.0.4",
+    "vite-tsconfig-paths": "^4.2.1"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -22,7 +22,7 @@ import {
   RoomResponse,
   VoteResponse,
 } from "~/services/types.client";
-import { isAdmin, jsonToCsv } from "~/services/helpers.client";
+import { isAdmin, jsonToCsv } from "~/services/helpers";
 import { ClerkLoaded, ClerkLoading, useUser } from "@clerk/remix";
 import { db } from "~/services/db.server";
 import { rooms } from "~/services/schema";
