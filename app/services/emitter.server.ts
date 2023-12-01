@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import { publishToChannel, subscribeToChannel } from "./redis.server";
 
 let emitter: EventEmitter;
 
@@ -13,6 +14,23 @@ if (process.env.NODE_ENV === "production") {
     global.__emitter = new EventEmitter();
   }
   emitter = global.__emitter;
+}
+
+if (process.env.REDIS_URL) {
+  subscribeToChannel("nodes", (message: string) => {
+    console.log(`[MULTI-NODE] RECEIVED ${message} EVENT FROM ANOTHER NODE!`);
+    const parsedMessage = message.split('"')[1];
+    emitter.emit(parsedMessage);
+  });
+
+  emitter.on("nodes", async (message: string) => {
+    await publishToChannel("nodes", message);
+  });
+} else {
+  emitter.on("nodes", async (message: string) => {
+    console.log(`[SINGLE NODE] RECEIVED ${message} EVENT!`);
+    emitter.emit(message);
+  });
 }
 
 export { emitter };
