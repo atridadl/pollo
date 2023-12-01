@@ -33,7 +33,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   const success = deletedRoom.length > 0;
 
   if (success) {
-    await invalidateCache(`kv_roomlist_${userId}`);
+    await invalidateCache(`kv_roomlist_${userId}`, "sp");
     emitter.emit("nodes", "roomlist");
 
     return json(deletedRoom, {
@@ -41,4 +41,9 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       statusText: "SUCCESS",
     });
   }
+
+  return json(null, {
+    status: 404,
+    statusText: "NOT FOUND",
+  });
 }
