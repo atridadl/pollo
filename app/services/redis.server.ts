@@ -61,16 +61,6 @@ if (process.env.NODE_ENV === "production") {
   sub = global.__sub;
 }
 
-// export const isConnectedToCache = process.env.REDIS_URL
-//   ? cache?.status === "ready"
-//   : true;
-// export const isConnectedToPub = process.env.REDIS_URL
-//   ? pub?.status === "ready"
-//   : true;
-// export const isConnectedToSub = process.env.REDIS_URL
-//   ? sub?.status === "ready"
-//   : true;
-
 export const publishToChannel = async (channel: string, message: string) => {
   await pub?.publish(channel, JSON.stringify(message));
 };
