@@ -1,22 +1,75 @@
 import Redis from "ioredis";
 
-export const cache = process.env.REDIS_URL
-  ? new Redis(process.env.REDIS_URL, {
-      family: 6,
-    })
-  : null;
+let cache: Redis | null = null;
+let pub: Redis | null = null;
+let sub: Redis | null = null;
 
-export const pub = process.env.REDIS_URL
-  ? new Redis(process.env.REDIS_URL, {
-      family: 6,
-    })
-  : null;
+declare global {
+  var __cache: Redis | null;
+  var __pub: Redis | null;
+  var __sub: Redis | null;
+}
 
-export const sub = process.env.REDIS_URL
-  ? new Redis(process.env.REDIS_URL, {
-      family: 6,
-    })
-  : null;
+if (process.env.NODE_ENV === "production") {
+  cache = process.env.REDIS_URL
+    ? new Redis(process.env.REDIS_URL, {
+        family: 6,
+      })
+    : null;
+} else {
+  if (!global.__cache) {
+    global.__cache = process.env.REDIS_URL
+      ? new Redis(process.env.REDIS_URL, {
+          family: 6,
+        })
+      : null;
+  }
+  cache = global.__cache;
+}
+
+if (process.env.NODE_ENV === "production") {
+  pub = process.env.REDIS_URL
+    ? new Redis(process.env.REDIS_URL, {
+        family: 6,
+      })
+    : null;
+} else {
+  if (!global.__pub) {
+    global.__pub = process.env.REDIS_URL
+      ? new Redis(process.env.REDIS_URL, {
+          family: 6,
+        })
+      : null;
+  }
+  pub = global.__pub;
+}
+
+if (process.env.NODE_ENV === "production") {
+  sub = process.env.REDIS_URL
+    ? new Redis(process.env.REDIS_URL, {
+        family: 6,
+      })
+    : null;
+} else {
+  if (!global.__sub) {
+    global.__sub = process.env.REDIS_URL
+      ? new Redis(process.env.REDIS_URL, {
+          family: 6,
+        })
+      : null;
+  }
+  sub = global.__sub;
+}
+
+// export const isConnectedToCache = process.env.REDIS_URL
+//   ? cache?.status === "ready"
+//   : true;
+// export const isConnectedToPub = process.env.REDIS_URL
+//   ? pub?.status === "ready"
+//   : true;
+// export const isConnectedToSub = process.env.REDIS_URL
+//   ? sub?.status === "ready"
+//   : true;
 
 export const publishToChannel = async (channel: string, message: string) => {
   await pub?.publish(channel, JSON.stringify(message));
