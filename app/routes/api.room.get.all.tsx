@@ -5,7 +5,7 @@ import { eventStream } from "remix-utils/sse/server";
 import { db } from "~/services/db.server";
 import { emitter } from "~/services/emitter.server";
 import { fetchCache, setCache } from "~/services/redis.server";
-import { rooms } from "~/services/schema";
+import { rooms } from "~/services/schema.server";
 
 // Get Room List
 export async function loader({ context, params, request }: LoaderFunctionArgs) {
