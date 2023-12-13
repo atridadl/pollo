@@ -51,7 +51,7 @@ export default function Dashboard() {
 
 function DashboardContent() {
   const { user, isLoaded } = useUser();
-  let roomsFromDb = useEventSource("/api/room/get/all", { event: user?.id! });
+  let roomsFromDb = useEventSource("/api/room/get/all", { event: user?.id });
 
   let roomsFromDbParsed = JSON.parse(roomsFromDb!) as RoomsResponse;
 
