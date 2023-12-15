@@ -35,9 +35,10 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
               where: eq(rooms.userId, userId || ""),
             })
             .then((roomList) => {
-              setCache(`kv_roomlist_${userId}`, roomList, "sp").then(() => {
-                send({ event: userId!, data: JSON.stringify(roomList) });
-              });
+              Promise.all([
+                setCache(`kv_roomlist_${userId}`, roomList, "sp"),
+                send({ event: userId!, data: JSON.stringify(roomList) }),
+              ]);
             });
         }
       });
@@ -59,9 +60,10 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
             where: eq(rooms.userId, userId || ""),
           })
           .then((roomList) => {
-            setCache(`kv_roomlist_${userId}`, roomList, "sp").then(() => {
-              send({ event: userId!, data: JSON.stringify(roomList) });
-            });
+            Promise.all([
+              setCache(`kv_roomlist_${userId}`, roomList, "sp"),
+              send({ event: userId!, data: JSON.stringify(roomList) }),
+            ]);
           });
       }
     });
