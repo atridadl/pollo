@@ -26,6 +26,9 @@ dependencies:
   csv42:
     specifier: ^5.0.0
     version: 5.0.0
+  dotenv:
+    specifier: ^16.3.1
+    version: 16.3.1
   drizzle-orm:
     specifier: ^0.29.1
     version: 0.29.1(@libsql/client@0.4.0-pre.5)(better-sqlite3@9.2.2)
@@ -76,9 +79,6 @@ devDependencies:
   daisyui:
     specifier: ^4.4.20
     version: 4.4.20(postcss@8.4.32)
-  dotenv:
-    specifier: ^16.3.1
-    version: 16.3.1
   drizzle-kit:
     specifier: ^0.20.6
     version: 0.20.6
@@ -3467,7 +3467,6 @@ packages:
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
-    dev: true
 
   /dreamopt@0.8.0:
     resolution: {integrity: sha512-vyJTp8+mC+G+5dfgsY+r3ckxlz+QMX40VjPQsZc5gxVAxLmi64TBoVkP54A/pRAXMXsbu2GMMBrZPxNv23waMg==}
