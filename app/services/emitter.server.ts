@@ -24,6 +24,7 @@ if (process.env.REDIS_URL) {
   });
 
   emitter.on("nodes", async (message: string) => {
+    emitter.emit(message);
     await publishToChannel("nodes", message);
   });
 } else {
