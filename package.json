@@ -5,16 +5,15 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev --manual",
-    "start": "remix-serve ./build/index.js",
+    "build": "vite build && vite build --ssr",
+    "dev": "vite dev --force",
+    "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
     "@clerk/remix": "^3.1.11",
     "@libsql/client": "0.4.0-pre.5",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@remix-run/css-bundle": "^2.4.0",
     "@remix-run/node": "^2.4.0",
     "@remix-run/react": "^2.4.0",
     "@remix-run/serve": "^2.4.0",
@@ -42,7 +41,9 @@
     "eslint": "^8.55.0",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-tsconfig-paths": "^4.2.2"
   },
   "engines": {
     "node": ">=18.0.0"
