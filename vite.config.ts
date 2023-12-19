@@ -5,11 +5,14 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 installGlobals();
 
-export default defineConfig({
+export default defineConfig((env) => ({
   plugins: [
     remix({
       ignoredRouteFiles: ["**/.*"],
     }),
     tsconfigPaths(),
   ],
-});
+  optimizeDeps: {
+    exclude: ["react-jsx"],
+  },
+}));
