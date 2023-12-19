@@ -243,6 +243,7 @@ function RoomContent() {
       setStoryNameText(roomFromDbParsed?.storyName || "");
       setRoomScale(roomFromDbParsed?.scale || "ERROR");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomFromDb]);
 
   // UI
