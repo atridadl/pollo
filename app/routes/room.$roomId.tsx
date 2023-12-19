@@ -72,6 +72,7 @@ export function ErrorBoundary() {
   return <ErrorPage />;
 }
 
+// Page Entry Point
 export default function Room() {
   return (
     <>
