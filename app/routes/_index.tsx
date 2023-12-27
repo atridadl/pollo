@@ -17,7 +17,8 @@ export default function Index() {
         <div className="card-body">
           <h2 className="card-title">Features:</h2>
           <ul>
-            <li>🚀 Real-time votes!</li>
+            <li>🚀 Real-time voting!</li>
+            <li>🚀 Servers in Seattle, Paris, and Tokyo! More to come!</li>
             <li>🚀 Customizable room name and vote scale!</li>
             <li>🚀 CSV Reports for every room!</li>
             <li>🚀 100% free and open-source... forever!</li>
