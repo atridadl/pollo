@@ -45,8 +45,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
           presenceData.map((presenceItem) => {
             return {
               ...presenceItem,
-              isAdmin: presenceItem.isAdmin === 0 ? false : true,
-              isVIP: presenceItem.isVIP === 0 ? false : true,
+              isAdmin: presenceItem.isAdmin,
+              isVIP: presenceItem.isVIP,
             };
           })
         ),
@@ -60,8 +60,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
         userFullName: name,
         userId: userId,
         userImageUrl: image,
-        isAdmin: metadata.isAdmin ? 1 : 0,
-        isVIP: metadata.isVIP ? 1 : 0,
+        isAdmin: metadata.isAdmin,
+        isVIP: metadata.isVIP,
       })
       .onConflictDoUpdate({
         target: [presence.userId, presence.roomId],
@@ -70,8 +70,8 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
           userFullName: name,
           userId: userId,
           userImageUrl: image,
-          isAdmin: metadata.isAdmin ? 1 : 0,
-          isVIP: metadata.isVIP ? 1 : 0,
+          isAdmin: metadata.isAdmin,
+          isVIP: metadata.isVIP,
         },
       })
       .then(async () => {
