@@ -27,7 +27,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       roomName: data.name,
       storyName: "First Story!",
       scale: "0.5,1,2,3,5,8",
-      visible: 0,
+      visible: false,
     })
     .returning();
 
