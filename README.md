@@ -9,14 +9,7 @@ A scrum poker tool that helps agile teams plan their sprints in real-time.
 - Rendering method: SSR
 - Hosting: Fly
 - ORM: Drizzle ORM
-- Database: Turso (libSQL)
-
-## Environment Vars
-
-Add variables to the following places:
-
-- Github Secrets: FLY_API_TOKEN
-- Fly Secrets: Everything in .env
+- Database: Postgres
 
 ## Versioning
 
