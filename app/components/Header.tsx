@@ -41,7 +41,7 @@ const Navbar = ({ title }: NavbarProps) => {
         >
           <img
             className="md:mr-2"
-            src="/logo.webp"
+            src="/logo-32x32.webp"
             alt="Nav Logo"
             width={32}
             height={32}
