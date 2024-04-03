@@ -41,10 +41,10 @@ const Navbar = ({ title }: NavbarProps) => {
         >
           <img
             className="md:mr-2"
-            src="/logo-32x32.webp"
+            src="/logo-48.webp"
             alt="Nav Logo"
-            width={32}
-            height={32}
+            width={48}
+            height={48}
           />
           <span className="hidden md:inline-flex">{title}</span>
         </Link>
