@@ -8,9 +8,9 @@ export default function Index() {
       </h1>
 
       <h2 className="my-4 text-xl sm:text-3xl font-bold">
-        A <span className="text-primary">scrum poker </span> tool that helps{" "}
-        <span className="text-secondary">agile teams </span> plan their sprints
-        in <span className="text-accent">real-time</span>.
+        A <span className="text-primary">dead-simple </span>{" "}
+        <span className="text-secondary">real-time  </span>{" "}
+        <span className="text-accent">voting tool</span>.
       </h2>
 
       <div className="card glass card-compact bg-secondary text-black font-bold text-left">
