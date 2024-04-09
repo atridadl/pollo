@@ -3,7 +3,6 @@ import { type ActionFunctionArgs, json } from "@remix-run/node";
 import { eq } from "drizzle-orm";
 import { db } from "~/services/db.server";
 import { emitter } from "~/services/emitter.server";
-import { invalidateCache } from "~/services/redis.server";
 import { rooms } from "~/services/schema.server";
 
 export async function action({ request, params, context }: ActionFunctionArgs) {
@@ -33,7 +32,6 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   const success = deletedRoom.length > 0;
 
   if (success) {
-    await invalidateCache(`kv_roomlist_${userId}`, "sp");
     emitter.emit("nodes", "roomlist");
 
     return json(deletedRoom, {

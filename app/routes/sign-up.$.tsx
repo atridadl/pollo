@@ -16,7 +16,7 @@ export default function SignUpPage() {
   return (
     <main className="flex flex-col text-center items-center justify-center px-4 py-16 gap-4 min-h-[100%]">
       <SignUp
-        path="/sign-in"
+        path="/sign-up"
         routing="path"
         signInUrl="/sign-up"
         redirectUrl={ENV.ROOT_URL ? ENV.ROOT_URL : "/"}

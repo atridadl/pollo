@@ -7,7 +7,7 @@ A dead-simple real-time voting tool.
 - Front-end framework: Remix
 - Front-end library: React
 - Rendering method: SSR
-- Hosting: Fly
+- Hosting: ???
 - ORM: Drizzle ORM
 - Database: Postgres
 
