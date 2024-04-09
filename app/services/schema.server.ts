@@ -12,7 +12,7 @@ export const rooms = pgTable("Room", {
   created_at: text("created_at"),
   userId: text("userId").notNull(),
   roomName: text("roomName"),
-  storyName: text("storyName"),
+  topicName: text("topicName"),
   visible: boolean("visible").default(false).notNull(),
   scale: text("scale").default("0.5,1,2,3,5").notNull(),
 });
@@ -58,7 +58,7 @@ export const logs = pgTable(
     scale: text("scale"),
     votes: text("votes"),
     roomName: text("roomName"),
-    storyName: text("storyName"),
+    topicName: text("topicName"),
   },
   (table) => {
     return {

@@ -16,8 +16,8 @@ import "./tailwind.css";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Sprint Padawan" },
-    { name: "description", content: "Plan. Sprint. Repeat." },
+    { title: "Pollo" },
+    { name: "description", content: "Simple Real-Time Voting" },
   ];
 };
 
@@ -35,7 +35,7 @@ function App() {
         <Links />
       </head>
       <body className="h-[100%] w-[100%] fixed overflow-y-auto">
-        <Header title={"Sprint Padawan"} />
+        <Header title={"Pollo"} />
         <div className="flex flex-row items-center justify-center min-h-[calc(100%-114px)]">
           <Outlet />
         </div>

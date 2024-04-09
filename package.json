@@ -1,6 +1,6 @@
 {
-  "name": "sprintpadawan",
-  "version": "4.3.2",
+  "name": "pollo",
+  "version": "5.0.0",
   "private": true,
   "sideEffects": false,
   "type": "module",

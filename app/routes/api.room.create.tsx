@@ -25,7 +25,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       created_at: Date.now().toString(),
       userId: userId || "",
       roomName: data.name,
-      storyName: "First Story!",
+      topicName: "First Topic!",
       scale: "0.5,1,2,3,5,8",
       visible: false,
     })

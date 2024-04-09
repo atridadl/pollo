@@ -3,7 +3,7 @@ export default function Index() {
     <div className="flex flex-col text-center items-center justify-center px-4 py-16 gap-4">
       <h1 className="text-3xl sm:text-6xl font-bold">
         <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent box-decoration-clone">
-          Sprint Padawan
+          Pollo
         </span>
       </h1>
 

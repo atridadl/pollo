@@ -15,7 +15,7 @@ export default function ErrorPage() {
         <h2 className="text-2xl font-bold m-2">
           If you believe you reached this page in error, please file an issue{" "}
           <a
-            href="https://github.com/atridadl/sprintpadawan/issues/new"
+            href="https://github.com/atridadl/pollo/issues/new"
             className="link link-secondary"
           >
             here
@@ -41,7 +41,7 @@ export default function ErrorPage() {
         <h2 className="text-2xl font-bold m-2">
           If you believe you reached this page in error, please file an issue{" "}
           <a
-            href="https://github.com/atridadl/sprintpadawan/issues/new"
+            href="https://github.com/atridadl/pollo/issues/new"
             className="link link-secondary"
           >
             here
@@ -63,7 +63,7 @@ export default function ErrorPage() {
         <h2 className="text-2xl font-bold m-2">
           If you believe you reached this page in error, please file an issue{" "}
           <a
-            href="https://github.com/atridadl/sprintpadawan/issues/new"
+            href="https://github.com/atridadl/pollo/issues/new"
             className="link link-secondary"
           >
             here

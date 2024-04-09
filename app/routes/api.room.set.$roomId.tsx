@@ -44,7 +44,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
           })
         ),
         roomName: oldRoom.roomName,
-        storyName: oldRoom.storyName,
+        topicName: oldRoom.topicName,
       }));
   }
 
@@ -54,23 +54,23 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 
   const newRoom = data.reset
     ? await db
-        .update(rooms)
-        .set({
-          storyName: data.name,
-          visible: data.visible,
-          scale: [...new Set(data.scale.split(","))]
-            .filter((item) => item !== "")
-            .toString(),
-        })
-        .where(eq(rooms.id, params.roomId || ""))
-        .returning()
+      .update(rooms)
+      .set({
+        topicName: data.name,
+        visible: data.visible,
+        scale: [...new Set(data.scale.split(","))]
+          .filter((item) => item !== "")
+          .toString(),
+      })
+      .where(eq(rooms.id, params.roomId || ""))
+      .returning()
     : await db
-        .update(rooms)
-        .set({
-          visible: data.visible,
-        })
-        .where(eq(rooms.id, params.roomId || ""))
-        .returning();
+      .update(rooms)
+      .set({
+        visible: data.visible,
+      })
+      .where(eq(rooms.id, params.roomId || ""))
+      .returning();
 
   const success = newRoom.length > 0;
 

@@ -113,7 +113,7 @@ function RoomContent() {
     | PresenceItem[]
     | undefined;
 
-  const [storyNameText, setStoryNameText] = useState<string>("");
+  const [topicNameText, setTopicNameText] = useState<string>("");
   const [roomScale, setRoomScale] = useState<string>("");
 
   const [copied, setCopied] = useState<boolean>(false);
@@ -142,7 +142,7 @@ function RoomContent() {
         cache: "no-cache",
         method: "PUT",
         body: JSON.stringify({
-          name: storyNameText,
+          name: topicNameText,
           visible: data.visible,
           scale: roomScale,
           reset: data.reset ? data.reset : false,
@@ -175,7 +175,7 @@ function RoomContent() {
             userId: item.userId,
             roomId: item.roomId,
             roomName: item.roomName,
-            storyName: item.storyName,
+            topicName: item.topicName,
             scale: item.scale,
             votes: item.votes,
           };
@@ -186,7 +186,7 @@ function RoomContent() {
           userId: roomFromDbParsed.userId,
           roomId: roomFromDbParsed.id,
           roomName: roomFromDbParsed.roomName,
-          storyName: storyNameText,
+          topicName: topicNameText,
           scale: roomScale,
           votes: votesFromDbParsed?.map((vote) => {
             return {
@@ -240,7 +240,7 @@ function RoomContent() {
   // =================================
   useEffect(() => {
     if (roomFromDb) {
-      setStoryNameText(roomFromDbParsed?.storyName || "");
+      setTopicNameText(roomFromDbParsed?.topicName || "");
       setRoomScale(roomFromDbParsed?.scale || "ERROR");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -276,7 +276,7 @@ function RoomContent() {
           <div className="card card-compact bg-base-100 shadow-xl">
             <div className="card-body">
               <h2 className="card-title mx-auto">
-                Story: {roomFromDbParsed?.storyName}
+                Topic: {roomFromDbParsed?.topicName}
               </h2>
 
               <ul className="p-0 flex flex-row flex-wrap justify-center items-center text-ceter gap-4">
@@ -324,13 +324,13 @@ function RoomContent() {
                             )}{" "}
                             {presenceItem.userId ===
                               roomFromDbParsed?.userId && (
-                              <span
-                                className="tooltip tooltip-warning"
-                                data-tip="Room Owner"
-                              >
-                                <CrownIcon className="inline-block text-warning" />
-                              </span>
-                            )}
+                                <span
+                                  className="tooltip tooltip-warning"
+                                  data-tip="Room Owner"
+                                >
+                                  <CrownIcon className="inline-block text-warning" />
+                                </span>
+                              )}
                             {" : "}
                           </p>
 
@@ -351,11 +351,10 @@ function RoomContent() {
                   return (
                     <button
                       key={index}
-                      className={`join-item ${
-                        getVoteForCurrentUser()?.value === scaleItem
-                          ? "btn btn-active btn-primary"
-                          : "btn"
-                      }`}
+                      className={`join-item ${getVoteForCurrentUser()?.value === scaleItem
+                        ? "btn btn-active btn-primary"
+                        : "btn"
+                        }`}
                       onClick={() => void setVoteHandler(scaleItem)}
                     >
                       {scaleItem}
@@ -389,15 +388,15 @@ function RoomContent() {
                     }}
                   />
 
-                  <label className="label">{"Story Name:"} </label>
+                  <label className="label">{"Topic Name:"} </label>
 
                   <input
                     type="text"
-                    placeholder="Story Name"
+                    placeholder="Topic Name"
                     className="input input-bordered"
-                    value={storyNameText}
+                    value={topicNameText}
                     onChange={(event) => {
-                      setStoryNameText(event.target.value);
+                      setTopicNameText(event.target.value);
                     }}
                   />
 
@@ -434,8 +433,8 @@ function RoomContent() {
                             visible: false,
                             reset: true,
                             log:
-                              roomFromDbParsed?.storyName === storyNameText ||
-                              votesFromDb?.length === 0
+                              roomFromDbParsed?.topicName === topicNameText ||
+                                votesFromDb?.length === 0
                                 ? false
                                 : true,
                           })
@@ -447,8 +446,8 @@ function RoomContent() {
                           ).length <= 1
                         }
                       >
-                        {roomFromDbParsed?.storyName === storyNameText ||
-                        votesFromDb?.length === 0 ? (
+                        {roomFromDbParsed?.topicName === topicNameText ||
+                          votesFromDb?.length === 0 ? (
                           <>
                             <RefreshCwIcon className="text-xl mr-1" /> Reset
                           </>

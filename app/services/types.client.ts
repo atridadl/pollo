@@ -13,52 +13,52 @@ export interface PresenceItem {
 
 export type RoomsResponse =
   | {
-      id: string;
-      createdAt: Date;
-      roomName: string;
-    }[]
+    id: string;
+    createdAt: Date;
+    roomName: string;
+  }[]
   | {
-      roomName: string | null;
-      id: string;
-      created_at: Date | null;
-      userId: string;
-      storyName: string | null;
-      visible: boolean;
-      scale: string;
-    }[]
+    roomName: string | null;
+    id: string;
+    created_at: Date | null;
+    userId: string;
+    topicName: string | null;
+    visible: boolean;
+    scale: string;
+  }[]
   | null
   | undefined;
 
 export type RoomResponse =
   | {
+    id: string;
+    created_at: Date | null;
+    userId: string;
+    roomName: string | null;
+    topicName: string | null;
+    visible: boolean;
+    scale: string | null;
+    logs: {
       id: string;
       created_at: Date | null;
       userId: string;
+      roomId: string;
       roomName: string | null;
-      storyName: string | null;
-      visible: boolean;
+      topicName: string | null;
       scale: string | null;
-      logs: {
-        id: string;
-        created_at: Date | null;
-        userId: string;
-        roomId: string;
-        roomName: string | null;
-        storyName: string | null;
-        scale: string | null;
-        votes: unknown;
-      }[];
-    }
+      votes: unknown;
+    }[];
+  }
   | undefined
   | null;
 
 export type VoteResponse =
   | {
-      id: string;
-      value: string;
-      created_at: Date | null;
-      userId: string;
-      roomId: string;
-    }[]
+    id: string;
+    value: string;
+    created_at: Date | null;
+    userId: string;
+    roomId: string;
+  }[]
   | null
   | undefined;

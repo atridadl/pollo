@@ -20,19 +20,19 @@ export const loader: LoaderFunction = async (args) => {
 
 type RoomsResponse =
   | {
-      id: string;
-      createdAt: Date;
-      roomName: string;
-    }[]
+    id: string;
+    createdAt: Date;
+    roomName: string;
+  }[]
   | {
-      roomName: string | null;
-      id: string;
-      created_at: Date | null;
-      userId: string;
-      storyName: string | null;
-      visible: boolean;
-      scale: string;
-    }[]
+    roomName: string | null;
+    id: string;
+    created_at: Date | null;
+    userId: string;
+    topicName: string | null;
+    visible: boolean;
+    scale: string;
+  }[]
   | null
   | undefined;
 
