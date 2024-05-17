@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     pull_policy: build
-    restart: on-failure:3
+    restart: always
     networks:
       - nginx_default
     ports:
