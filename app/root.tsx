@@ -1,5 +1,5 @@
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
-import { ClerkApp, ClerkErrorBoundary } from "@clerk/remix";
+import { ClerkApp } from "@clerk/remix";
 import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
@@ -22,8 +22,6 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader: LoaderFunction = (args) => rootAuthLoader(args);
-
-export const ErrorBoundary = ClerkErrorBoundary();
 
 function App() {
   return (
