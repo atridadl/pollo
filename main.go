@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"atri.dad/api"
-	"atri.dad/api/webhooks"
-	"atri.dad/lib"
-	"atri.dad/pages"
+	"pollo/api"
+	"pollo/api/webhooks"
+	"pollo/lib"
+	"pollo/pages"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -43,32 +43,14 @@ func main() {
 
 	// Page routes
 	e.GET("/", pages.Home)
-	e.GET("/projects", pages.Projects)
-	e.GET("/talks", pages.Talks)
-	e.GET("/testimonials", pages.Testimonials)
-	e.GET("/blog", pages.Blog)
-	e.GET("/post/:post", pages.Post)
-	e.GET("/tools", pages.Tools)
-	e.GET("/tools/resize", pages.Resize)
-	e.GET("/tools/ssedemo", pages.SSEDemo)
 
 	// API Routes:
 	apiGroup := e.Group("/api")
 	apiGroup.GET("/ping", api.Ping)
-	apiGroup.GET("/authed/ping", api.Authed)
-	apiGroup.POST("/pay", api.Pay)
-	apiGroup.GET("/rss", api.RSSFeedHandler)
-	apiGroup.GET("/post/copy", api.PostCopy)
 
 	apiGroup.GET("/sse", func(c echo.Context) error {
 		return api.SSE(c)
 	})
-
-	apiGroup.POST("/tools/sendsse", func(c echo.Context) error {
-		return api.SSEDemoSend(c)
-	})
-
-	apiGroup.POST("/tools/resize", api.ResizeHandler)
 
 	// Webhook Routes:
 	webhookGroup := e.Group("/webhook")

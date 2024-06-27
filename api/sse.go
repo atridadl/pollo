@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"atri.dad/lib"
 	"github.com/labstack/echo/v4"
+	"pollo/lib"
 )
 
 func SSE(c echo.Context) error {

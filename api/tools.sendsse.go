@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	"atri.dad/lib"
 	"github.com/labstack/echo/v4"
+	"pollo/lib"
 )
 
 func SSEDemoSend(c echo.Context) error {

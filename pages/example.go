@@ -1,8 +1,8 @@
 package pages
 
 import (
-	"atri.dad/lib"
 	"github.com/labstack/echo/v4"
+	"pollo/lib"
 )
 
 type ExampleProps struct {

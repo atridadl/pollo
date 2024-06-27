@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"atri.dad/lib"
 	"github.com/labstack/echo/v4"
 	svix "github.com/svix/svix-webhooks/go"
+	"pollo/lib"
 )
 
 // Types
@@ -28,11 +28,11 @@ type ClerkEvent struct {
 // Event Handlers
 func userCreatedHandler(event ClerkEvent) {
 	welcomeEmail := `
-		<h1>Thank you for making an atri.dad account!</h1>
+		<h1>Thank you for making an pollo account!</h1>
 		<h2>There are a number of apps this account give you access to!</h2>
 		<br/>
 		<ul>
-		<li>Pollo: https://pollo.atri.dad/</li>
+		<li>Pollo: https://pollo.pollo/</li>
 		</ul>
 		`
 

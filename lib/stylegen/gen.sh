@@ -108,6 +108,10 @@ echo "module.exports = {
 }" > tailwind.config.js
 
 # Run the binary with the generated config
+#print out the output directory
+echo "Output Directory: $OUTPUT_DIR"
+#print out the current directory
+echo "Current Directory: $PWD" 
 $BINARY build -i ./base.css -c tailwind.config.js -o "${OUTPUT_DIR}/styles.css" --minify
 
 # Wait for all background processes to finish
