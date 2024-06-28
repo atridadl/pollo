@@ -6,16 +6,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type HomeProps struct {
-	IsLoggedIn bool
+type SignInProps struct {
 }
 
-func Home(c echo.Context) error {
-	props := HomeProps{
-		IsLoggedIn: lib.IsSignedIn(c),
-	}
-
-	println("Home page props: ", props.IsLoggedIn)
+func SignIn(c echo.Context) error {
+	props := HomeProps{}
 
 	// Specify the partials used by this page
 	partials := []string{"header"}

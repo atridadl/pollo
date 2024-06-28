@@ -4,7 +4,9 @@ import (
 	"embed"
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"pollo/api"
 	"pollo/api/webhooks"
@@ -21,10 +23,31 @@ var PublicFS embed.FS
 
 func main() {
 	// Load environment variables
-	godotenv.Load(".env")
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// Initialize the database connection pool
+	connString := os.Getenv("DATABASE_URL")
+	if connString == "" {
+		log.Fatal("DATABASE_URL environment variable is not set.")
+	}
+
+	if err := lib.InitializeDBPool(connString); err != nil {
+		log.Fatalf("Failed to initialize DB pool: %v", err)
+	}
+
+	// Initialize the database schema
+	dbPool := lib.GetDBPool()
+	if err := lib.InitializeSchema(dbPool); err != nil {
+		log.Fatalf("Failed to initialize schema: %v", err)
+	}
 
 	// Initialize Echo router
 	e := echo.New()
+
+	// Initialize the session store
+	e.Use(lib.InitSessionMiddleware())
 
 	// Middleware
 	e.Use(middleware.Logger())
@@ -43,6 +66,9 @@ func main() {
 
 	// Page routes
 	e.GET("/", pages.Home)
+	e.GET("/signin", pages.SignIn)
+	e.GET("/register", pages.Register)
+	e.GET("/dashboard", pages.Dashboard, lib.AuthenticatedMiddleware)
 
 	// API Routes:
 	apiGroup := e.Group("/api")
@@ -51,6 +77,9 @@ func main() {
 	apiGroup.GET("/sse", func(c echo.Context) error {
 		return api.SSE(c)
 	})
+	// Public routes
+	apiGroup.POST("/register", api.RegisterUserHandler)
+	apiGroup.POST("/signin", api.SignInUserHandler)
 
 	// Webhook Routes:
 	webhookGroup := e.Group("/webhook")

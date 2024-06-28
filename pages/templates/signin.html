@@ -1,0 +1,30 @@
+{{define "title"}}
+Pollo // Root
+{{end}}
+
+{{define "headercontent"}}
+Pollo // Root
+{{end}}
+
+{{define "head"}}
+<link rel="stylesheet" href="/public/css/styles.css" />
+{{end}}
+
+{{define "main"}}
+<div id="auth-form" hx-ext="response-targets">
+  <h2>Sign In</h2>
+  <form hx-post="/api/signin" hx-target-4*="#error-message">
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Sign In</button>
+  </form>
+  <div id="error-message"style="color: red;"></div>
+  <p>Don't have an account? <a href="/register">Register</a></p>
+</div>
+{{end}}
+
+{{define "foot"}}
+<script src="/public/js/htmx.base.js"></script>
+<script src="/public/js/htmx.sse.js"></script>
+<script src="/public/js/htmx.targets.js"></script>
+{{end}}

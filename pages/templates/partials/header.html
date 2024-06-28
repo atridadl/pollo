@@ -3,5 +3,20 @@
   <div class="navbar-start">
     <a class="btn btn-ghost normal-case text-lg sm:text-xl text-white" href="/">{{template "headercontent".}}</a>
   </div>
+
+  <div class="navbar-end">
+    {{if .IsLoggedIn}}
+    <a class="btn btn-primary btn-outline mx-2" href="/dashboard">
+      Dashboard
+    </a>
+    <a class="btn btn-primary" href="/signout">
+      Sign Out
+    </a>
+    {{else}}
+    <a class="btn btn-primary" href="/signin">
+      Sign In
+    </a>
+    {{end}}
+  </div>
 </header>
 {{end}}
