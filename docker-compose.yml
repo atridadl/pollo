@@ -36,6 +36,9 @@ services:
       - proxy_default
     restart: on-failure:3
 
+volumes:
+  pgdata:
+
 networks:
   proxy_default:
     name: proxy_default
