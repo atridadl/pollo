@@ -27,7 +27,12 @@ func RegisterUserHandler(c echo.Context) error {
 	}
 
 	// Set the session cookie using the helper function
-	lib.SetSessionCookie(c.Response().Writer, "session_id", sessionID)
+	lib.SetSessionCookie(c.Response().Writer, "session", lib.SessionData{
+		SessionID: sessionID,
+		UserID:    user.ID,
+		Email:     user.Email,
+		Roles:     []string{"user"},
+	})
 
 	// Redirect or respond with a success status code
 	c.Response().Header().Set("HX-Redirect", "/")

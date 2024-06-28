@@ -11,7 +11,7 @@ import (
 )
 
 type User struct {
-	ID       int
+	ID       string
 	Email    string
 	Password string
 }
@@ -35,7 +35,8 @@ func GetUserByEmail(dbPool *pgxpool.Pool, email string) (*User, error) {
 	}
 
 	var user User
-	err := dbPool.QueryRow(context.Background(), "SELECT id, email, password FROM users WHERE email = $1", email).Scan(&user.ID, &user.Email, &user.Password)
+	// Ensure the ID is being scanned as a string.
+	err := dbPool.QueryRow(context.Background(), "SELECT id::text, email, password FROM users WHERE email = $1", email).Scan(&user.ID, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}

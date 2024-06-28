@@ -25,7 +25,12 @@ func SignInUserHandler(c echo.Context) error {
 	}
 
 	// Set the session cookie with the generated session ID
-	lib.SetSessionCookie(c.Response().Writer, "session_id", sessionID)
+	lib.SetSessionCookie(c.Response().Writer, "session", lib.SessionData{
+		SessionID: sessionID,
+		UserID:    user.ID,
+		Email:     user.Email,
+		Roles:     []string{"user"},
+	})
 
 	// Proceed with login success logic
 	c.Response().Header().Set("HX-Redirect", "/")

@@ -9,7 +9,7 @@ import (
 
 func SignOutUserHandler(c echo.Context) error {
 	// Clear the session cookie
-	lib.ClearSessionCookie(c.Response().Writer, "session_id")
+	lib.ClearSessionCookie(c.Response().Writer, "session")
 
 	// Proceed with login success logic
 	c.Response().Header().Set("HX-Redirect", "/")
