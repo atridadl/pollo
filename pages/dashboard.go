@@ -8,7 +8,7 @@ import (
 
 type DashboardProps struct {
 	IsLoggedIn bool
-	Email      string
+	Name       string
 }
 
 func Dashboard(c echo.Context) error {
@@ -19,7 +19,7 @@ func Dashboard(c echo.Context) error {
 
 	props := DashboardProps{
 		IsLoggedIn: lib.IsSignedIn(c),
-		Email:      currentSession.Email,
+		Name:       currentSession.Name,
 	}
 
 	// Specify the partials used by this page

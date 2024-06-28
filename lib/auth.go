@@ -12,6 +12,7 @@ import (
 
 type User struct {
 	ID       string
+	Name     string
 	Email    string
 	Password string
 }
@@ -37,6 +38,21 @@ func GetUserByEmail(dbPool *pgxpool.Pool, email string) (*User, error) {
 	var user User
 	// Ensure the ID is being scanned as a string.
 	err := dbPool.QueryRow(context.Background(), "SELECT id::text, email, password FROM users WHERE email = $1", email).Scan(&user.ID, &user.Email, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+// GetUserByID fetches a user by ID from the database.
+func GetUserByID(dbPool *pgxpool.Pool, id string) (*User, error) {
+	if dbPool == nil {
+		return nil, errors.New("database connection pool is not initialized")
+	}
+
+	var user User
+	// Ensure the ID is being scanned as a string.
+	err := dbPool.QueryRow(context.Background(), "SELECT id::text, email, password FROM users WHERE id = $1", id).Scan(&user.ID, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}

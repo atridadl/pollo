@@ -21,6 +21,7 @@ import (
 type SessionData struct {
 	SessionID string   `json:"sessionID"`
 	UserID    string   `json:"userId"`
+	Name      string   `json:"name"`
 	Email     string   `json:"email"`
 	Roles     []string `json:"roles"`
 }
@@ -154,12 +155,21 @@ func ClearSessionCookie(w http.ResponseWriter, name string) {
 
 // Checks if the user is signed in by checking the session cookie
 func IsSignedIn(c echo.Context) bool {
-	_, err := GetSessionCookie(c.Request(), "session")
+	sessionData, err := GetSessionCookie(c.Request(), "session")
 	if err != nil {
-		// Log the error for debugging purposes
 		log.Printf("Error retrieving session cookie: %v", err)
+		return false
 	}
-	return err == nil
+
+	// Validate the session data by checking if the user exists in the database
+	user, err := GetUserByID(GetDBPool(), sessionData.UserID)
+	if err != nil || user == nil {
+		log.Printf("Session refers to a non-existent user: %v", err)
+		ClearSessionCookie(c.Response().Writer, "session")
+		return false
+	}
+
+	return true
 }
 
 // GenerateRandomBytes returns securely generated random bytes.

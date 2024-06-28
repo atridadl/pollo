@@ -11,19 +11,21 @@ Pollo // Register
 {{end}}
 
 {{define "main"}}
-<div id="auth-form">
+<div id="auth-form" hx-ext="response-targets">
   <h2 class="text-4xl">Register</h2>
   <br>
-  <form class="flex flex-col gap-2" hx-post="/api/register" hx-swap="none">
+  <form class="flex flex-col gap-2" hx-post="/api/register" hx-target-4*="#error-message">
+    <input class="input input-bordered input-primary w-full max-w-xs" type="text" name="name" placeholder="Name" required>
     <input class="input input-bordered input-primary w-full max-w-xs" type="email" name="email" placeholder="Email" required>
     <input class="input input-bordered input-primary w-full max-w-xs" type="password" name="password" placeholder="Password" required>
-    <button class="btn btn-primary" type="submit">Register</button>
+    <button class="btn btn-primary" type="submit">Sign In</button>
   </form>
-  <p>Already have an account? <a href="/signin">Sign In</a></p>
+  <div id="error-message"style="color: red;"></div>
+  <p>Already have an account? <a href="/signin">Register</a></p>
 </div>
 {{end}}
 
 {{define "foot"}}
 <script src="/public/js/htmx.base.js"></script>
-<script src="/public/js/htmx.sse.js"></script>
+<script src="/public/js/htmx.targets.js"></script>
 {{end}}
