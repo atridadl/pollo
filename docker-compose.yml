@@ -8,9 +8,6 @@ services:
     image: atridad:latest
     command: ["/app"]
     pull_policy: build
-    depends_on:
-      db:
-        condition: service_healthy
     ports:
       - "3131:3000"
     networks:
