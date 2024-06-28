@@ -1,9 +1,9 @@
 {{define "title"}}
-Pollo // Root
+Pollo // Register
 {{end}}
 
 {{define "headercontent"}}
-Pollo // Root
+Pollo // Register
 {{end}}
 
 {{define "head"}}
@@ -12,11 +12,12 @@ Pollo // Root
 
 {{define "main"}}
 <div id="auth-form">
-  <h2>Register</h2>
-  <form hx-post="/api/register" hx-swap="none">
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Register</button>
+  <h2 class="text-4xl">Register</h2>
+  <br>
+  <form class="flex flex-col gap-2" hx-post="/api/register" hx-swap="none">
+    <input class="input input-bordered input-primary w-full max-w-xs" type="email" name="email" placeholder="Email" required>
+    <input class="input input-bordered input-primary w-full max-w-xs" type="password" name="password" placeholder="Password" required>
+    <button class="btn btn-primary" type="submit">Register</button>
   </form>
   <p>Already have an account? <a href="/signin">Sign In</a></p>
 </div>

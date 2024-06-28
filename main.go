@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"pollo/api"
 	"pollo/api/webhooks"
@@ -28,12 +29,21 @@ func main() {
 	}
 
 	// Initialize the database connection pool
-	connString := os.Getenv("DATABASE_URL")
-	if connString == "" {
-		log.Fatal("DATABASE_URL environment variable is not set.")
+	postgresHost := os.Getenv("POSTGRES_HOST")
+	postgresPort := os.Getenv("POSTGRES_PORT")
+	postgresUser := os.Getenv("POSTGRES_USER")
+	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
+	postgresDB := os.Getenv("POSTGRES_DB")
+	if postgresHost == "" || postgresPort == "" || postgresUser == "" || postgresPassword == "" || postgresDB == "" {
+		log.Fatal("Darta environment variable is not set.")
 	}
 
-	if err := lib.InitializeDBPool(connString); err != nil {
+	portNumber, err := strconv.Atoi(postgresPort)
+	if err != nil {
+		log.Fatalf("Invalid database port: %v", err)
+	}
+
+	if err := lib.InitializeDBPool(postgresHost, postgresUser, postgresPassword, postgresDB, portNumber); err != nil {
 		log.Fatalf("Failed to initialize DB pool: %v", err)
 	}
 
@@ -80,6 +90,7 @@ func main() {
 	// Public routes
 	apiGroup.POST("/register", api.RegisterUserHandler)
 	apiGroup.POST("/signin", api.SignInUserHandler)
+	apiGroup.POST("/signout", api.SignOutUserHandler)
 
 	// Webhook Routes:
 	webhookGroup := e.Group("/webhook")

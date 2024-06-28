@@ -48,6 +48,19 @@ func GetSessionCookie(r *http.Request, name string) (string, error) {
 	return cookie.Value, nil
 }
 
+// ClearSessionCookie clears the session cookie from the client's browser
+func ClearSessionCookie(w http.ResponseWriter, name string) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     name,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   os.Getenv("DEVMODE") != "true",
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   -1, // Set MaxAge to -1 to delete the cookie immediately.
+	})
+}
+
 // Checks if the user is signed in by checking the session cookie
 func IsSignedIn(c echo.Context) bool {
 	_, err := GetSessionCookie(c.Request(), "session_id")

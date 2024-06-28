@@ -7,10 +7,13 @@ import (
 )
 
 type DashboardProps struct {
+	IsLoggedIn bool
 }
 
 func Dashboard(c echo.Context) error {
-	props := HomeProps{}
+	props := DashboardProps{
+		IsLoggedIn: lib.IsSignedIn(c),
+	}
 
 	// Specify the partials used by this page
 	partials := []string{"header"}

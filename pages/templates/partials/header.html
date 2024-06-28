@@ -9,7 +9,7 @@
     <a class="btn btn-primary btn-outline mx-2" href="/dashboard">
       Dashboard
     </a>
-    <a class="btn btn-primary" href="/signout">
+    <a class="btn btn-primary" hx-post="/api/signout" hx-redirect="/">
       Sign Out
     </a>
     {{else}}
