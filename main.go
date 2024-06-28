@@ -24,14 +24,7 @@ var PublicFS embed.FS
 
 func main() {
 	// Load environment variables
-	err := godotenv.Load(".env")
-	if err != nil {
-		// If loading .env fails, try loading stack.env
-		err = godotenv.Load("stack.env")
-		if err != nil {
-			log.Fatal("Error loading environment file")
-		}
-	}
+	godotenv.Load(".env")
 
 	// Initialize the database connection pool
 	postgresHost := os.Getenv("POSTGRES_HOST")
