@@ -31,21 +31,7 @@ func RegisterUserHandler(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, "Failed to save user")
 	}
 
-	sessionID, err := lib.GenerateSessionID()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, "Failed to generate session ID")
-	}
-
-	// Set the session cookie using the helper function
-	lib.SetSessionCookie(c.Response().Writer, "session", lib.SessionData{
-		SessionID: sessionID,
-		UserID:    user.ID,
-		Name:      user.Name,
-		Email:     user.Email,
-		Roles:     []string{"user"},
-	})
-
 	// Redirect or respond with a success status code
-	c.Response().Header().Set("HX-Redirect", "/")
+	c.Response().Header().Set("HX-Redirect", "/signin")
 	return c.NoContent(http.StatusOK)
 }
