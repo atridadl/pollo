@@ -22,12 +22,10 @@ func GetAllRoomsHandler(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to retrieve rooms"})
 	}
 
-	// Start building the HTML content
+	// Start building the HTML content for the updated list of rooms
 	htmlContent := "<div id='room-list'>"
 	for _, room := range rooms {
-		// For each room, append an HTML element to htmlContent
-		// Customize this HTML structure as needed to match your desired appearance
-		htmlContent += fmt.Sprintf("<div class='room-name'>%s</div>", room.RoomName)
+		htmlContent += fmt.Sprintf("<div class='room-name'>%s <button hx-delete='/api/room/%s' hx-target='#room-list' hx-swap='outerHTML'>❌</button></div>", room.RoomName, room.ID)
 	}
 	htmlContent += "</div>"
 
