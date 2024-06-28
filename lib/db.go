@@ -29,7 +29,17 @@ func InitializeSchema(dbPool *pgxpool.Pool) error {
 		name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL
-    );`
+    );
+	CREATE TABLE IF NOT EXISTS rooms (
+		id TEXT NOT NULL PRIMARY KEY,
+		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		userId TEXT NOT NULL,
+		roomName TEXT,
+		topicName TEXT,
+		visible BOOLEAN NOT NULL DEFAULT false,
+		scale TEXT NOT NULL DEFAULT '0.5,1,2,3,5'
+	);
+	`
 	// TODO: Add more tables to the schema
 
 	_, err := dbPool.Exec(context.Background(), schemaSQL)

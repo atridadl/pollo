@@ -89,6 +89,10 @@ func main() {
 	apiGroup.POST("/register", api.RegisterUserHandler)
 	apiGroup.POST("/signin", api.SignInUserHandler)
 	apiGroup.POST("/signout", api.SignOutUserHandler)
+	// Rooms routes
+	apiGroup.POST("/room/create", api.CreateRoomHandler)
+	apiGroup.GET("/room/list", api.GetAllRoomsHandler)
+	apiGroup.POST("/room/delete", api.DeleteRoomHandler)
 
 	// Webhook Routes:
 	webhookGroup := e.Group("/webhook")

@@ -15,10 +15,18 @@ Pollo // Dashboard
   <h1 class="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold">
     Hi, {{.Name}}!
   </h1>
-
-  <label htmlFor="new-room-modal" class="btn btn-primary">
-    New Room
-  </label>
+  <!-- Form to create a new room -->
+  <form method="POST" hx-post="/api/room/create" hx-target="#room-list" hx-swap="outerHTML">
+    <input type="text" name="roomName" placeholder="Room Name" required>
+    <button type="submit" class="btn btn-primary">Create Room</button>
+  </form>
+  <!-- Section to list rooms -->
+  <div class="flex flex-col gap-2" id="room-list" hx-get="/api/room/list" hx-trigger="load">
+    <!-- Example of how rooms might be loaded -->
+    <!-- <div class="room-name">Room 1</div>
+         <div class="room-name">Room 2</div> -->
+    <!-- Rooms will be loaded here -->
+  </div>
 </div>
 {{end}}
 
