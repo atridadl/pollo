@@ -9,7 +9,7 @@ services:
     command: ["/app"]
     pull_policy: build
     ports:
-      - "3000:3000"
+      - "3131:3000"
     networks:
       - proxy_default
     environment:
