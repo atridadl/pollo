@@ -27,6 +27,7 @@ func SignInUserHandler(c echo.Context) error {
 	// Set the session cookie with the generated session ID
 	lib.SetSessionCookie(c.Response().Writer, "session", lib.SessionData{
 		SessionID: sessionID,
+		Name:      user.Name,
 		UserID:    user.ID,
 		Email:     user.Email,
 		Roles:     []string{"user"},
