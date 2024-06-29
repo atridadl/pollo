@@ -2,10 +2,7 @@ package lib
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -21,15 +18,6 @@ type Room struct {
 	Scale     string
 }
 
-// GenerateNewID generates a new room ID with the format "room_randomstring".
-func GenerateNewID() string {
-	randomBytes := make([]byte, 16)
-	if _, err := rand.Read(randomBytes); err != nil {
-		panic(err)
-	}
-	return fmt.Sprintf("room_%s", hex.EncodeToString(randomBytes))
-}
-
 // CreateRoom creates a new room in the database.
 func CreateRoom(dbPool *pgxpool.Pool, userID, roomName string) (*Room, error) {
 	if dbPool == nil {
@@ -37,7 +25,7 @@ func CreateRoom(dbPool *pgxpool.Pool, userID, roomName string) (*Room, error) {
 	}
 
 	// Generate a new ID for the room
-	newRoomID := GenerateNewID()
+	newRoomID := GenerateNewID("room")
 
 	// Insert the new room into the database
 	_, err := dbPool.Exec(context.Background(), "INSERT INTO rooms (id, userid, roomname, topicname, visible, scale) VALUES ($1, $2, $3, $4, $5, $6)", newRoomID, userID, roomName, "My First Topic", false, "0.5,1,2,3,5")

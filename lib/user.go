@@ -65,7 +65,7 @@ func SaveUser(dbPool *pgxpool.Pool, user *User) error {
 		return errors.New("database connection pool is not initialized")
 	}
 
-	commandTag, err := dbPool.Exec(context.Background(), "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", user.Name, user.Email, user.Password)
+	commandTag, err := dbPool.Exec(context.Background(), "INSERT INTO users (id, name, email, password) VALUES ($1, $2, $3, $4)", GenerateNewID("user"), user.Name, user.Email, user.Password)
 	if err != nil {
 		return err
 	}

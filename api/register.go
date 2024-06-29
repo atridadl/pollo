@@ -29,6 +29,7 @@ func RegisterUserHandler(c echo.Context) error {
 	user := lib.User{Name: name, Email: email, Password: hashedPassword}
 	println("User: ", user.Name, user.Email, user.Password)
 	if err := lib.SaveUser(lib.GetDBPool(), &user); err != nil {
+		println("Error saving user: ", err.Error())
 		return c.JSON(http.StatusInternalServerError, "Failed to save user")
 	}
 
