@@ -16,12 +16,22 @@ Pollo // Dashboard
     Hi, {{.Name}}!
   </h1>
   <!-- Form to create a new room -->
-  <form class="flex flex-col gap-2" method="POST" hx-post="/api/room" hx-target="#room-list" hx-swap="outerHTML">
+  <form class="flex flex-col gap-2" method="POST" hx-post="/api/room" hx-target="#room-list" hx-swap="outerHTML" hx-on--after-request="this.reset()">
     <input class="input input-bordered input-primary w-full max-w-xs" type="text" name="roomName" placeholder="Room Name" required>
     <button type="submit" class="btn btn-primary">Create Room</button>
   </form>
-  <!-- Section to list rooms -->
-  <div class="flex flex-col gap-2" id="room-list" hx-get="/api/room" hx-trigger="load">
+
+  <div class="overflow-x-auto">
+    <table class="table text-center">
+        <thead>
+        <tr class="border-white">
+            <th>Room Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="room-list" hx-get="/api/room" hx-trigger="load" hx-swap="outerHTML">
+        </tbody>
+    </table>
   </div>
 </div>
 {{end}}

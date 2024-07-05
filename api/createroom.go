@@ -34,11 +34,11 @@ func CreateRoomHandler(c echo.Context) error {
 	}
 
 	// Start building the HTML content for the updated list of rooms
-	htmlContent := "<div id='room-list'>"
+	htmlContent := "<tbody id='room-list'>"
 	for _, room := range rooms {
-		htmlContent += fmt.Sprintf("<div class='room-name'>%s <button hx-delete='/api/room/%s' hx-target='#room-list' hx-swap='outerHTML'>❌</button></div>", room.RoomName, room.ID)
+		htmlContent += fmt.Sprintf("<tr class='hover border-white'><td class='break-all max-w-[200px] md:max-w-[400px]'>%s</td> <td><button class='m-2' hx-delete='/api/room/%s' hx-target='#room-list' hx-swap='outerHTML'>❌</button></td></tr>", room.RoomName, room.ID)
 	}
-	htmlContent += "</div>"
+	htmlContent += "</tbody>"
 
 	// Return the dynamically generated HTML content
 	return c.HTML(http.StatusOK, htmlContent)
