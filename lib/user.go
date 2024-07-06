@@ -74,6 +74,7 @@ func SaveUser(dbPool *pgxpool.Pool, user *User) error {
 	}
 	return nil
 }
+
 func AuthenticatedMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		isSignedIn := IsSignedIn(c)

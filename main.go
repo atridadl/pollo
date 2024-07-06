@@ -51,13 +51,20 @@ func main() {
 		log.Fatalf("Failed to initialize schema: %v", err)
 	}
 
-	// Initialize Echo router
+	// Initialize Echo router and route groups
 	e := echo.New()
+	publicPageRoute := e.Group("")
+	protectedPageRoute := e.Group("", lib.AuthenticatedPageMiddleware)
+	publicApiRoute := e.Group("/api")
+	protectedApiRoute := e.Group("/api", lib.AuthenticatedEndpointMiddleware)
+	webhookGroup := e.Group("/webhook")
 
 	// Initialize the session store
 	e.Use(lib.InitSessionMiddleware())
 
-	// Middleware
+	// ------------------------------
+	// Middleware:
+	// ------------------------------
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -68,35 +75,41 @@ func main() {
 	}))
 	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(50)))
 
-	// Static server
+	// ------------------------------
+	// Static Server:
+	// ------------------------------
 	fs := http.FS(PublicFS)
 	e.GET("/public/*", echo.WrapHandler(http.FileServer(fs)))
 
-	// Page routes
-	e.GET("/", pages.Home)
-	e.GET("/signin", pages.SignIn)
-	e.GET("/register", pages.Register)
-	e.GET("/dashboard", pages.Dashboard, lib.AuthenticatedMiddleware)
-	e.GET("/room/:id", pages.Room, lib.AuthenticatedMiddleware)
+	// ------------------------------
+	// Page Routes:
+	// ------------------------------
+	publicPageRoute.GET("/", pages.Home)
+	publicPageRoute.GET("/signin", pages.SignIn)
+	publicPageRoute.GET("/register", pages.Register)
+	protectedPageRoute.GET("/dashboard", pages.Dashboard)
+	protectedPageRoute.GET("/room/:id", pages.Room)
 
+	// ------------------------------
 	// API Routes:
-	apiGroup := e.Group("/api")
-	apiGroup.GET("/ping", api.Ping)
-
-	apiGroup.GET("/sse", func(c echo.Context) error {
+	// ------------------------------
+	// Generic API routes (public)
+	publicApiRoute.GET("/ping", api.Ping)
+	publicApiRoute.GET("/sse", func(c echo.Context) error {
 		return api.SSE(c)
 	})
-	// Public routes
-	apiGroup.POST("/register", api.RegisterUserHandler)
-	apiGroup.POST("/signin", api.SignInUserHandler)
-	apiGroup.POST("/signout", api.SignOutUserHandler)
-	// Rooms routes
-	apiGroup.POST("/room", api.CreateRoomHandler)
-	apiGroup.GET("/room", api.GetAllRoomsHandler)
-	apiGroup.DELETE("/room/:id", api.DeleteRoomHandler)
+
+	// Auth routes (public)
+	publicApiRoute.POST("/register", api.RegisterUserHandler)
+	publicApiRoute.POST("/signin", api.SignInUserHandler)
+	publicApiRoute.POST("/signout", api.SignOutUserHandler)
+
+	// Rooms routes (protected)
+	protectedApiRoute.POST("/room", api.CreateRoomHandler)
+	protectedApiRoute.GET("/room", api.GetAllRoomsHandler)
+	protectedApiRoute.DELETE("/room/:id", api.DeleteRoomHandler)
 
 	// Webhook Routes:
-	webhookGroup := e.Group("/webhook")
 	webhookGroup.POST("/clerk", webhooks.ClerkWebhookHandler)
 
 	// Parse command-line arguments for IP and port
