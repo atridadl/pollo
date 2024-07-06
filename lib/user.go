@@ -75,7 +75,7 @@ func SaveUser(dbPool *pgxpool.Pool, user *User) error {
 	return nil
 }
 
-func AuthenticatedMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func AuthenticatedPageMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		isSignedIn := IsSignedIn(c)
 
@@ -83,6 +83,21 @@ func AuthenticatedMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		if !isSignedIn {
 			// Redirect to signin page if not authenticated
 			return c.Redirect(http.StatusFound, "/signin")
+		}
+
+		// Proceed with the request if authenticated
+		return next(c)
+	}
+}
+
+func AuthenticatedEndpointMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		isSignedIn := IsSignedIn(c)
+
+		// Check if user is authenticated
+		if !isSignedIn {
+			// Return 401 if not authenticated
+			return c.String(http.StatusUnauthorized, "Unauthorized")
 		}
 
 		// Proceed with the request if authenticated
