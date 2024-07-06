@@ -77,6 +77,7 @@ func main() {
 	e.GET("/signin", pages.SignIn)
 	e.GET("/register", pages.Register)
 	e.GET("/dashboard", pages.Dashboard, lib.AuthenticatedMiddleware)
+	e.GET("/room/:id", pages.Room, lib.AuthenticatedMiddleware)
 
 	// API Routes:
 	apiGroup := e.Group("/api")

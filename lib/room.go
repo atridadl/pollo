@@ -2,7 +2,9 @@ package lib
 
 import (
 	"context"
+	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -84,4 +86,20 @@ func GetRoomsByUserID(dbPool *pgxpool.Pool, userID string) ([]Room, error) {
 	}
 
 	return rooms, nil
+}
+
+// GetRoomById retrieves a room by its ID from the database.
+func GetRoomById(dbPool *pgxpool.Pool, roomId string) (*Room, error) {
+	var room Room
+
+	query := "SELECT id, created_at, userid, roomname, topicname, visible, scale FROM rooms WHERE id = $1"
+	err := dbPool.QueryRow(context.Background(), query, roomId).Scan(&room.ID, &room.CreatedAt, &room.UserID, &room.RoomName, &room.TopicName, &room.Visible, &room.Scale)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no room found with ID %s", roomId)
+		}
+		return nil, err
+	}
+
+	return &room, nil
 }

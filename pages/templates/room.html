@@ -1,0 +1,27 @@
+{{define "title"}}
+Pollo // Room
+{{end}}
+
+{{define "headercontent"}}
+Pollo // Room
+{{end}}
+
+{{define "head"}}
+<link rel="stylesheet" href="/public/css/styles.css" />
+{{end}}
+
+{{define "main"}}
+<div class="flex flex-col items-center justify-center gap-8">
+  <div class="text-2xl">{{.Room.RoomName}}</div>
+
+  <div class="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-md">
+    <div>ID:</div>
+    <div>{{.Room.ID}}</div>
+  </div>
+</div>
+{{end}}
+
+{{define "foot"}}
+<script src="/public/js/htmx.base.js"></script>
+<script src="/public/js/htmx.sse.js"></script>
+{{end}}
