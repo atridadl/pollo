@@ -7,8 +7,7 @@ import (
 )
 
 type RoomProps struct {
-	IsLoggedIn bool
-	Room       lib.Room
+	Room lib.Room
 }
 
 func Room(c echo.Context) error {
@@ -28,13 +27,12 @@ func Room(c echo.Context) error {
 	}
 
 	props := RoomProps{
-		IsLoggedIn: lib.IsSignedIn(c),
-		Room:       *room,
+		Room: *room,
 	}
 
 	// Specify the partials used by this page
 	partials := []string{"header"}
 
 	// Render the template
-	return lib.RenderTemplate(c.Response().Writer, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props)
 }

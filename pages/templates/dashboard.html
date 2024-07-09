@@ -13,7 +13,7 @@ Pollo // Dashboard
 {{define "main"}}
 <div class="flex flex-col items-center justify-center gap-8">
   <h1 class="flex flex-row flex-wrap text-center justify-center items-center gap-1 text-4xl font-bold">
-    Hi, {{.Name}}!
+    Hi, {{.Props.Name}}!
   </h1>
   <!-- Form to create a new room -->
   <form class="flex flex-col gap-2" method="POST" hx-post="/api/room" hx-target="#room-list" hx-swap="outerHTML" hx-on--after-request="this.reset()">

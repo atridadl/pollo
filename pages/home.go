@@ -7,19 +7,14 @@ import (
 )
 
 type HomeProps struct {
-	IsLoggedIn bool
 }
 
 func Home(c echo.Context) error {
-	props := HomeProps{
-		IsLoggedIn: lib.IsSignedIn(c),
-	}
-
-	println("Home page props: ", props.IsLoggedIn)
+	props := HomeProps{}
 
 	// Specify the partials used by this page
 	partials := []string{"header"}
 
 	// Render the template
-	return lib.RenderTemplate(c.Response().Writer, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props)
 }

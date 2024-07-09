@@ -10,11 +10,11 @@ type SignInProps struct {
 }
 
 func SignIn(c echo.Context) error {
-	props := HomeProps{}
+	props := SignInProps{}
 
 	// Specify the partials used by this page
 	partials := []string{"header"}
 
 	// Render the template
-	return lib.RenderTemplate(c.Response().Writer, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props)
 }

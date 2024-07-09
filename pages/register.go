@@ -10,11 +10,11 @@ type RegisterProps struct {
 }
 
 func Register(c echo.Context) error {
-	props := HomeProps{}
+	props := RegisterProps{}
 
 	// Specify the partials used by this page
 	partials := []string{"header"}
 
 	// Render the template
-	return lib.RenderTemplate(c.Response().Writer, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props)
 }

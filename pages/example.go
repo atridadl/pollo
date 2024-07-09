@@ -1,8 +1,9 @@
 package pages
 
 import (
-	"github.com/labstack/echo/v4"
 	"pollo/lib"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ExampleProps struct {
@@ -18,5 +19,5 @@ func Example(c echo.Context) error {
 	partials := []string{"header", "navitems"}
 
 	// Render the template
-	return lib.RenderTemplate(c.Response().Writer, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props)
 }

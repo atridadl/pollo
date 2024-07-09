@@ -2,14 +2,20 @@ package lib
 
 import (
 	"html/template"
-	"net/http"
 	"path/filepath"
 	"runtime"
 
 	templatefs "pollo/pages/templates"
+
+	"github.com/labstack/echo/v4"
 )
 
-func RenderTemplate(w http.ResponseWriter, layout string, partials []string, props interface{}) error {
+type TemplateData struct {
+	Props      interface{}
+	IsLoggedIn bool
+}
+
+func RenderTemplate(c echo.Context, layout string, partials []string, props interface{}) error {
 	// Get the name of the current file
 	_, filename, _, _ := runtime.Caller(1)
 	page := filepath.Base(filename)
@@ -31,8 +37,15 @@ func RenderTemplate(w http.ResponseWriter, layout string, partials []string, pro
 		return err
 	}
 
-	// Execute the layout template
-	err = ts.ExecuteTemplate(w, layout, props)
+	// Wrap the props with the IsLoggedIn status
+	isLoggedIn := IsSignedIn(c)
+	templateData := TemplateData{
+		Props:      props,
+		IsLoggedIn: isLoggedIn,
+	}
+
+	// Execute the layout template with the wrapped props
+	err = ts.ExecuteTemplate(c.Response().Writer, layout, templateData)
 	if err != nil {
 		LogError.Print(err.Error())
 		return err

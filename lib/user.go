@@ -90,6 +90,18 @@ func AuthenticatedPageMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+func AuthFlowPageMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		isSignedIn := IsSignedIn(c)
+
+		if isSignedIn {
+			return c.Redirect(http.StatusFound, "/dashboard")
+		}
+
+		return next(c)
+	}
+}
+
 func AuthenticatedEndpointMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		isSignedIn := IsSignedIn(c)

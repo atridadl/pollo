@@ -55,6 +55,7 @@ func main() {
 	e := echo.New()
 	publicPageRoute := e.Group("")
 	protectedPageRoute := e.Group("", lib.AuthenticatedPageMiddleware)
+	authFlowPageRoute := e.Group("", lib.AuthFlowPageMiddleware)
 	publicApiRoute := e.Group("/api")
 	protectedApiRoute := e.Group("/api", lib.AuthenticatedEndpointMiddleware)
 	webhookGroup := e.Group("/webhook")
@@ -85,8 +86,8 @@ func main() {
 	// Page Routes:
 	// ------------------------------
 	publicPageRoute.GET("/", pages.Home)
-	publicPageRoute.GET("/signin", pages.SignIn)
-	publicPageRoute.GET("/register", pages.Register)
+	authFlowPageRoute.GET("/signin", pages.SignIn)
+	authFlowPageRoute.GET("/register", pages.Register)
 	protectedPageRoute.GET("/dashboard", pages.Dashboard)
 	protectedPageRoute.GET("/room/:id", pages.Room)
 
