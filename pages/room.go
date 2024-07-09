@@ -11,19 +11,27 @@ type RoomProps struct {
 }
 
 func Room(c echo.Context) error {
-	_, error := lib.GetSessionCookie(c.Request(), "session")
-	if error != nil {
-		return c.Redirect(302, "/signin")
-	}
-
 	// Get the room ID from the URL
 	roomID := c.Param("id")
-	println("Room ID: ", roomID)
+
+	// Initialize the page error
+	pageError := lib.Error{}
 
 	// Get the room from the database
 	room, err := lib.GetRoomById(lib.GetDBPool(), roomID)
 	if err != nil {
-		return c.String(404, "Room not found!")
+		pageError = lib.Error{
+			Code:    404,
+			Message: "Room not found",
+		}
+
+		props := RoomProps{}
+
+		// Specify the partials used by this page
+		partials := []string{"header"}
+
+		// Render the template
+		return lib.RenderTemplate(c, "base", partials, props, pageError)
 	}
 
 	props := RoomProps{
@@ -34,5 +42,5 @@ func Room(c echo.Context) error {
 	partials := []string{"header"}
 
 	// Render the template
-	return lib.RenderTemplate(c, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props, pageError)
 }

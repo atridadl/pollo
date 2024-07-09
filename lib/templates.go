@@ -10,12 +10,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type Error struct {
+	Code    int
+	Message string
+}
+
 type TemplateData struct {
 	Props      interface{}
 	IsLoggedIn bool
+	Error      Error
 }
 
-func RenderTemplate(c echo.Context, layout string, partials []string, props interface{}) error {
+func RenderTemplate(c echo.Context, layout string, partials []string, props interface{}, error Error) error {
 	// Get the name of the current file
 	_, filename, _, _ := runtime.Caller(1)
 	page := filepath.Base(filename)
@@ -41,6 +47,7 @@ func RenderTemplate(c echo.Context, layout string, partials []string, props inte
 	isLoggedIn := IsSignedIn(c)
 	templateData := TemplateData{
 		Props:      props,
+		Error:      error,
 		IsLoggedIn: isLoggedIn,
 	}
 

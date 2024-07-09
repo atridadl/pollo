@@ -12,7 +12,19 @@
   <body class="block h-[100%]">
     {{template "header" .}}
     <main class="container flex flex-col items-center justify-center gap-3 sm:gap-6 p-4 text-center mx-auto min-h-[calc(100%-64px)]">
+      {{if .Error.Code}}
+      <h1 class="text-3xl sm:text-6xl font-bold">
+        <span class="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent box-decoration-clone">
+          Error {{.Error.Code}}
+        </span>
+      </h1>
+    
+      <h2 class="my-4 text-xl sm:text-3xl font-bold">
+        {{.Error.Message}}
+      </h2>
+      {{else}}
       {{template "main" .}}
+      {{end}}
     </main>
     {{template "foot" .}}
   </body>

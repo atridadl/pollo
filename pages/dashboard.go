@@ -11,6 +11,9 @@ type DashboardProps struct {
 }
 
 func Dashboard(c echo.Context) error {
+	// Initialize the page error
+	pageError := lib.Error{}
+
 	currentSession, error := lib.GetSessionCookie(c.Request(), "session")
 	if error != nil {
 		lib.LogError.Printf("Error getting session: %v", error)
@@ -24,5 +27,5 @@ func Dashboard(c echo.Context) error {
 	partials := []string{"header"}
 
 	// Render the template
-	return lib.RenderTemplate(c, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props, pageError)
 }

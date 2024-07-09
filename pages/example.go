@@ -11,6 +11,9 @@ type ExampleProps struct {
 }
 
 func Example(c echo.Context) error {
+	// Initialize the page error
+	pageError := lib.Error{}
+
 	props := ExampleProps{
 		ExamplePropText: "EXAMPLE TEXT HERE",
 	}
@@ -19,5 +22,5 @@ func Example(c echo.Context) error {
 	partials := []string{"header", "navitems"}
 
 	// Render the template
-	return lib.RenderTemplate(c, "base", partials, props)
+	return lib.RenderTemplate(c, "base", partials, props, pageError)
 }
