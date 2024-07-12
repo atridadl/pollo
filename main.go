@@ -51,30 +51,35 @@ func main() {
 		log.Fatalf("Failed to initialize schema: %v", err)
 	}
 
-	// Initialize Echo router and route groups
+	// ------------------------------
+	// Middlewares:
+	// ------------------------------
+	logMiddleware := middleware.Logger()
+	recoverMiddleware := middleware.Recover()
+	requestIDMiddleware := middleware.RequestID()
+	securityMiddleware := middleware.Secure()
+	gzipMiddleware := middleware.GzipWithConfig(middleware.GzipConfig{
+		Level: 5,
+	})
+	rateLimitMiddleware := middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(50))
+	removeTrailingSlashMiddleware := middleware.RemoveTrailingSlash()
+
+	// Initialize Echo router route groups
 	e := echo.New()
-	publicPageRoute := e.Group("")
-	protectedPageRoute := e.Group("", lib.AuthenticatedPageMiddleware)
-	authFlowPageRoute := e.Group("", lib.AuthFlowPageMiddleware)
+	e.Pre(removeTrailingSlashMiddleware)
+	e.Use(logMiddleware)
+	e.Use(recoverMiddleware)
+	e.Use(requestIDMiddleware)
+	e.Use(securityMiddleware)
+	e.Use(rateLimitMiddleware)
+	e.Use(lib.InitSessionMiddleware())
+
+	publicPageRoute := e.Group("", gzipMiddleware)
+	protectedPageRoute := e.Group("", lib.AuthenticatedPageMiddleware, gzipMiddleware)
+	authFlowPageRoute := e.Group("", lib.AuthFlowPageMiddleware, gzipMiddleware)
 	publicApiRoute := e.Group("/api")
 	protectedApiRoute := e.Group("/api", lib.AuthenticatedEndpointMiddleware)
 	webhookGroup := e.Group("/webhook")
-
-	// Initialize the session store
-	e.Use(lib.InitSessionMiddleware())
-
-	// ------------------------------
-	// Middleware:
-	// ------------------------------
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Pre(middleware.RemoveTrailingSlash())
-	e.Use(middleware.RequestID())
-	e.Use(middleware.Secure())
-	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
-		Level: 5,
-	}))
-	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(50)))
 
 	// ------------------------------
 	// Static Server:
