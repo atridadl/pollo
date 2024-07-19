@@ -1,5 +1,5 @@
 ARG NODE_VERSION=21.5.0
-FROM node:22.5.0-alpine as base
+FROM node:22.5.0 as base
 
 # Remix app lives here
 WORKDIR /app
