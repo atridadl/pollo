@@ -10,13 +10,8 @@ ENV NODE_ENV="production"
 # Install pnpm
 RUN npm install -g pnpm
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install -y build-essential pkg-config python-is-python3
 
 # Install node modules
 COPY --link package.json pnpm-lock.yaml ./
