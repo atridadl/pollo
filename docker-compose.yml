@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   db:
-    image: 'postgres:latest'
+    image: "postgres:16-alpine"
     pull_policy: build
     environment:
       - POSTGRES_DB=$POSTGRES_DB
@@ -35,8 +35,6 @@ services:
       - ROOT_URL=$ROOT_URL
       - SHIT_LIST=$SHIT_LIST
 volumes:
-  redis:
-  redis-config:
   pgdata:
 
 networks:

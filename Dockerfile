@@ -1,5 +1,5 @@
 ARG NODE_VERSION=21.5.0
-FROM node:${NODE_VERSION}-slim as base
+FROM node:22.5.0-alpine as base
 
 # Remix app lives here
 WORKDIR /app
@@ -16,7 +16,7 @@ FROM base as build
 
 # Install packages needed to build node modules
 RUN apt-get update -qq && \
-	apt-get install -y build-essential pkg-config python-is-python3
+    apt-get install -y build-essential pkg-config python-is-python3
 
 # Install node modules
 COPY --link package.json pnpm-lock.yaml ./
