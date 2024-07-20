@@ -1,11 +1,13 @@
 import { defineConfig } from "drizzle-kit";
 import "dotenv/config";
 
+const DB_URL = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASS}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`;
+
 export default defineConfig({
-  dialect: "postgresql", // "postgresql" | "mysql"
+  dialect: "postgresql",
   schema: "./app/services/schema.server.ts",
-  out: "./drizzle/generated",
+  out: "./drizzle",
   dbCredentials: {
-    url: `${process.env.DATABASE_URL}`
-  }
-})
+    url: DB_URL,
+  },
+});
