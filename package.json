@@ -10,6 +10,7 @@
     "start": "remix-serve ./build/server/index.js",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
+    "prod": "pnpm migrate && pnpm start",
     "typecheck": "tsc"
   },
   "dependencies": {

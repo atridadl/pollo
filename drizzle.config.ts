@@ -1,7 +1,9 @@
 import { defineConfig } from "drizzle-kit";
 import "dotenv/config";
 
-const DB_URL = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASS}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`;
+const DB_URL =
+  process.env.DATABASE_URL ||
+  `postgres://${process.env.DB_USER}:${process.env.DB_PASS}@localhost:5432/${process.env.DB_NAME}`;
 
 export default defineConfig({
   dialect: "postgresql",
