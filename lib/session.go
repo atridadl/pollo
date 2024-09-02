@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -36,9 +37,16 @@ func InitSessionMiddleware() echo.MiddlewareFunc {
 	return session.Middleware(store)
 }
 
+// Returns the first 32 bytes of the SHA-256 hash of the ENCRYPTION_KEY environment variable
+func getEncryptionKey() []byte {
+	key := []byte(os.Getenv("ENCRYPTION_KEY"))
+	hash := sha256.Sum256(key)
+	return hash[:32] // Use the first 32 bytes for AES-256
+}
+
 // Encrypt data using AES
 func encrypt(data []byte) (string, error) {
-	encryptionKey := []byte(os.Getenv("ENCRYPTION_KEY"))
+	encryptionKey := getEncryptionKey()
 	fmt.Printf("Encryption Key Length: %d\n", len(encryptionKey))
 
 	block, err := aes.NewCipher(encryptionKey)
@@ -60,7 +68,7 @@ func encrypt(data []byte) (string, error) {
 
 // decrypt decrypts the data using AES-GCM.
 func decrypt(encryptedString string) (string, error) {
-	encryptionKey := []byte(os.Getenv("ENCRYPTION_KEY"))
+	encryptionKey := getEncryptionKey()
 
 	data, err := base64.StdEncoding.DecodeString(encryptedString)
 	if err != nil {
