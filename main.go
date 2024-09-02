@@ -33,7 +33,7 @@ func main() {
 	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
 	postgresDB := os.Getenv("POSTGRES_DB")
 	if postgresHost == "" || postgresPort == "" || postgresUser == "" || postgresPassword == "" || postgresDB == "" {
-		log.Fatal("Darta environment variable is not set.")
+		log.Fatal("DB environment variables not set")
 	}
 
 	portNumber, err := strconv.Atoi(postgresPort)
