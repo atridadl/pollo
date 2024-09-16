@@ -25,13 +25,16 @@ func SignInUserHandler(c echo.Context) error {
 	}
 
 	// Set the session cookie with the generated session ID
-	lib.SetSessionCookie(c.Response().Writer, "session", lib.SessionData{
+	err = lib.SetSessionCookie(c.Response().Writer, "session", lib.SessionData{
 		SessionID: sessionID,
-		Name:      user.Name,
 		UserID:    user.ID,
+		Name:      user.Name,
 		Email:     user.Email,
 		Roles:     []string{"user"},
 	})
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, "Failed to create session")
+	}
 
 	// Proceed with login success logic
 	c.Response().Header().Set("HX-Redirect", "/")

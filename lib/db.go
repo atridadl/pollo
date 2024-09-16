@@ -81,6 +81,19 @@ func InitializeSchema(dbPool *pgxpool.Pool) error {
 				CREATE INDEX IF NOT EXISTS idx_rooms_userid ON rooms(userId);
 			`,
 		},
+		{
+			Version: "6_create_sessions_table",
+			SQL: `
+		        CREATE TABLE IF NOT EXISTS sessions (
+		            id TEXT PRIMARY KEY,
+		            user_id TEXT NOT NULL,
+		            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		            expires_at TIMESTAMP NOT NULL,
+		            FOREIGN KEY (user_id) REFERENCES users(id)
+		        );
+		        CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
+		    `,
+		},
 	}
 
 	// Ensure the migrations table exists
