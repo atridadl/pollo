@@ -7,8 +7,6 @@ services:
         condition: service_healthy
     ports:
       - "3002:3000"
-    networks:
-      - proxy
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
@@ -38,8 +36,3 @@ services:
 
 volumes:
   pgdata:
-
-networks:
-  proxy:
-    name: proxy
-    external: true
