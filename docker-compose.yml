@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/atridadl/pollo:latest@sha256:457780352aa9323655c7355ac68196cd5a721af73349296a3a9132f14bafdad2
+    image: ghcr.io/atridadl/pollo:latest
     command: ["/app"]
     depends_on:
       db:
