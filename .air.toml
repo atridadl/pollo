@@ -6,9 +6,10 @@ tmp_dir = "tmp"
   args_bin = ["-ip", "127.0.0.1", "-port", "3000"]
   bin = "./tmp/main"
   pre_cmd = []
-  cmd = "cd lib/stylegen && ./gen.sh -e html -d ../../pages/templates -o ../../public/css && cd ../.. && go build -o ./tmp/main ."
+  # Updated command to use daisygen
+  cmd = "go build -o ./tmp/main ."
   delay = 1000
-  exclude_dir = ["assets", "tmp", "vendor", "testdata", "lib/stylegen"]
+  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
   exclude_file = []
   exclude_regex = ["_test.go"]
   exclude_unchanged = false

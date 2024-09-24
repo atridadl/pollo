@@ -14,6 +14,7 @@ import (
 	"pollo/lib"
 	"pollo/pages"
 
+	daisygen "github.com/atridadl/daisygen/generator"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -25,6 +26,9 @@ var PublicFS embed.FS
 func main() {
 	// Load environment variables
 	godotenv.Load(".env")
+
+	// Generate CSS
+	daisygen.Generate("html", "./pages/templates", "./public/css")
 
 	// Initialize the database connection pool
 	postgresHost := os.Getenv("POSTGRES_HOST")
