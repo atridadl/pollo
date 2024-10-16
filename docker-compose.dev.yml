@@ -12,11 +12,7 @@ services:
     ports:
       - "3002:3000"
     environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=pollo
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/pollo
       - AUTH_SECRET=${AUTH_SECRET}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
       - DEVMODE=${DEVMODE}

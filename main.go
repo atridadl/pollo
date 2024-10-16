@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 
 	"pollo/api"
 	"pollo/api/webhooks"
@@ -27,21 +26,12 @@ func main() {
 	godotenv.Load(".env")
 
 	// Initialize the database connection pool
-	postgresHost := os.Getenv("POSTGRES_HOST")
-	postgresPort := os.Getenv("POSTGRES_PORT")
-	postgresUser := os.Getenv("POSTGRES_USER")
-	postgresPassword := os.Getenv("POSTGRES_PASSWORD")
-	postgresDB := os.Getenv("POSTGRES_DB")
-	if postgresHost == "" || postgresPort == "" || postgresUser == "" || postgresPassword == "" || postgresDB == "" {
-		log.Fatal("DB environment variables not set")
+	databaseURL := os.Getenv("DATABASE_URL")
+	if databaseURL == "" {
+		log.Fatal("DATABASE_URL environment variable not set")
 	}
 
-	portNumber, err := strconv.Atoi(postgresPort)
-	if err != nil {
-		log.Fatalf("Invalid database port: %v", err)
-	}
-
-	if err := lib.InitializeDBPool(postgresHost, postgresUser, postgresPassword, postgresDB, portNumber); err != nil {
+	if err := lib.InitializeDBPool(databaseURL); err != nil {
 		log.Fatalf("Failed to initialize DB pool: %v", err)
 	}
 
