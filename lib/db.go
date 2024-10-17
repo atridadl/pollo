@@ -27,9 +27,10 @@ func GenerateNewID(prefix string) string {
 }
 
 // Initializes the global database connection pool.
-func InitializeDBPool(databaseURL string) error {
+func InitializeDBPool(host, user, password, dbname string, port int) error {
+	connString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", user, password, host, port, dbname)
 	var err error
-	dbPool, err = pgxpool.Connect(context.Background(), databaseURL)
+	dbPool, err = pgxpool.Connect(context.Background(), connString)
 	if err != nil {
 		return err
 	}
