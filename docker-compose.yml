@@ -1,6 +1,6 @@
 services:
   app:
-    image: registry.digitalocean.com/himboreg/pollo:latest
+    image: ghcr.io/atridadl/pollo:latest
     command: ["/app"]
     depends_on:
       db:
